@@ -1,0 +1,28 @@
+<div class="admin-panel">
+  <header class="admin-header">
+    <h2>Painel do Lojista</h2>
+    <nav>
+      <a routerLink="/admin" 
+         routerLinkActive="active-link" 
+         [routerLinkActiveOptions]="{exact: true}" 
+         class="admin-button">
+         Ver Pedidos
+      </a>
+      <a routerLink="/admin/produtos" 
+         routerLinkActive="active-link" 
+         [routerLinkActiveOptions]="{exact: true}"
+         class="admin-button">
+         Gerenciar Produtos
+      </a>
+      <a routerLink="/admin/produtos/novo" 
+         routerLinkActive="active-link" 
+         class="admin-button">
+         Cadastrar Produto
+      </a>
+    </nav>
+  </header>
+  
+  <div class="admin-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

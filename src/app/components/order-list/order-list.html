@@ -1,0 +1,32 @@
+<div class="order-list-container">
+  <h3>Últimos Pedidos</h3>
+
+  <div class="table-responsive-wrapper">
+    <table class="data-table" *ngIf="pedidos.length > 0; else noOrders">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Cliente</th>
+          <th>Status</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pedido of pedidos">
+          <td>{{ pedido.dataDoPedido | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ pedido.nomeCliente }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="'status-' + pedido.status.toLowerCase().replace(' ', '_')">
+              {{ pedido.status.replace('_', ' ') }}
+            </span>
+          </td>
+          <td>{{ pedido.valorTotal | currency:'BRL' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <ng-template #noOrders>
+    <p class="no-orders">Nenhum pedido encontrado.</p>
+  </ng-template>
+</div>

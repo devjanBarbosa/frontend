@@ -1,0 +1,29 @@
+.welcome-section {
+  display: flex;
+  align-items: center;
+  gap: 40px; 
+  padding: 60px 20px;
+  background-color: var(--rosa-claro);
+  border-radius: 8px;
+  margin-top: 40px;
+}
+
+.welcome-image img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--rosa-principal);
+}
+
+.welcome-text h2 {
+  margin-top: 0;
+  font-size: 2em;
+}
+
+.welcome-text p {
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: var(--texto-claro);
+  max-width: 600px;
+}

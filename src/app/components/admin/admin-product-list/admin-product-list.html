@@ -1,0 +1,25 @@
+<div class="table-container">
+  <h3>Gerenciar Produtos</h3>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Preço</th>
+        <th>Estoque</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let produto of produtos">
+        <td>{{ produto.nome }}</td>
+        <td>{{ produto.preco | currency:'BRL' }}</td>
+        <td>{{ produto.estoque }}</td>
+        <td class="actions">
+          <a [routerLink]="['/admin/produtos/editar', produto.id]" class="btn btn-edit">Editar</a>
+          <button class="btn btn-delete" (click)="excluirProduto(produto.id)">Excluir</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p *ngIf="produtos.length === 0">Nenhum produto cadastrado.</p>
+</div>

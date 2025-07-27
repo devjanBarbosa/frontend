@@ -1,0 +1,51 @@
+<div class="cart-container">
+  <h2>Seu Carrinho</h2>
+
+  <div class="cart-wrapper" *ngIf="(itensDoCarrinho$ | async) as itens; else carrinhoVazio">
+    <div *ngIf="itens.length > 0; else carrinhoVazio">
+      
+      <div class="cart-header">
+        <div class="header-produto">Produto</div>
+        <div class="header-quantidade">Quantidade</div>
+        <div class="header-subtotal">Subtotal</div>
+        <div class="header-remover"></div>
+      </div>
+
+      <div class="cart-item" *ngFor="let item of itens">
+        <div class="item-produto">
+          <img [src]="item.produto.urlImagem" [alt]="item.produto.nome">
+          <div class="info">
+            <h3>{{ item.produto.nome }}</h3>
+            <p>{{ item.produto.preco | currency:'BRL' }}</p>
+          </div>
+        </div>
+        <div class="item-quantidade">
+          <button (click)="decrementarQuantidade(item)">-</button>
+          <span>{{ item.quantidade }}</span>
+          <button (click)="incrementarQuantidade(item)">+</button>
+        </div>
+        <div class="item-subtotal">
+          {{ (item.produto.preco * item.quantidade) | currency:'BRL' }}
+        </div>
+        <div class="item-remover">
+          <button class="remove-btn" (click)="removerItem(item)">×</button>
+        </div>
+      </div>
+
+      <div class="cart-summary">
+        <div class="total">
+          <strong>Total:</strong>
+          <span>{{ calcularTotal(itens) | currency:'BRL' }}</span>
+        </div>
+        <button class="checkout-button">Finalizar Compra</button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #carrinhoVazio>
+    <div class="empty-cart">
+      <p>Seu carrinho está vazio.</p>
+      <a routerLink="/" class="back-to-shop-btn">Continuar comprando</a>
+    </div>
+  </ng-template>
+</div>

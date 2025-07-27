@@ -1,0 +1,39 @@
+<div class="product-detail-page" *ngIf="produto; else loading">
+  <div class="product-gallery">
+    <div class="main-image">
+      <img [src]="produto.urlImagem" [alt]="produto.nome">
+    </div>
+  </div>
+
+  <div class="product-info">
+    <h1 class="product-title">{{ produto.nome }}</h1>
+    
+    <div class="price-section">
+      <span class="product-price">{{ produto.preco | currency:'BRL' }}</span>
+      <span class="installments">em 12x {{ (produto.preco / 12) | currency:'BRL' }} sem juros</span>
+    </div>
+
+    <div class="shipping-info">
+      <span>Frete grátis</span>
+    </div>
+
+    <div class="stock-info">
+      <p><strong>Estoque disponível</strong></p>
+      <p>Quantidade: {{ produto.estoque }} unidades</p>
+    </div>
+    
+    <div class="actions">
+      <button class="buy-now-button">Comprar agora</button>
+      <button class="add-to-cart-button" (click)="adicionarAoCarrinho()">Adicionar ao carrinho</button>
+    </div>
+
+    <div class="description-section">
+      <h2>Descrição</h2>
+      <p>{{ produto.descricao }}</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <p class="loading-message">Carregando produto...</p>
+</ng-template>

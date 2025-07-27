@@ -1,0 +1,54 @@
+.admin-panel {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-header h2 {
+  margin: 0;
+  color: var(--texto-escuro);
+}
+
+.admin-header nav {
+  display: flex;
+  gap: 15px;
+}
+
+.admin-button {
+  background-color: #f1f3f5;
+  color: var(--texto-claro);
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+
+  &:hover {
+    background-color: var(--rosa-claro);
+    color: var(--rosa-principal);
+  }
+
+  &.active-link {
+    background-color: var(--rosa-principal);
+    color: white;
+    font-weight: 700;
+    border-color: var(--rosa-principal);
+  }
+}
+
+.admin-content {
+  padding-top: 1rem;
+}

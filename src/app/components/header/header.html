@@ -1,0 +1,16 @@
+<header class="main-header">
+  <div class="logo">
+    <h1>Leda Cosméticos</h1>
+  </div>
+  <nav class="main-nav">
+    <a routerLink="/">Home</a>
+    <a routerLink="/">Produtos</a>
+    <a routerLink="/contato">Contato</a>
+    <a routerLink="/carrinho" class="cart-link">
+      Carrinho 
+      <span *ngIf="quantidadeItensCarrinho > 0" class="cart-badge">
+        {{ quantidadeItensCarrinho }}
+      </span>
+    </a>
+  </nav>
+</header>

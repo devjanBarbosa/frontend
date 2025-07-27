@@ -1,0 +1,10 @@
+<section class="category-nav-section">
+  <h2>Nossos Produtos</h2>
+  <p>Navegue por nossas categorias e encontre o que você precisa.</p>
+  
+  <div class="category-grid">
+    <div class="category-card" *ngFor="let categoria of categorias">
+      {{ categoria.nome }}
+    </div>
+  </div>
+</section>

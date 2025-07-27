@@ -1,0 +1,85 @@
+/* (O código SCSS que já tínhamos para o formulário profissional) */
+.form-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  max-width: 800px;
+  margin: 20px auto;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+label {
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: inherit;
+  &:focus {
+    border-color: var(--rosa-principal);
+    outline: none;
+  }
+}
+.validation-error {
+  color: #e53935;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+.form-actions {
+  text-align: right;
+  margin-top: 30px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+.submit-button {
+  background-color: var(--rosa-principal);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1em;
+  transition: all 0.3s ease;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  } &:hover {
+    box-shadow: 0 2px 5px rgba(var(--rosa-principal-rgb), 0.5); /* Precisa definir --rosa-principal-rgb se quiser usar rgba */
+  }
+}
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  text-align: center;
+  &.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+}
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

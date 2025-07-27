@@ -1,6 +1,8 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
-import { App } from './app/app';
+// 1. O import busca a classe correta no arquivo correto
+import { AppComponent } from './app/app';
 
-bootstrapApplication(App, appConfig)
+// 2. O bootstrap usa a classe correta
+bootstrapApplication(AppComponent, appConfig)
   .catch((err) => console.error(err));

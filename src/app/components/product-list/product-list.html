@@ -1,0 +1,23 @@
+<section class="product-list-section">
+  <h2>Destaques da Semana</h2>
+
+  <swiper-container 
+    slides-per-view="4" 
+    space-between="30" 
+    navigation="true" 
+    pagination="true"
+    loop="true">
+
+    <swiper-slide *ngFor="let produto of produtos">
+      <a [routerLink]="['/produtos', produto.id]" class="product-link">
+        <div class="product-card">
+          <img [src]="produto.urlImagem" [alt]="produto.nome" class="product-image">
+          <h3 class="product-name">{{ produto.nome }}</h3>
+          <p class="product-price">{{ produto.preco | currency:'BRL' }}</p>
+          <button class="add-to-cart-button" (click)="adicionarAoCarrinho(produto, $event)">Adicionar ao Carrinho</button>
+        </div>
+      </a>
+    </swiper-slide>
+
+  </swiper-container>
+</section>

@@ -17,6 +17,10 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "styles": [
+            "src/styles.scss",
+            "node_modules/swiper/swiper-bundle.min.css"
+          ],
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
@@ -94,5 +98,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "85c7d35d-d539-4bdd-b7b6-7bcb51b26436"
   }
 }

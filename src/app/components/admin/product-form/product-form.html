@@ -1,0 +1,71 @@
+<div class="form-container">
+  <h3>{{ pageTitle }}</h3>
+
+  <div *ngIf="submitErrorMessage" class="alert alert-danger">
+    {{ submitErrorMessage }}
+  </div>
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="form-grid">
+      <div class="form-column">
+        <div class="form-group">
+          <label for="nome">Nome do Produto</label>
+          <input id="nome" type="text" formControlName="nome">
+          <div *ngIf="nome?.invalid && (nome?.dirty || nome?.touched)" class="validation-error">
+            <small *ngIf="nome?.errors?.['required']">Nome é obrigatório.</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="descricao">Descrição</label>
+          <textarea id="descricao" formControlName="descricao" rows="5"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="urlImagem">URL da Imagem</label>
+          <input id="urlImagem" type="text" formControlName="urlImagem">
+        </div>
+      </div>
+
+      <div class="form-column">
+        <div class="form-group">
+          <label for="preco">Preço (R$)</label>
+          <input id="preco" type="number" formControlName="preco">
+          <div *ngIf="preco?.invalid && (preco?.dirty || preco?.touched)" class="validation-error">
+            <small *ngIf="preco?.errors?.['required']">Preço é obrigatório.</small>
+            <small *ngIf="preco?.errors?.['min']">Preço deve ser maior que zero.</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="estoque">Estoque</label>
+          <input id="estoque" type="number" formControlName="estoque">
+          <div *ngIf="estoque?.invalid && (estoque?.dirty || estoque?.touched)" class="validation-error">
+            <small *ngIf="estoque?.errors?.['required']">Estoque é obrigatório.</small>
+            <small *ngIf="estoque?.errors?.['min']">Estoque não pode ser negativo.</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="categoria">Categoria</label>
+          <select id="categoria" formControlName="categoria">
+            <option [ngValue]="null" disabled>Selecione uma categoria</option>
+            <option *ngFor="let cat of categorias" [ngValue]="cat.id">
+              {{ cat.nome }}
+            </option>
+          </select>
+          <div *ngIf="categoria?.invalid && (categoria?.dirty || categoria?.touched)" class="validation-error">
+            <small *ngIf="categoria?.errors?.['required']">Categoria é obrigatória.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="isLoading" class="submit-button">
+        <span *ngIf="!isLoading">Salvar Alterações</span>
+        <span *ngIf="isLoading" class="spinner"></span>
+      </button>
+    </div>
+  </form>
+</div>
