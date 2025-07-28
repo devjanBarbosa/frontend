@@ -5,7 +5,7 @@ import { tap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly apiUrl = 'http://localhost:8080/login';
+  private readonly apiUrl = 'http://localhost:8080/api/login';
   private readonly TOKEN_KEY = 'auth_token';
 
   constructor(private http: HttpClient) { }
@@ -27,4 +27,10 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
   }
+  // Dentro da classe AuthService
+
+// Método para verificar se o usuário está logado (checa se existe um token)
+isLoggedIn(): boolean {
+  return !!this.getToken();
+}
 }

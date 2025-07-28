@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+// 1. Precisamos importar as ferramentas para formulários reativos
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
@@ -7,6 +8,7 @@ import { AuthService } from '../../services/auth';
 @Component({
   selector: 'app-login',
   standalone: true,
+  // 2. Adicionamos o ReactiveFormsModule e RouterModule aqui
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.html',
   styleUrls: ['./login.scss']
@@ -39,7 +41,7 @@ export class LoginComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro no login:', err);
-        alert('Email ou senha inválidos. Por favor, tente novamente.');
+        alert('Email ou senha inválidos.');
       }
     });
   }

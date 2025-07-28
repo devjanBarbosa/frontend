@@ -15,9 +15,9 @@
         <td>{{ produto.preco | currency:'BRL' }}</td>
         <td>{{ produto.estoque }}</td>
         <td class="actions">
-          <a [routerLink]="['/admin/produtos/editar', produto.id]" class="btn btn-edit">Editar</a>
-          <button class="btn btn-delete" (click)="excluirProduto(produto.id)">Excluir</button>
-        </td>
+  <a [routerLink]="['/admin/produtos/editar', produto.id]" class="btn btn-edit">Editar</a>
+  <button class="btn btn-delete" (click)="excluirProduto(produto.id)">Excluir</button>
+</td>
       </tr>
     </tbody>
   </table>

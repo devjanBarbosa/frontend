@@ -1,0 +1,177 @@
+<!-- footer.html -->
+<footer class="main-footer">
+  <!-- Seção principal do footer -->
+  <div class="footer-content">
+    <div class="footer-container">
+      
+      <!-- Informações da loja -->
+      <div class="footer-section">
+        <h3>{{ lojaInfo.nome }}</h3>
+        <p class="footer-description">
+          Sua beleza é única, nossos produtos são especiais para você! 
+          Há mais de 20 anos cuidando da sua autoestima com carinho e qualidade.
+        </p>
+        
+        <div class="social-links">
+          <button 
+            class="social-btn instagram" 
+            (click)="openInstagram()"
+            aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </button>
+          <button 
+            class="social-btn facebook" 
+            (click)="openFacebook()"
+            aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </button>
+          <button 
+            class="social-btn whatsapp" 
+            (click)="openWhatsApp()"
+            aria-label="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Links úteis -->
+      <div class="footer-section">
+        <h3>Links Úteis</h3>
+        <ul class="footer-links">
+          <li><a routerLink="/">Início</a></li>
+          <li><a routerLink="/">Produtos</a></li>
+          <li><a routerLink="/carrinho">Carrinho</a></li>
+          <li><a href="#sobre">Sobre Nós</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </div>
+
+      <!-- Contato -->
+      <div class="footer-section">
+        <h3>Contato</h3>
+        <div class="contact-info">
+          <div class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <p>{{ lojaInfo.endereco }}</p>
+              <p>{{ lojaInfo.cidade }}</p>
+              <p>CEP: {{ lojaInfo.cep }}</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <div>
+              <p>{{ lojaInfo.telefone }}</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <div>
+              <p>
+                <a href="mailto:{{ lojaInfo.email }}" (click)="copyEmail()">
+                  {{ lojaInfo.email }}
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Horário de funcionamento -->
+      <div class="footer-section">
+        <h3>Horário de Funcionamento</h3>
+        <div class="opening-hours">
+          <div class="hours-row">
+            <span>Segunda a Sexta:</span>
+            <span>{{ lojaInfo.horarioFuncionamento.segunda }}</span>
+          </div>
+          <div class="hours-row">
+            <span>Sábado:</span>
+            <span>{{ lojaInfo.horarioFuncionamento.sabado }}</span>
+          </div>
+          <div class="hours-row">
+            <span>Domingo:</span>
+            <span>{{ lojaInfo.horarioFuncionamento.domingo }}</span>
+          </div>
+        </div>
+        
+        <button class="directions-btn" (click)="openDirections()">
+          <i class="fas fa-directions"></i>
+          Como Chegar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seção do mapa -->
+  <div class="map-section">
+    <div class="map-container">
+      <div class="map-header">
+        <h3>Nossa Localização</h3>
+        <p>Venha nos visitar! Estamos te esperando com muito carinho.</p>
+      </div>
+      
+      <div class="map-wrapper">
+        <div 
+          #mapContainer 
+          class="google-map"
+          [attr.aria-label]="'Mapa mostrando a localização de ' + lojaInfo.nome">
+        </div>
+        
+        <!-- Fallback para quando o mapa não carrega -->
+        <div class="map-fallback" *ngIf="!mapLoaded">
+          <div class="fallback-content">
+            <i class="fas fa-map-marked-alt"></i>
+            <p>Carregando mapa...</p>
+            <small>{{ lojaInfo.endereco }}, {{ lojaInfo.cidade }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seção de newsletter -->
+  <div class="newsletter-section">
+    <div class="footer-container">
+      <div class="newsletter-content">
+        <div class="newsletter-text">
+          <h3>📧 Receba nossas novidades!</h3>
+          <p>Fique por dentro dos lançamentos, promoções e dicas de beleza.</p>
+        </div>
+        
+        <div class="newsletter-form">
+          <div class="input-group">
+            <input 
+              type="email" 
+              placeholder="Seu melhor email"
+              class="newsletter-input"
+              #emailInput>
+            <button 
+              class="newsletter-btn"
+              (click)="openWhatsApp()">
+              Inscrever-se
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer bottom -->
+  <div class="footer-bottom">
+    <div class="footer-container">
+      <div class="bottom-content">
+        <p>&copy; {{ currentYear }} {{ lojaInfo.nome }}. Todos os direitos reservados.</p>
+        <div class="bottom-links">
+          <a href="#privacidade">Política de Privacidade</a>
+          <span>•</span>
+          <a href="#termos">Termos de Uso</a>
+          <span>•</span>
+          <a href="#cookies">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

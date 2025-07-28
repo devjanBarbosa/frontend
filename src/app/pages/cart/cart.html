@@ -37,7 +37,7 @@
           <strong>Total:</strong>
           <span>{{ calcularTotal(itens) | currency:'BRL' }}</span>
         </div>
-        <button class="checkout-button">Finalizar Compra</button>
+        <button class="checkout-button" (click)="finalizarCompra(itens)">Finalizar Compra</button>
       </div>
     </div>
   </div>

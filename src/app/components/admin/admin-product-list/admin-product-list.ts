@@ -26,10 +26,20 @@ export class AdminProductListComponent implements OnInit {
     });
   }
 
-  excluirProduto(id: string): void {
-    if (confirm('Tem certeza que deseja excluir este produto?')) {
-      // A lógica para chamar o serviço de exclusão virá aqui
-      console.log('Excluir produto com ID:', id);
-    }
+excluirProduto(id: string): void {
+  // Adiciona uma confirmação para evitar exclusões acidentais
+  if (confirm('Tem certeza que deseja excluir este produto? A ação não pode ser desfeita.')) {
+    this.productService.excluirProduto(id).subscribe({
+      next: () => {
+        alert('Produto excluído com sucesso!');
+        // Recarrega a lista de produtos para remover o item da tela
+        this.carregarProdutos(); 
+      },
+      error: (err) => {
+        alert('Ocorreu um erro ao excluir o produto.');
+        console.error(err);
+      }
+    });
   }
+}
 }

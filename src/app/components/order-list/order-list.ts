@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OrderService, Pedido } from '../../services/order';
+// 1. O import agora pega tanto o serviço QUANTO a interface do mesmo arquivo
+import { OrderService } from '../../services/order';
+import { Pedido } from '../../services/order';
 
 @Component({
   selector: 'app-order-list',
@@ -10,7 +12,8 @@ import { OrderService, Pedido } from '../../services/order';
   styleUrls: ['./order-list.scss']
 })
 export class OrderListComponent implements OnInit {
-  
+
+  // 2. A propriedade "pedidos" é agora uma lista do tipo "Pedido"
   pedidos: Pedido[] = [];
 
   constructor(private orderService: OrderService) {}
@@ -22,7 +25,7 @@ export class OrderListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao buscar pedidos:', err);
-        alert('Ocorreu um erro ao buscar os pedidos. Verifique o console para mais detalhes.');
+        alert('Ocorreu um erro ao buscar os pedidos.');
       }
     });
   }
