@@ -1,31 +1,41 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// 1. O import agora pega tanto o serviço QUANTO a interface do mesmo arquivo
-import { OrderService } from '../../services/order';
-import { Pedido } from '../../services/order';
+import { OrderService, Pedido } from '../../services/order';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-order-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './order-list.html',
   styleUrls: ['./order-list.scss']
 })
 export class OrderListComponent implements OnInit {
-
-  // 2. A propriedade "pedidos" é agora uma lista do tipo "Pedido"
+  
   pedidos: Pedido[] = [];
+  isLoading = true;
+  errorMessage: string | null = null;
 
   constructor(private orderService: OrderService) {}
 
   ngOnInit(): void {
-    this.orderService.listarPedidos().subscribe({
-      next: (dados) => {
-        this.pedidos = dados;
+    this.carregarPedidos();
+  }
+
+  carregarPedidos(): void {
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    this.orderService.getPedidos().subscribe({
+      next: (data) => {
+        this.pedidos = data;
+        this.isLoading = false;
+        console.log('Pedidos carregados:', this.pedidos);
       },
       error: (err) => {
-        console.error('Erro ao buscar pedidos:', err);
-        alert('Ocorreu um erro ao buscar os pedidos.');
+        this.errorMessage = 'Falha ao carregar as encomendas. Verifique se está logado como administrador.';
+        this.isLoading = false;
+        console.error(err);
       }
     });
   }

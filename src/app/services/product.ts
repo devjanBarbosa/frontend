@@ -25,6 +25,7 @@ export interface Produto {
 })
 export class ProductService {
   private readonly apiUrl = 'http://localhost:8080/api/produtos';
+  private readonly uploadUrl = 'http://localhost:8080/api/upload';
 
   constructor(private http: HttpClient) {}
 
@@ -75,5 +76,12 @@ export class ProductService {
     console.error(errorMessage);
     // Retorna um observable com uma mensagem de erro para o usuário
     return throwError(() => new Error(errorMessage));
+  }
+
+   uploadImage(file: File): Observable<{ url: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<{ url: string }>(this.uploadUrl, formData);
   }
 }

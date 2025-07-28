@@ -1,10 +1,10 @@
 <section class="product-list-section">
   <h2>{{ titulo }}</h2>
-  
-  <swiper-container 
-    [slidesPerView]="4" 
-    [spaceBetween]="30" 
-    [navigation]="true" 
+
+  <swiper-container
+    [slidesPerView]="4"
+    [spaceBetween]="30"
+    [navigation]="true"
     [pagination]="{ clickable: true }"
     [loop]="true"
     [breakpoints]="{
@@ -13,24 +13,36 @@
       '1024': { 'slidesPerView': 3, 'spaceBetween': 30 },
       '1200': { 'slidesPerView': 4, 'spaceBetween': 30 }
     }">
-    
+
     <swiper-slide *ngFor="let produto of produtos; trackBy: trackByProdutoId">
+
       <div class="product-card">
-        <a [routerLink]="['/produtos', produto.id]" class="product-link-area">
-          <img 
-            [src]="produto.urlImagem" 
-            [alt]="produto.nome" 
-            class="product-image"
-            loading="lazy"> <h3 class="product-name">{{ produto.nome }}</h3>
-          <p class="product-price">{{ produto.preco | currency:'BRL' }}</p>
+
+        <a [routerLink]="['/produtos', produto.id]" class="product-link-wrapper">
+
+          <div class="product-image-wrapper">
+            <img
+              [src]="produto.urlImagem"
+              [alt]="produto.nome"
+              loading="lazy">
+          </div>
+
+          <div class="product-content">
+            <h3 class="product-name">{{ produto.nome }}</h3>
+            <p class="product-price">{{ produto.preco | currency:'BRL' }}</p>
+          </div>
+
         </a>
-        <button 
-          class="add-to-cart-button" 
-          (click)="adicionarAoCarrinho(produto, $event)"
-          [attr.aria-label]="'Adicionar ' + produto.nome + ' ao carrinho'">
-          Adicionar ao Carrinho
-        </button>
-        
+
+        <div class="product-footer">
+          <button
+            class="add-to-cart-button"
+            (click)="adicionarAoCarrinho(produto, $event)"
+            [attr.aria-label]="'Adicionar ' + produto.nome + ' ao carrinho'">
+            Adicionar ao Carrinho
+          </button>
+        </div>
+
       </div>
     </swiper-slide>
 

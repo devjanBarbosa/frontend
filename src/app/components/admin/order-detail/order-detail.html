@@ -1,0 +1,46 @@
+<div class="order-detail-container" *ngIf="pedido$ | async as pedido; else loading">
+  <a routerLink="/admin/pedidos" class="back-link">&larr; Voltar para a lista de encomendas</a>
+  
+  <header class="detail-header">
+    <h1>Detalhes da Encomenda #{{ pedido.id.substring(0, 8) }}</h1>
+    <span class="status-badge" [ngClass]="pedido.status.toLowerCase()">{{ pedido.status }}</span>
+  </header>
+
+  <div class="details-grid">
+    <div class="detail-card">
+      <h3>Cliente</h3>
+      <p><strong>Nome:</strong> {{ pedido.nomeCliente }}</p>
+    </div>
+
+    <div class="detail-card">
+      <h3>Resumo Financeiro</h3>
+      <p><strong>Valor Total:</strong> {{ pedido.valorTotal | currency:'BRL' }}</p>
+    </div>
+  </div>
+
+  <div class="items-card">
+    <h3>Itens da Encomenda</h3>
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Quantidade</th>
+          <th>Preço Unitário</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of pedido.itens">
+          <td>{{ item.nomeProduto }}</td>
+          <td>{{ item.quantidade }}</td>
+          <td>{{ item.precoUnitario | currency:'BRL' }}</td>
+          <td><strong>{{ (item.precoUnitario * item.quantidade) | currency:'BRL' }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template #loading>
+  <p class="loading-indicator">A carregar detalhes da encomenda...</p>
+</ng-template>

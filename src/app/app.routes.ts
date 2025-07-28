@@ -6,14 +6,17 @@ import { CartComponent } from './pages/cart/cart';
 import { LoginComponent } from './pages/login/login';
 import { AdminComponent } from './pages/admin/admin';
 import { ProductFormComponent } from './components/admin/product-form/product-form';
+import { CheckoutComponent } from './pages/checkout/checkout';
 import { OrderListComponent } from './components/order-list/order-list';
 import { AdminProductListComponent } from './components/admin/admin-product-list/admin-product-list';
 import { authGuard } from './guards/auth-guard';
+import { OrderDetailComponent } from './components/admin/order-detail/order-detail';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'produtos/:id', component: ProductDetailComponent }, 
-    { path: 'carrinho', component: CartComponent },
+    { path: 'carrinho', component: CheckoutComponent },
+    { path: 'pedidos/:id', component: OrderDetailComponent },
     { path: 'login', component: LoginComponent },
     // Removendo a duplicata e mantendo apenas a rota com as filhas e o guarda
     { 

@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router'; // Importe o Router e RouterModule
 import { CartItem, CartService } from '../../services/cart';
 import { Observable } from 'rxjs';
-import { OrderService } from '../../services/order';
 
 @Component({
   selector: 'app-cart',
@@ -17,20 +16,20 @@ export class CartComponent {
 
   constructor(
     private cartService: CartService,
-    private orderService: OrderService, // 2. Injete o OrderService
-    private router: Router // 3. Injete o Router para redirecionar
+    private router: Router // Apenas o Router é necessário aqui
   ) {
     this.itensDoCarrinho$ = this.cartService.items$;
   }
-  incrementarQuantidade(item: CartItem) {
+
+  incrementarQuantidade(item: CartItem): void {
     this.cartService.adicionarAoCarrinho(item.produto);
   }
 
-  decrementarQuantidade(item: CartItem) {
+  decrementarQuantidade(item: CartItem): void {
     this.cartService.decrementarQuantidade(item);
   }
 
-  removerItem(item: CartItem) {
+  removerItem(item: CartItem): void {
     this.cartService.removerItem(item);
   }
   
@@ -38,29 +37,10 @@ export class CartComponent {
     if (!itens) return 0;
     return itens.reduce((total, item) => total + (item.produto.preco * item.quantidade), 0);
   }
-   finalizarCompra(itens: CartItem[]) {
-    if (itens.length === 0) {
-      alert('Seu carrinho está vazio!');
-      return;
-    }
 
-    // Simula a obtenção de dados do cliente.
-    // Futuramente, isso viria de um formulário.
-    const dadosCliente = {
-      nomeCliente: 'Cliente da Loja',
-      whatsappCliente: '21912345678'
-    };
-
-    this.orderService.criarPedido({ itens, ...dadosCliente }).subscribe({
-      next: (pedidoCriado) => {
-        alert(`Pedido #${pedidoCriado.id.substring(0, 8)} realizado com sucesso!`);
-        this.cartService.limparCarrinho();
-        this.router.navigate(['/']); // Redireciona para a home
-      },
-      error: (err) => {
-        console.error('Erro ao finalizar a compra:', err);
-        alert('Ocorreu um erro ao finalizar sua compra. Tente novamente.');
-      }
-    });
+  // MÉTODO CORRIGIDO E SIMPLIFICADO
+  irParaCheckout(): void {
+    // A única responsabilidade deste método é navegar para a página de checkout
+    this.router.navigate(['/checkout']);
   }
 }

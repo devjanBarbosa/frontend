@@ -1,0 +1,213 @@
+:host {
+  --primary-color: #E91E63;
+  --text-color: #333;
+  --text-light: #666;
+  --border-color: #e0e0e0;
+  --background-color: #f5f5f5;
+  --surface-color: #ffffff;
+  --button-color: #3483fa; // Azul do Mercado Livre
+}
+
+.page-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  background-color: var(--background-color); // Fundo da página
+}
+
+.page-title h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+// Estilo da Lista de Produtos
+.cart-items-container .cart-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  h3 { margin: 0; font-size: 1.2rem; }
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto; // Coluna da imagem com tamanho automático
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.product-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.product-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.product-details .product-name {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.remove-link {
+  background: none;
+  border: none;
+  color: var(--button-color);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.9rem;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.product-quantity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  .quantity-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    color: var(--button-color);
+    &:disabled {
+      color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+  .quantity-value {
+    padding: 0 0.5rem;
+    font-weight: 500;
+  }
+}
+
+.product-price {
+  text-align: right;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.empty-cart-message {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-light);
+}
+
+// Estilo da Seção de Checkout
+.checkout-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.checkout-form h3, .summary-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+  }
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.summary-card {
+  position: sticky;
+  top: 2rem;
+}
+
+.summary-line, .summary-total {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.summary-total {
+  font-size: 1.3rem;
+  font-weight: 600;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.submit-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--button-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.2s, background-color 0.2s; // Adiciona filter à transição
+
+  &:hover:not(:disabled) {
+    // A CORREÇÃO ESTÁ AQUI
+    filter: brightness(0.9); // Escurece o botão em 10% no navegador
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+// Media Query para layout de duas colunas em ecrãs maiores
+@media (min-width: 992px) {
+  .checkout-section {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+// Media Query para o layout do item do carrinho em mobile
+@media (max-width: 576px) {
+  .cart-item {
+    grid-template-columns: 1fr; // Empilha tudo
+    text-align: center;
+  }
+  .product-info {
+    flex-direction: column;
+  }
+  .product-price {
+    text-align: center;
+    margin-top: 1rem;
+  }
+}

@@ -1,0 +1,72 @@
+:host {
+  --primary-color: #007bff;
+  --surface-color: #fff;
+  --border-color: #f0f0f0;
+}
+.order-detail-container {
+  padding: 2rem;
+}
+.back-link {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: 500;
+  margin-bottom: 2rem;
+  display: inline-block;
+}
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  h1 {
+    font-size: 2rem;
+    margin: 0;
+  }
+}
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.detail-card, .items-card {
+  background-color: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  h3 {
+    margin-top: 0;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+  }
+}
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  th, td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+  }
+  thead {
+    th {
+      font-weight: 600;
+    }
+  }
+}
+.status-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: white;
+  &.pendente { background-color: #ffc107; color: #333; }
+  &.em_preparacao { background-color: #17a2b8; }
+  &.entregue { background-color: #28a745; }
+  &.cancelado { background-color: #dc3545; }
+}
+.loading-indicator {
+  text-align: center;
+  padding: 2rem;
+}

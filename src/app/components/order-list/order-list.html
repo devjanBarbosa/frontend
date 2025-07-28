@@ -1,32 +1,46 @@
 <div class="order-list-container">
-  <h3>Últimos Pedidos</h3>
+  <h2>Gestão de Encomendas</h2>
 
-  <div class="table-responsive-wrapper">
-    <table class="data-table" *ngIf="pedidos.length > 0; else noOrders">
+  <div *ngIf="isLoading" class="loading-indicator">
+    <p>A carregar encomendas...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && pedidos.length > 0" class="table-container">
+    <table>
       <thead>
         <tr>
+          <th>ID da Encomenda</th>
           <th>Data</th>
           <th>Cliente</th>
+          <th>Valor Total</th>
           <th>Status</th>
-          <th>Total</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let pedido of pedidos">
+          <td>#{{ pedido.id.substring(0, 8) }}</td>
           <td>{{ pedido.dataDoPedido | date:'dd/MM/yyyy HH:mm' }}</td>
           <td>{{ pedido.nomeCliente }}</td>
+          <td>{{ pedido.valorTotal | currency:'BRL' }}</td>
           <td>
-            <span class="status-badge" [ngClass]="'status-' + pedido.status.toLowerCase().replace(' ', '_')">
-              {{ pedido.status.replace('_', ' ') }}
+            <span class="status-badge" [ngClass]="pedido.status.toLowerCase()">
+              {{ pedido.status }}
             </span>
           </td>
-          <td>{{ pedido.valorTotal | currency:'BRL' }}</td>
+          <td class="actions">
+            <button class="btn-details">Ver Detalhes</button>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
-  
-  <ng-template #noOrders>
-    <p class="no-orders">Nenhum pedido encontrado.</p>
-  </ng-template>
+
+  <div *ngIf="!isLoading && !errorMessage && pedidos.length === 0" class="empty-state">
+    <p>Ainda não há nenhuma encomenda registada.</p>
+  </div>
 </div>
