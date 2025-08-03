@@ -21,37 +21,40 @@
           <textarea id="descricao" formControlName="descricao" rows="5"></textarea>
         </div>
 
-        <div class="form-group">
-  <label for="imagem">Imagem do Produto</label>
-  <button type="button" class="btn btn-secondary" (click)="fileInput.click()">
-    Escolher Imagem
-  </button>
-  <input #fileInput type="file" id="imagem" (change)="onFileSelected($event)" accept="image/*" style="display: none;">
+        <div class="form-group image-upload-group">
+          <label>Imagem do Produto</label>
+          <button type="button" class="btn-secondary" (click)="fileInput.click()">
+            Escolher Imagem
+          </button>
+          <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" style="display: none;">
 
-  <div *ngIf="imagePreviewUrl" class="image-preview">
-    <img [src]="imagePreviewUrl" alt="Pré-visualização da Imagem">
-  </div>
-</div>
+          <div class="cropper-container" *ngIf="imageChangedEvent">
+            <image-cropper
+                [imageChangedEvent]="imageChangedEvent"
+                [maintainAspectRatio]="true"
+                [aspectRatio]="1 / 1"
+                [resizeToWidth]="400"
+                format="jpeg"
+                (imageCropped)="imageCropped($event)"
+            ></image-cropper>
+          </div>
+
+          <div class="image-preview" *ngIf="croppedImage">
+            <p>Pré-visualização Final:</p>
+            <img [src]="croppedImage" alt="Pré-visualização da Imagem Enquadrada">
+          </div>
+        </div>
+      </div>
 
       <div class="form-column">
         <div class="form-group">
           <label for="preco">Preço (R$)</label>
           <input id="preco" type="number" formControlName="preco">
-          <div *ngIf="preco?.invalid && (preco?.dirty || preco?.touched)" class="validation-error">
-            <small *ngIf="preco?.errors?.['required']">Preço é obrigatório.</small>
-            <small *ngIf="preco?.errors?.['min']">Preço deve ser maior que zero.</small>
           </div>
-        </div>
-
         <div class="form-group">
           <label for="estoque">Estoque</label>
           <input id="estoque" type="number" formControlName="estoque">
-          <div *ngIf="estoque?.invalid && (estoque?.dirty || estoque?.touched)" class="validation-error">
-            <small *ngIf="estoque?.errors?.['required']">Estoque é obrigatório.</small>
-            <small *ngIf="estoque?.errors?.['min']">Estoque não pode ser negativo.</small>
           </div>
-        </div>
-
         <div class="form-group">
           <label for="categoria">Categoria</label>
           <select id="categoria" formControlName="categoria">
@@ -60,10 +63,7 @@
               {{ cat.nome }}
             </option>
           </select>
-          <div *ngIf="categoria?.invalid && (categoria?.dirty || categoria?.touched)" class="validation-error">
-            <small *ngIf="categoria?.errors?.['required']">Categoria é obrigatória.</small>
           </div>
-        </div>
       </div>
     </div>
 
@@ -73,5 +73,5 @@
         <span *ngIf="isLoading" class="spinner"></span>
       </button>
     </div>
+  </form>
 </div>
-  

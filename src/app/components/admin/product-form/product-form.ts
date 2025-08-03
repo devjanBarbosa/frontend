@@ -2,13 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ProductService, Produto } from '../../../services/product'; // Importe a interface Produto também
+import { ProductService, Produto } from '../../../services/product';
 import { CategoryService, Categoria } from '../../../services/category';
+import { ImageCropperComponent, ImageCroppedEvent } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ImageCropperComponent
+  ],
   templateUrl: './product-form.html',
   styleUrls: ['./product-form.scss']
 })
@@ -22,9 +27,10 @@ export class ProductFormComponent implements OnInit {
   currentProductId: string | null = null;
   pageTitle = 'Cadastrar Novo Produto';
 
-  // Propriedades para o upload de imagem
-  selectedFile: File | null = null;
-  imagePreviewUrl: string | ArrayBuffer | null = null;
+  // --- Propriedades para o enquadramento de imagem ---
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+  croppedFile: File | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -48,7 +54,7 @@ export class ProductFormComponent implements OnInit {
       descricao: [''],
       preco: ['', [Validators.required, Validators.min(0.01)]],
       estoque: ['', [Validators.required, Validators.min(0)]],
-      urlImagem: [''], // Este campo será atualizado após o upload
+      urlImagem: [''],
       categoria: [null, Validators.required]
     });
   }
@@ -65,17 +71,16 @@ export class ProductFormComponent implements OnInit {
       this.isEditMode = true;
       this.pageTitle = 'Editar Produto';
       this.productService.buscarProdutoPorId(this.currentProductId).subscribe(produto => {
-        // Preenche o formulário com os dados do produto
         this.productForm.patchValue({
           nome: produto.nome,
           descricao: produto.descricao,
           preco: produto.preco,
           estoque: produto.estoque,
           urlImagem: produto.urlImagem,
-          categoria: produto.categoria.id // Corrigido para usar apenas o ID
+          categoria: produto.categoria.id
         });
-        // Define a pré-visualização da imagem existente
-        this.imagePreviewUrl = produto.urlImagem;
+        // Define a imagem existente na pré-visualização
+        this.croppedImage = produto.urlImagem;
       });
     }
   }
@@ -87,57 +92,59 @@ export class ProductFormComponent implements OnInit {
   get estoque() { return this.productForm.get('estoque'); }
   get categoria() { return this.productForm.get('categoria'); }
 
-  // --- Lógica de Upload de Imagem ---
+  // --- Lógica de Enquadramento de Imagem ---
 
   onFileSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
-      // Gera a pré-visualização da nova imagem
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreviewUrl = reader.result;
-      };
-      reader.readAsDataURL(file);
+    this.imageChangedEvent = event;
+  }
+
+  imageCropped(event: ImageCroppedEvent) {
+    this.croppedImage = event.base64;
+    if (event.blob) {
+      this.croppedFile = new File([event.blob], 'cropped_image.jpeg', { type: 'image/jpeg' });
     }
   }
 
   // --- Lógica de Submissão do Formulário ---
 
-  onSubmit(): void {
+   onSubmit(): void {
+    // Adicionamos um log para depuração. Verifique a consola do navegador (F12).
+    console.log('Tentativa de submissão do formulário.');
+    
+    // 1. Marca todos os campos como "tocados"
+    // Isto irá forçar a exibição de todas as mensagens de validação no seu HTML.
     this.productForm.markAllAsTouched();
-    if (this.productForm.invalid) {
-      this.submitErrorMessage = "Por favor, preencha todos os campos obrigatórios.";
-      return;
-    }
 
+    // 2. Verifica se o formulário continua inválido
+    if (this.productForm.invalid) {
+      console.log('Formulário inválido. A submissão foi cancelada.');
+      this.submitErrorMessage = "Por favor, corrija os campos marcados em vermelho.";
+      return; // Agora o utilizador sabe por que a ação parou.
+    }
+    
+    // Se o formulário for válido, o resto da sua lógica é executado...
+    console.log('Formulário válido. A processar a encomenda...');
     this.isLoading = true;
     this.submitErrorMessage = null;
 
-    if (this.selectedFile) {
-      // 1. Se uma nova imagem foi selecionada, faz o upload primeiro
-      this.productService.uploadImage(this.selectedFile).subscribe({
+    if (this.croppedFile) {
+      // Faz o upload da imagem e depois salva os dados...
+      this.productService.uploadImage(this.croppedFile).subscribe({
         next: (response) => {
-          // 2. Atualiza o valor de 'urlImagem' no formulário com o URL retornado
           this.productForm.patchValue({ urlImagem: response.url });
-          // 3. Procede para salvar os dados do produto
           this.saveProductData();
         },
-        error: (err) => this.handleError(err, 'Erro no upload da imagem.')
+        error: (err) => this.handleError(err)
       });
     } else {
-      // Se não há nova imagem, salva os dados diretamente
+      // Salva os dados diretamente...
       this.saveProductData();
     }
   }
 
   private saveProductData(): void {
     const formValue = this.productForm.value;
-    // Monta o objeto final para enviar ao backend
-    const produtoParaEnviar = {
-      ...formValue,
-      categoria: { id: formValue.categoria }
-    };
+    const produtoParaEnviar = { ...formValue, categoria: { id: formValue.categoria } };
 
     const saveOperation = this.isEditMode
       ? this.productService.atualizarProduto(this.currentProductId!, produtoParaEnviar)
@@ -145,7 +152,7 @@ export class ProductFormComponent implements OnInit {
 
     saveOperation.subscribe({
       next: () => this.handleSuccess(),
-      error: (err) => this.handleError(err, 'Erro ao salvar o produto.')
+      error: (err) => this.handleError(err)
     });
   }
 
@@ -153,14 +160,13 @@ export class ProductFormComponent implements OnInit {
 
   private handleSuccess(): void {
     this.isLoading = false;
-    const message = this.isEditMode ? 'Produto atualizado com sucesso!' : 'Produto cadastrado com sucesso!';
-    alert(message); // Pode ser trocado por um serviço de notificação (Toast)
+    alert(this.isEditMode ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!');
     this.router.navigate(['/admin/produtos']);
   }
 
-  private handleError(err: any, customMessage: string): void {
+  private handleError(err: any): void {
     this.isLoading = false;
-    this.submitErrorMessage = `${customMessage} Por favor, tente novamente.`;
+    this.submitErrorMessage = 'Ocorreu um erro ao salvar. Por favor, tente novamente.';
     console.error('Erro:', err);
   }
 }

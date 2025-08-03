@@ -1,0 +1,16 @@
+<div class="search-results-page">
+  <div class="container">
+    <h1 class="page-title">
+      Resultados da pesquisa para: <span>"{{ termoPesquisado }}"</span>
+    </h1>
+
+    <app-product-list 
+      [produtos]="resultados$ | async" 
+      titulo="">
+    </app-product-list>
+
+    <div *ngIf="(resultados$ | async)?.length === 0" class="no-results">
+      <p>Nenhum produto encontrado com este termo.</p>
+    </div>
+  </div>
+</div>

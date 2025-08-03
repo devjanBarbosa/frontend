@@ -1,0 +1,31 @@
+:host {
+  --whatsapp-color: #25D366;
+}
+
+.whatsapp-float-button {
+  position: fixed; // Faz o botão "flutuar" sobre o conteúdo
+  bottom: 2rem;    // Distância da parte de baixo
+  right: 2rem;     // Distância da direita
+  z-index: 1000;   // Garante que fique por cima de outros elementos
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 60px;
+  height: 60px;
+  background-color: var(--whatsapp-color);
+  color: white;
+  border-radius: 50%; // Deixa o botão redondo
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  
+  font-size: 2rem; // Tamanho do ícone
+  text-decoration: none;
+
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1); // Efeito de crescimento ao passar o rato
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  }
+}

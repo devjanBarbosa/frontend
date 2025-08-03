@@ -1,20 +1,19 @@
-// app.ts - Componente principal atualizado
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './components/header/header';
-import { FooterComponent } from './components/footer/footer';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router'; // RouterModule já deve estar aqui
+import { HeaderComponent } from './components/header/header'; // Import do seu Header
+import { WhatsappButtonComponent } from './components/whatsapp-button/whatsapp-button'; // 1. IMPORTE o novo componente
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent],
-  template: `
-    <app-header></app-header>
-    <main>
-      <router-outlet></router-outlet>
-    </main>
-    <app-footer></app-footer>
-  `,
+  imports: [
+    CommonModule,
+    RouterModule,
+    HeaderComponent,
+    WhatsappButtonComponent
+  ],
+  templateUrl: './app.html',
   styleUrls: ['./app.scss']
 })
 export class AppComponent {

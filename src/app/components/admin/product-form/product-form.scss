@@ -1,19 +1,25 @@
 /* product-form.scss - Versão Profissional */
 
+// --- 1. Design System (Variáveis) ---
 :host {
   --primary-color: #E91E63;
+  --primary-color-rgb: 233, 30, 99;
   --border-color: #dee2e6;
   --text-color: #212529;
   --surface-color: #ffffff;
-  --form-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+  --background-color: #f8f9fa;
+  --error-color: #d9534f;
+  --border-radius: 8px;
+  --form-shadow: 0 6px 24px rgba(0, 0, 0, 0.07);
 }
 
+// --- 2. Container Principal ---
 .form-container {
   max-width: 900px;
   margin: 2rem auto;
   background-color: var(--surface-color);
   padding: 2.5rem;
-  border-radius: 12px;
+  border-radius: var(--border-radius);
   box-shadow: var(--form-shadow);
 
   h3 {
@@ -25,19 +31,19 @@
   }
 }
 
+// --- 3. Layout do Formulário (Grid) ---
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
 }
-
-// Em ecrãs maiores, o formulário terá duas colunas
 @media (min-width: 768px) {
   .form-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
 
+// --- 4. Estilos dos Campos do Formulário ---
 .form-group {
   display: flex;
   flex-direction: column;
@@ -47,42 +53,65 @@
     font-weight: 500;
     margin-bottom: 0.5rem;
   }
-
-  input,
-  select,
-  textarea {
+  input, select, textarea {
     width: 100%;
     padding: 0.8rem 1rem;
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     font-size: 1rem;
     transition: all 0.2s ease-in-out;
-
     &:focus {
       border-color: var(--primary-color);
       outline: none;
-      box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.15);
+      box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.15);
     }
   }
 }
 
-.image-preview {
-  margin-top: 1rem;
-  width: 100%;
-  height: 200px;
-  border: 2px dashed var(--border-color);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+// --- 5. Estilo Específico para Upload de Imagem ---
+.image-upload-group {
+  .btn-secondary {
+    background-color: #fff;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    width: fit-content;
 
-  img {
+    &:hover {
+      background-color: var(--primary-color);
+      color: #fff;
+    }
+  }
+
+  .cropper-container {
+    margin-top: 1.5rem;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: 300px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+  }
+
+  .image-preview {
+    margin-top: 1.5rem;
+    p {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    img {
+      max-width: 200px;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
+    }
   }
 }
+
+// --- 6. Feedback de Validação e Ações ---
+.validation-error { color: var(--error-color); font-size: 0.85rem; margin-top: 0.5rem; }
 
 .form-actions {
   text-align: right;
@@ -101,22 +130,17 @@
   font-weight: 700;
   font-size: 1rem;
   transition: all 0.3s ease;
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-
-  &:not(:disabled):hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
-  }
-}
-
-.alert-danger {
-  // ... seu estilo de alerta ...
+  &:disabled { background-color: #ccc; cursor: not-allowed; }
+  &:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(var(--primary-color-rgb), 0.3); }
 }
 
 .spinner {
-  // ... seu estilo de spinner ...
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
 }
+@keyframes spin { to { transform: rotate(360deg); } }

@@ -1,48 +1,125 @@
-.login-container { 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  padding: 60px 20px; 
+:host {
+  --primary-color: #E91E63; // Seu rosa principal
+  --primary-color-dark: #C2185B;
+  --primary-color-rgb: 233, 30, 99;
+  --text-color: #333;
+  --border-color: #ced4da;
+  --background-color: #f8f9fa;
+  --surface-color: #ffffff;
+  --error-color: #d9534f;
+  --border-radius: 8px;
+  --form-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-.login-box { 
-  background-color: #fff; 
-  padding: 40px; 
-  border-radius: 8px; 
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
-  width: 100%; 
-  max-width: 400px; 
-  text-align: center; 
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  padding: 1rem;
 }
-.form-group { 
-  text-align: left; 
-  margin-bottom: 20px; 
+
+.login-box {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--surface-color);
+  padding: 2.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--form-shadow);
 }
-.form-group label { 
-  display: block; 
-  margin-bottom: 5px; 
-  font-weight: 500; 
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.5rem 0;
+  }
+  p {
+    color: #6c757d;
+  }
 }
-.form-group input { 
-  width: 100%; 
-  padding: 10px; 
-  border: 1px solid #ccc; 
-  border-radius: 4px; 
-  box-sizing: border-box;
+
+.form-group {
+  margin-bottom: 1.5rem;
+  
+  label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+
+    &:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.15);
+    }
+    
+    // Estilo para quando o campo é inválido
+    &.is-invalid {
+      border-color: var(--error-color);
+    }
+  }
 }
-.login-button { 
-  width: 100%; 
-  background-color: var(--rosa-principal); 
-  color: white; 
-  border: none; 
-  padding: 15px; 
-  border-radius: 50px; 
-  cursor: pointer; 
-  font-weight: 700; 
-  font-size: 1.1em; 
-  transition: background-color 0.3s ease; 
-  &:disabled { 
-    background-color: #ccc; 
-    cursor: not-allowed; 
-  } 
+
+.validation-error {
+  color: var(--error-color);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.login-button {
+  width: 100%;
+  padding: 0.8rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+
+  &:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(var(--primary-color-rgb), 0.3);
+  }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+// Animação do Spinner
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

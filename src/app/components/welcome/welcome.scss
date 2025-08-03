@@ -1,29 +1,74 @@
+/* welcome.component.scss - Versão Refatorada */
+
 .welcome-section {
+  padding: 4rem 1rem;
+  background-color: #fff;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.welcome-content {
   display: flex;
+  flex-direction: column; // Layout inicial para ecrãs menores (imagem em cima)
   align-items: center;
-  gap: 40px; 
-  padding: 60px 20px;
-  background-color: var(--rosa-claro);
-  border-radius: 8px;
-  margin-top: 40px;
+  gap: 2rem;
+  text-align: center;
 }
 
-.welcome-image img {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid var(--rosa-principal);
+// Em ecrãs maiores, o layout muda para ser lado a lado
+@media (min-width: 768px) {
+  .welcome-content {
+    flex-direction: row; // Imagem e texto lado a lado
+    text-align: left;
+  }
 }
 
-.welcome-text h2 {
-  margin-top: 0;
-  font-size: 2em;
+.welcome-image {
+  flex-shrink: 0; // Impede que a imagem encolha
+
+  img {
+    width: 100%;
+    max-width: 250px; // Garante que a imagem não fique demasiado grande
+    border-radius: 50%; // Deixa a imagem redonda
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: block;
+  }
 }
 
-.welcome-text p {
-  font-size: 1.1em;
-  line-height: 1.6;
-  color: var(--texto-claro);
-  max-width: 600px;
+.welcome-text {
+  flex-grow: 1; // Permite que a secção de texto ocupe o espaço restante
+
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333; // Cor direta
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+  }
+  p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #666; // Cor direta
+    margin-bottom: 2rem;
+  }
+}
+
+.btn-primary {
+  background-color: #E91E63; // Cor principal
+  color: white;
+  text-decoration: none;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &:hover {
+    // Escurece a cor principal em 10%
+    background-color: #c2185b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+  }
 }

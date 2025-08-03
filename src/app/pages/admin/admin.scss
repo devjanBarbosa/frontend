@@ -1,54 +1,95 @@
+/* admin.scss - Versão Profissional */
+
+// --- 1. Design System (Variáveis) ---
+// Centraliza as decisões de design para consistência e fácil manutenção.
+:host {
+  --primary-color: #E91E63; // Seu rosa principal
+  --background-color: #f8f9fa; // Um cinza muito claro para o fundo da página
+  --surface-color: #ffffff; // Cor de fundo para os painéis
+  --border-color: #e9ecef;
+  --text-color-dark: #212529;
+  --text-color-light: #6c757d;
+  --border-radius: 12px;
+  --panel-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+// --- 2. Layout Principal do Painel ---
 .admin-panel {
   max-width: 1200px;
   margin: 2rem auto;
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  padding: 1.5rem; // Padding inicial para mobile
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--panel-shadow);
+  border: 1px solid var(--border-color);
 }
 
+// --- 3. Cabeçalho do Painel ---
 .admin-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #eee;
+  flex-direction: column; // Empilha em ecrãs pequenos
+  align-items: flex-start;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 1.5rem;
   margin-bottom: 2rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-color-dark);
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap; // Permite que os botões quebrem a linha
+    gap: 0.75rem;
+  }
 }
 
-.admin-header h2 {
-  margin: 0;
-  color: var(--texto-escuro);
-}
-
-.admin-header nav {
-  display: flex;
-  gap: 15px;
-}
-
+// --- 4. Botões de Navegação ---
 .admin-button {
   background-color: #f1f3f5;
-  color: var(--texto-claro);
-  padding: 10px 20px;
+  color: var(--text-color-light);
+  padding: 0.6rem 1.25rem;
   text-decoration: none;
   border-radius: 50px;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease-in-out;
   border: 1px solid transparent;
 
   &:hover {
-    background-color: var(--rosa-claro);
-    color: var(--rosa-principal);
+    background-color: rgba(var(--primary-color), 0.1);
+    color: var(--primary-color);
+    transform: translateY(-2px); // Efeito subtil de elevação
   }
 
+  // Estilo para o link ativo (página atual)
   &.active-link {
-    background-color: var(--rosa-principal);
+    background-color: var(--primary-color);
     color: white;
-    font-weight: 700;
-    border-color: var(--rosa-principal);
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
   }
 }
 
+// --- 5. Área de Conteúdo ---
+// O <router-outlet> irá renderizar o conteúdo aqui
 .admin-content {
   padding-top: 1rem;
+}
+
+// --- 6. Responsividade (Desktop) ---
+// Ajusta o layout para ecrãs maiores
+@media (min-width: 768px) {
+  .admin-panel {
+    padding: 2.5rem;
+  }
+
+  .admin-header {
+    flex-direction: row; // Lado a lado em ecrãs maiores
+    align-items: center;
+    justify-content: space-between;
+  }
 }

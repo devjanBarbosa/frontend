@@ -1,0 +1,51 @@
+<div class="management-container">
+  <h2>Gestão de Categorias</h2>
+
+  <div class="form-card">
+    <h3>{{ isEditMode ? 'Editar Categoria' : 'Nova Categoria' }}</h3>
+    <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="nome">Nome da Categoria</label>
+        <input id="nome" formControlName="nome" type="text">
+      </div>
+      <div class="form-group">
+        <label for="tipo">Tipo</label>
+        <select id="tipo" formControlName="tipo">
+          <option value="PRODUTO">Produto</option>
+          <option value="PRESENTE">Presente</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="categoryForm.invalid">
+          {{ isEditMode ? 'Salvar Alterações' : 'Criar Categoria' }}
+        </button>
+        <button type="button" class="btn-secondary" *ngIf="isEditMode" (click)="resetForm()">
+          Cancelar Edição
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="table-container">
+    <h3>Categorias Existentes</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Tipo</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of categorias">
+          <td>{{ cat.nome }}</td>
+          <td>{{ cat.tipo }}</td>
+          <td class="actions">
+            <button (click)="editCategory(cat)" class="btn-edit">Editar</button>
+            <button (click)="deleteCategory(cat.id)" class="btn-delete">Apagar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

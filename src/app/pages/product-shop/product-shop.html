@@ -1,0 +1,23 @@
+<div class="shop-container">
+  <header class="shop-header">
+    <h1>Nossos Produtos</h1>
+    <p>Explore as nossas categorias e encontre o que precisa.</p>
+  </header>
+
+  <div class="category-filters">
+    <button 
+      (click)="filtrarPorCategoria(null)" 
+      [class.active]="!categoriaSelecionadaId">
+      Todos
+    </button>
+    <button 
+      *ngFor="let cat of categorias" 
+      (click)="filtrarPorCategoria(cat.id)"
+      [class.active]="categoriaSelecionadaId === cat.id">
+      {{ cat.nome }}
+    </button>
+  </div>
+
+  <app-product-list [produtos]="produtos" [titulo]="null"></app-product-list>
+
+</div>

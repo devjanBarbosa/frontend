@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -29,10 +29,14 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  listarProdutos(): Observable<Produto[]> {
-    return this.http.get<Produto[]>(this.apiUrl).pipe(
-      catchError(this.handleError)
-    );
+  listarProdutos(categoriaId?: string): Observable<Produto[]> {
+    let params = new HttpParams();
+    if (categoriaId) {
+      // Adiciona o parâmetro à requisição se ele existir
+      params = params.set('categoria', categoriaId);
+    }
+    // Envia a requisição com os parâmetros
+    return this.http.get<Produto[]>(this.apiUrl, { params });
   }
 
   buscarProdutoPorId(id: string): Observable<Produto> {
@@ -84,4 +88,12 @@ export class ProductService {
 
     return this.http.post<{ url: string }>(this.uploadUrl, formData);
   }
+
+  pesquisarProdutos(termo: string): Observable<Produto[]> {
+    // Usamos HttpParams para adicionar o parâmetro `q` à URL de forma segura
+    const params = new HttpParams().set('q', termo);
+    const url = `${this.apiUrl}/buscar`;
+    return this.http.get<Produto[]>(url, { params });
+  }
+  
 }

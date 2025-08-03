@@ -1,15 +1,25 @@
 <div class="order-detail-container" *ngIf="pedido$ | async as pedido; else loading">
+
   <a routerLink="/admin/pedidos" class="back-link">&larr; Voltar para a lista de encomendas</a>
   
   <header class="detail-header">
     <h1>Detalhes da Encomenda #{{ pedido.id.substring(0, 8) }}</h1>
-    <span class="status-badge" [ngClass]="pedido.status.toLowerCase()">{{ pedido.status }}</span>
+    
+    <button 
+      *ngIf="pedido.status !== 'ENTREGUE'" 
+      (click)="concluirPedido()" 
+      class="btn-action btn-success">
+      Marcar como Entregue
+    </button>
+    
+    <span class="status-badge" [ngClass]="pedido.status.toLowerCase()">{{ pedido.status.replace('_', ' ') }}</span>
   </header>
 
   <div class="details-grid">
     <div class="detail-card">
       <h3>Cliente</h3>
       <p><strong>Nome:</strong> {{ pedido.nomeCliente }}</p>
+      <p><strong>WhatsApp:</strong> {{ pedido.whatsappCliente }}</p>
     </div>
 
     <div class="detail-card">
@@ -39,6 +49,7 @@
       </tbody>
     </table>
   </div>
+
 </div>
 
 <ng-template #loading>

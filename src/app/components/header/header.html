@@ -1,16 +1,60 @@
-<header class="main-header">
-  <div class="logo">
-    <h1>Leda Cosméticos</h1>
+<header class="site-header">
+  <div class="top-bar">
+    <div class="header-container">
+      <div class="contact-info">
+        <span>Fale conosco: (21) 99788-3761</span>
+      </div>
+      <div class="social-links">
+        <a href="#" target="_blank" aria-label="Instagram">Instagram</a>
+      </div>
+    </div>
   </div>
-  <nav class="main-nav">
-    <a routerLink="/">Home</a>
-    <a routerLink="/">Produtos</a>
-    <a routerLink="/contato">Contato</a>
-    <a routerLink="/carrinho" class="cart-link">
-      Carrinho 
-      <span *ngIf="quantidadeItensCarrinho > 0" class="cart-badge">
-        {{ quantidadeItensCarrinho }}
-      </span>
-    </a>
-  </nav>
+
+  <div class="main-header">
+    <div class="header-container">
+      <div class="logo">
+        <a routerLink="/" aria-label="Página Inicial">Leda Cosméticos</a>
+      </div>
+
+      <nav class="main-nav" [class.is-active]="isMenuOpen">
+        <div class="nav-item">
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" (click)="closeMenu()">Home</a>
+        </div>
+        
+        <div class="nav-item dropdown">
+          <a routerLink="/produtos" routerLinkActive="active" class="nav-link">Produtos</a>
+          <div class="dropdown-menu">
+            <a *ngFor="let cat of categoriasDeProduto" [routerLink]="['/produtos']" [queryParams]="{ categoria: cat.id }" class="dropdown-item" (click)="closeMenu()">{{ cat.nome }}</a>
+          </div>
+        </div>
+
+        <div class="nav-item dropdown">
+          <a routerLink="/presentes" routerLinkActive="active" class="nav-link">Presentes</a>
+          <div class="dropdown-menu">
+            <a *ngFor="let cat of categoriasDePresente" [routerLink]="['/presentes']" [queryParams]="{ categoria: cat.id }" class="dropdown-item" (click)="closeMenu()">{{ cat.nome }}</a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a routerLink="/sobre-nos" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Sobre Nós</a>
+        </div>
+      </nav>
+      
+      <div class="header-actions">
+        <div class="search-bar">
+          <input type="text" placeholder="O que você procura?" #termoPesquisa (keyup.enter)="pesquisar(termoPesquisa.value)">
+          <button (click)="pesquisar(termoPesquisa.value)" aria-label="Buscar"><i class="bi bi-search"></i></button>
+        </div>
+        <a routerLink="/carrinho" class="cart-link" aria-label="Ver carrinho de compras">
+          <i class="bi bi-cart3"></i> 
+          <span *ngIf="hasCartItems()" class="cart-badge">{{ quantidadeItensCarrinho }}</span>
+        </a>
+        <button class="menu-toggle" (click)="toggleMenu()" aria-label="Abrir menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+      </div>
+    </div>
+  </div>
 </header>

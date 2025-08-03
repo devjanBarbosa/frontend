@@ -1,11 +1,12 @@
-/* product-list.component.scss - Versão Final e Profissional */
+/* product-list.component.scss - Versão Profissional */
 
 // --- 1. Design System (Variáveis) ---
-// Centraliza as decisões de design para fácil manutenção.
+// Centralizar as cores e estilos principais torna o design consistente.
 :host {
-  --primary-color: #e91e63;
-  --primary-color-dark: #c2185b;
+  --primary-color: #E91E63;
+  --primary-color-dark: #C2185B;
   --text-color: #333;
+  --text-color-light: #6c757d;
   --card-bg: #ffffff;
   --card-border-color: #f0f0f0;
   --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
@@ -13,71 +14,12 @@
   --border-radius: 12px;
 }
 
-// --- 2. Estilo da Seção Principal ---
-.product-list-section {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem 1rem; // Espaçamento para mobile
-  text-align: center;
-
-  h2 {
-    font-size: 2rem; // Tamanho para mobile
-    font-weight: 700;
-    color: var(--text-color);
-    margin-bottom: 2.5rem;
-    position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, var(--primary-color), var(--primary-color-dark));
-      border-radius: 2px;
-    }
-  }
-}
-
-// --- 3. Configuração do Carrossel (Swiper) ---
-swiper-container {
-  padding-bottom: 3rem; // Espaço para a paginação
-  --swiper-navigation-color: var(--primary-color);
-  --swiper-pagination-color: var(--primary-color);
-
-  .swiper-button-next,
-  .swiper-button-prev {
-    background-color: white;
-    border-radius: 50%;
-    width: 44px;
-    height: 44px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-
-    &:hover {
-      background-color: var(--primary-color);
-      color: white;
-      transform: scale(1.1);
-    }
-    &::after {
-      font-size: 1rem;
-    }
-  }
-}
-
-swiper-slide {
-  height: auto; // Permite que a altura se ajuste ao conteúdo
-  display: flex; // Essencial para o alinhamento
-}
-
-// --- 4. O Card de Produto (Coração do Layout) ---
+// --- 2. Estilo do Card de Produto ---
 .product-card {
   display: flex;
   flex-direction: column; // Organiza os filhos (link e footer) verticalmente
   width: 100%;
-  height: 100%; // Ocupa toda a altura do slide (a mágica do alinhamento)
+  height: 100%; // Ocupa toda a altura do slide (essencial para o alinhamento)
   background-color: var(--card-bg);
   border: 1px solid var(--card-border-color);
   border-radius: var(--border-radius);
@@ -91,7 +33,9 @@ swiper-slide {
   }
 }
 
-// --- 5. Estrutura Interna do Card ---
+// --- 3. Estrutura Interna do Card (Links, Imagem, Conteúdo) ---
+
+// O link que envolve a parte clicável do card
 .product-link-wrapper {
   text-decoration: none;
   color: inherit;
@@ -100,52 +44,58 @@ swiper-slide {
   flex-grow: 1; // ESSENCIAL: Faz a área do link crescer e empurrar o footer para baixo
 }
 
+// O "invólucro" da imagem - AQUI ESTÁ A MÁGICA
 .product-image-wrapper {
   width: 100%;
-  height: 180px; // Altura da imagem para mobile
-  overflow: hidden;
+  height: 200px; // 1. ALTURA FIXA: Garante que todas as áreas de imagem sejam iguais.
+  overflow: hidden; // 2. Esconde qualquer parte da imagem que transborde.
+  padding: 1rem; // 3. BORDA INTERNA: Cria o espaçamento que você pediu.
+  box-sizing: border-box; // Garante que o padding não aumente o tamanho total.
 
   img {
     width: 100%;
     height: 100%;
-    object-fit: cover; // Garante que a imagem preencha o espaço sem distorcer
+    object-fit: cover; // 4. FAZ A IMAGEM PREENCHER O ESPAÇO: Redimensiona a imagem para cobrir a área sem distorcer.
+    border-radius: var(--border-radius); // Bordas arredondadas na imagem também
     transition: transform 0.3s ease;
   }
 
+  // Efeito de zoom na imagem ao passar o rato sobre o card
   .product-card:hover & img {
-    transform: scale(1.05); // Efeito de zoom no hover
+    transform: scale(1.05);
   }
 }
 
+// A área que contém o nome e o preço do produto
 .product-content {
-  padding: 1rem;
+  padding: 0 1.5rem 1rem; // Espaçamento para o texto
   text-align: left;
   display: flex;
   flex-direction: column;
-  flex-grow: 1; // Garante que esta área também se expanda
+  flex-grow: 1; // Garante que esta área se expanda
 }
 
 .product-name {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   line-height: 1.4;
   color: var(--text-color);
   // Garante uma altura mínima para 2 linhas, ajudando no alinhamento
-  min-height: 2.8rem; // (1rem * 1.4 * 2)
+  min-height: 3.08rem; // (1.1rem * 1.4 * 2)
   margin-bottom: 0.5rem;
 }
 
 .product-price {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--primary-color);
   margin-top: auto; // Empurra o preço para o final da área de conteúdo
   padding-top: 0.5rem;
 }
 
+// O rodapé do card, onde fica o botão
 .product-footer {
-  padding: 0 1rem 1.25rem;
-  margin-top: auto; // Garante que o footer fique no fundo, mesmo que o link não cresça o suficiente
+  padding: 0 1.5rem 1.5rem;
 }
 
 .add-to-cart-button {
@@ -157,32 +107,11 @@ swiper-slide {
   border-radius: 50px;
   cursor: pointer;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
 
   &:hover {
-    background: linear-gradient(135deg, var(--primary-color-dark), #ad1457);
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
-  }
-}
-
-// --- 6. Responsividade (Desktop) ---
-@media (min-width: 768px) {
-  .product-list-section {
-    padding: 3rem 1.5rem;
-    h2 {
-      font-size: 2.5rem;
-      margin-bottom: 3rem;
-    }
-  }
-
-  .product-image-wrapper {
-    height: 200px;
-  }
-
-  .product-name {
-    font-size: 1.1rem;
-    min-height: 3.08rem; // (1.1rem * 1.4 * 2)
   }
 }

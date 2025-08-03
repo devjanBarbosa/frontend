@@ -7,6 +7,7 @@ export interface Pedido {
   id: string;
   dataDoPedido: string; // Vem como string, podemos formatar depois
   nomeCliente: string;
+  whatsappCliente: string; 
   status: string;
   valorTotal: number;
   itens: any[]; // Simplificado por agora
@@ -30,4 +31,9 @@ export class OrderService {
 getPedidoById(id: string): Observable<Pedido> {
   return this.http.get<Pedido>(`${this.apiUrl}/${id}`);
 }
+
+concluirPedido(id: string): Observable<Pedido> {
+    const url = `${this.apiUrl}/${id}/concluir`;
+    return this.http.patch<Pedido>(url, {});
+  }
 }

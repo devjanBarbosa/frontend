@@ -16,11 +16,7 @@
       "architect": {
         "build": {
           "builder": "@angular/build:application",
-          "options": {
-            "styles": [
-            "src/styles.scss",
-            "node_modules/swiper/swiper-bundle.min.css"
-          ],
+          "options":{
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
@@ -34,7 +30,9 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/swiper/swiper-bundle.min.css",
+              "node_modules/ngx-toastr/toastr.css"
             ]
           },
           "configurations": {

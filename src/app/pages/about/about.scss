@@ -1,0 +1,73 @@
+:host {
+  --primary-color: #E91E63;
+  --text-color: #333;
+  --text-light: #666;
+}
+
+.about-hero {
+  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/about-banner.jpg'); // <-- A CORREÇÃO ESTÁ AQUI
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+  padding: 4rem 1rem;
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 700;
+  }
+
+  p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0.5rem auto 0;
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.content-section {
+  padding: 4rem 1.5rem;
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .about-content {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+.about-image img {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 50%; // Deixa a sua foto redonda
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  display: block;
+  margin: 0 auto;
+}
+
+.about-text {
+  h2 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+  }
+}
