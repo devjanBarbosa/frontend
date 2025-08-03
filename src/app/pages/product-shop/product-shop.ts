@@ -41,7 +41,8 @@ export class ProductShopComponent implements OnInit {
     });
   }
   carregarProdutos(): void {
-    this.productService.listarProdutos(this.categoriaSelecionadaId ?? undefined).subscribe(data => {
+    // Agora pedimos produtos filtrando por categoria OU pelo tipo PRODUTO
+    this.productService.listarProdutos(this.categoriaSelecionadaId ?? undefined, 'PRODUTO').subscribe(data => {
       this.produtos = data;
     });
   }

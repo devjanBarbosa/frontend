@@ -39,8 +39,8 @@ export class GiftShopComponent implements OnInit {
   }
 
   carregarProdutos(): void {
-    // O seu ProductService já sabe como filtrar produtos por categoria
-    this.productService.listarProdutos(this.categoriaSelecionadaId ?? undefined).subscribe(data => {
+    // Agora pedimos produtos filtrando por categoria OU pelo tipo PRESENTE
+    this.productService.listarProdutos(this.categoriaSelecionadaId ?? undefined, 'PRESENTE').subscribe(data => {
       this.produtos = data;
     });
   }

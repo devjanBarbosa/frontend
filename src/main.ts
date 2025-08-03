@@ -1,9 +1,12 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
-// 1. O import busca a classe correta no arquivo correto
 import { AppComponent } from './app/app';
-import { register } from 'swiper/element';
-  register();
-// 2. O bootstrap usa a classe correta
+
+// 1. Importe a função de registro do Swiper aqui
+import { register } from 'swiper/element/bundle';
+
+// 2. Execute a função de registro ANTES de a aplicação iniciar
+register();
+
 bootstrapApplication(AppComponent, appConfig)
   .catch((err) => console.error(err));

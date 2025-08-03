@@ -5,34 +5,41 @@ import { ProductListComponent } from '../../components/product-list/product-list
 import { WelcomeComponent } from '../../components/welcome/welcome';
 import { ProductService, Produto } from '../../services/product';
 import { CategoryService, Categoria } from '../../services/category';
+import { FooterComponent } from "../../components/footer/footer";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, ProductListComponent, WelcomeComponent],
+  imports: [CommonModule, RouterModule, WelcomeComponent, ProductListComponent, FooterComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
+
 export class HomeComponent implements OnInit {
   produtosEmDestaque: Produto[] = [];
-  categorias: Categoria[] = []; // 1. Crie a variável para as categorias
+  categoriasDeProduto: Categoria[] = []; // Renomeado para clareza
+  categoriasDePresente: Categoria[] = []; // 1. Crie uma variável para as categorias de presentes
 
   constructor(
     private productService: ProductService,
-    private categoryService: CategoryService // 2. Injete o CategoryService
+    private categoryService: CategoryService
   ) {}
 
   ngOnInit(): void {
     // Busca os produtos em destaque
     this.productService.listarProdutos().subscribe(data => {
-      // Pega apenas os 4 primeiros como destaque, por exemplo
       this.produtosEmDestaque = data.slice(0, 4);
     });
 
-    // 3. Busca as categorias do tipo PRODUTO para os cards visuais
+    // Busca as categorias do tipo PRODUTO para o carrossel
     this.categoryService.listarCategorias('PRODUTO').subscribe(data => {
-      this.categorias = data;
+      this.categoriasDeProduto = data;
+    });
+
+    // 2. Busca as categorias do tipo PRESENTE para a nova secção
+    this.categoryService.listarCategorias('PRESENTE').subscribe(data => {
+      this.categoriasDePresente = data;
     });
   }
 }

@@ -1,12 +1,17 @@
-.category-section {
-  padding: 3rem 1rem;
+/* home.scss - Versão Profissional e Unificada */
+
+// --- 1. Estilos para as Secções de Carrossel ---
+// Regra única que se aplica a ambas as secções
+.category-section,
+.gift-section {
+  position: relative; // Essencial para o posicionamento das setas
+  padding: 3rem 0;
   text-align: center;
   background-color: #f8f9fa;
 
   h2 {
     font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
   }
   p {
     font-size: 1.2rem;
@@ -15,22 +20,65 @@
   }
 }
 
+// Fundo diferente para a seção de presentes para criar contraste
+.gift-section {
+  background-color: #ffffff;
+}
+
+
+/* home.scss - Estilo Específico para as Setas do Carrossel */
+
 swiper-container {
-  padding: 1rem 1.5rem 3rem 1.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  --swiper-navigation-color: #E91E63;
-  --swiper-pagination-color: #E91E63;
+  // Certifique-se de que position: relative esteja aqui para o posicionamento absoluto das setas
+  position: relative;
+  // ... (outros estilos do swiper-container)
+}
+
+swiper-container::part(button-next),
+swiper-container::part(button-prev) {
+  // Posicionamento
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  cursor: pointer;
+
+  // Aparência - Estilo mais básico para teste
+  width: 30px;
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.3); /* Cor de fundo escura para verificar */
+  color: white;
+  border-radius: 15px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+swiper-container::part(button-prev) {
+  left: 10px;
+}
+
+swiper-container::part(button-next) {
+  right: 10px;
 }
 
 swiper-slide {
-  display: flex;
-  // Define uma largura máxima para os slides do carrossel
-  max-width: 280px; 
+  height: auto;
+  max-width: 280px; // Garante que os cards não fiquem demasiado largos
 }
 
+// Regra única que se aplica tanto a .category-card quanto a .gift-card
 .category-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
   text-decoration: none;
   background-color: #ffffff;
   border-radius: 12px;
@@ -38,6 +86,7 @@ swiper-slide {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
+  height: 100%; // Força todos os cards a terem a mesma altura
 
   &:hover {
     transform: translateY(-5px);
@@ -47,10 +96,8 @@ swiper-slide {
 
 .category-image-wrapper {
   width: 100%;
-  // A ALTURA FOI REDUZIDA PARA TORNAR O CARD MENOS ALTO
-  height: 220px; 
+  height: 220px;
   overflow: hidden;
-
   img {
     width: 100%;
     height: 100%;
@@ -64,11 +111,12 @@ swiper-slide {
 }
 
 .category-name {
-  padding: 1.25rem; // Padding ligeiramente ajustado
+  padding: 1.25rem;
   text-align: center;
+  margin-top: auto; // Garante que o nome fique na base
   h3 {
     margin: 0;
-    font-size: 1.1rem; // Fonte um pouco menor para um look mais clean
+    font-size: 1.1rem;
     font-weight: 600;
     color: #333;
   }

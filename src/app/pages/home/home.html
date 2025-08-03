@@ -1,13 +1,13 @@
 <app-welcome></app-welcome>
-<section class="category-section">
+<section class="gift-section">
   <div class="container">
-    <h2>Nossas Categorias</h2>
-    <p>Navegue pelas nossas seleções e encontre o que você precisa.</p>
+    <h2>Presentes Especiais</h2>
+    <p>Encontre a cesta perfeita para surpreender quem você ama.</p>
     
-    <swiper-container class="category-swiper"
+    <swiper-container
       [slidesPerView]="'auto'"
       [spaceBetween]="20"
-      [navigation]="true"
+      navigation="true"
       [pagination]="{ clickable: true }"
       [breakpoints]="{
         '320': { 'slidesPerView': 1, 'spaceBetween': 15 },
@@ -15,17 +15,59 @@
         '992': { 'slidesPerView': 3, 'spaceBetween': 20 }
       }">
       
-      <swiper-slide *ngFor="let categoria of categorias">
-        <a [routerLink]="['/produtos']" [queryParams]="{ categoria: categoria.id }" class="category-card">
+      <swiper-slide *ngFor="let categoria of categoriasDePresente">
+        <a [routerLink]="['/presentes']" 
+           [queryParams]="{ categoria: categoria.id }"
+           class="category-card">
+          
           <div class="category-image-wrapper">
             <img [src]="categoria.nome.toLowerCase() + '.jpg'" [alt]="categoria.nome">
           </div>
+          
           <div class="category-name">
             <h3>{{ categoria.nome }}</h3>
           </div>
+
         </a>
       </swiper-slide>
       
     </swiper-container>
   </div>
 </section>
+<section class="category-section">
+  <div class="container">
+    <h2>Nossas Categorias</h2>
+    <p>Navegue pelas nossas seleções e encontre o que você precisa.</p>
+    
+    <swiper-container
+      [slidesPerView]="'auto'"
+      [spaceBetween]="20"
+      navigation="true"
+      [pagination]="{ clickable: true }"
+      [loop]="true"
+      [breakpoints]="{
+        '320': { 'slidesPerView': 1, 'spaceBetween': 15 },
+        '576': { 'slidesPerView': 2, 'spaceBetween': 20 },
+        '992': { 'slidesPerView': 3, 'spaceBetween': 20 },
+        '1200': { 'slidesPerView': 4, 'spaceBetween': 20 }
+      }">
+      
+      <swiper-slide *ngFor="let categoria of categoriasDeProduto">
+        <a [routerLink]="['/produtos']" [queryParams]="{ categoria: categoria.id }" class="category-card">
+          
+          <div class="category-image-wrapper">
+            <img [src]="categoria.nome.toLowerCase() + '.jpg'" [alt]="categoria.nome">
+          </div>
+          
+          <div class="category-name">
+            <h3>{{ categoria.nome }}</h3>
+          </div>
+
+        </a>
+      </swiper-slide>
+      
+    </swiper-container>
+  </div>
+</section>
+<app-product-list [produtos]="produtosEmDestaque" titulo="Destaques da Semana"></app-product-list>
+<app-footer></app-footer>

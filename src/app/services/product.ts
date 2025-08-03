@@ -29,13 +29,14 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  listarProdutos(categoriaId?: string): Observable<Produto[]> {
+  listarProdutos(categoriaId?: string, tipo?: 'PRODUTO' | 'PRESENTE'): Observable<Produto[]> {
     let params = new HttpParams();
     if (categoriaId) {
-      // Adiciona o parâmetro à requisição se ele existir
       params = params.set('categoria', categoriaId);
     }
-    // Envia a requisição com os parâmetros
+    if (tipo) {
+      params = params.set('tipo', tipo); // Adiciona o novo filtro
+    }
     return this.http.get<Produto[]>(this.apiUrl, { params });
   }
 

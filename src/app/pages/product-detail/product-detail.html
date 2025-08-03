@@ -1,30 +1,41 @@
-<div class="product-detail-page" *ngIf="produto; else loading">
+<div class="product-detail-container" *ngIf="produto; else loading">
+  
   <div class="product-gallery">
-    <div class="main-image">
+    <div class="main-image-wrapper">
       <img [src]="produto.urlImagem" [alt]="produto.nome">
     </div>
-  </div>
+    </div>
 
   <div class="product-info">
     <h1 class="product-title">{{ produto.nome }}</h1>
     
     <div class="price-section">
       <span class="product-price">{{ produto.preco | currency:'BRL' }}</span>
-      <span class="installments">em 12x {{ (produto.preco / 12) | currency:'BRL' }} sem juros</span>
     </div>
 
-    <div class="shipping-info">
-      <span>Frete grátis</span>
+    <div class="local-perks">
+      <div class="perk-item">
+        <i class="bi bi-truck"></i> <span>Entrega rápida no seu bairro!</span>
+      </div>
+      <div class="perk-item">
+        <i class="bi bi-shop"></i> <span>Retire na loja hoje mesmo.</span>
+      </div>
     </div>
-
-    <div class="stock-info">
-      <p><strong>Estoque disponível</strong></p>
-      <p>Quantidade: {{ produto.estoque }} unidades</p>
+    
+    <div class="stock-info" *ngIf="produto.estoque > 0">
+      <p><strong>Estoque disponível</strong> ({{ produto.estoque }} unidades)</p>
+    </div>
+    <div class="stock-info out-of-stock" *ngIf="produto.estoque === 0">
+      <p><strong>Produto indisponível no momento.</strong></p>
     </div>
     
     <div class="actions">
-      <button class="buy-now-button">Comprar agora</button>
-      <button class="add-to-cart-button" (click)="adicionarAoCarrinho()">Adicionar ao carrinho</button>
+      <button class="add-to-cart-button" (click)="adicionarAoCarrinho()" [disabled]="produto.estoque === 0">
+        Adicionar ao carrinho
+      </button>
+      <a [href]="getWhatsappLink()" target="_blank" class="whatsapp-button">
+        <i class="bi bi-whatsapp"></i> Dúvidas? Fale com a Leda
+      </a>
     </div>
 
     <div class="description-section">
@@ -35,5 +46,5 @@
 </div>
 
 <ng-template #loading>
-  <p class="loading-message">Carregando produto...</p>
+  <p class="loading-message">A carregar produto...</p>
 </ng-template>
