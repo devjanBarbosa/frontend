@@ -1,12 +1,19 @@
 <header class="site-header">
-  <div class="top-bar">
+  
+    <div class="top-bar">
     <div class="header-container">
-      <div class="contact-info">
-        <span>Fale conosco: (21) 99788-3761</span>
+      
+      <div class="top-bar-start">
+        <span></span>
       </div>
-      <div class="social-links">
-        <a href="#" target="_blank" aria-label="Instagram">Instagram</a>
+
+      <div class="ticker-wrap">
+        <div class="ticker-move">
+          <div class="ticker-item" *ngFor="let mensagem of mensagensMarketing">{{ mensagem }}</div>
+          <div class="ticker-item" *ngIf="mensagensMarketing.length > 0">{{ mensagensMarketing[0] }}</div>
+        </div>
       </div>
+
     </div>
   </div>
 

@@ -15,6 +15,12 @@ import { CategoryService, Categoria } from '../../services/category';
   styleUrls: ['./header.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+    mensagensMarketing: string[] = [
+    '📍 Entrega rápida no seu bairro!',
+    '🛍️ Retire na loja hoje mesmo',
+    '✨ Produtos selecionados por uma especialista',
+    '💬 Fale conosco no WhatsApp para dicas!'
+  ];
   quantidadeItensCarrinho = 0;
   isMenuOpen = false;
   
