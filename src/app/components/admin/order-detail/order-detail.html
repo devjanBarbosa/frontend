@@ -1,57 +1,91 @@
-<div class="order-detail-container" *ngIf="pedido$ | async as pedido; else loading">
-
-  <a routerLink="/admin/pedidos" class="back-link">&larr; Voltar para a lista de encomendas</a>
-  
-  <header class="detail-header">
-    <h1>Detalhes da Encomenda #{{ pedido.id.substring(0, 8) }}</h1>
-    
-    <button 
-      *ngIf="pedido.status !== 'ENTREGUE'" 
-      (click)="concluirPedido()" 
-      class="btn-action btn-success">
-      Marcar como Entregue
-    </button>
-    
-    <span class="status-badge" [ngClass]="pedido.status.toLowerCase()">{{ pedido.status.replace('_', ' ') }}</span>
-  </header>
-
-  <div class="details-grid">
-    <div class="detail-card">
-      <h3>Cliente</h3>
-      <p><strong>Nome:</strong> {{ pedido.nomeCliente }}</p>
-      <p><strong>WhatsApp:</strong> {{ pedido.whatsappCliente }}</p>
-    </div>
-
-    <div class="detail-card">
-      <h3>Resumo Financeiro</h3>
-      <p><strong>Valor Total:</strong> {{ pedido.valorTotal | currency:'BRL' }}</p>
-    </div>
-  </div>
-
-  <div class="items-card">
-    <h3>Itens da Encomenda</h3>
-    <table class="items-table">
-      <thead>
-        <tr>
-          <th>Produto</th>
-          <th>Quantidade</th>
-          <th>Preço Unitário</th>
-          <th>Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of pedido.itens">
-          <td>{{ item.nomeProduto }}</td>
-          <td>{{ item.quantidade }}</td>
-          <td>{{ item.precoUnitario | currency:'BRL' }}</td>
-          <td><strong>{{ (item.precoUnitario * item.quantidade) | currency:'BRL' }}</strong></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
+<div *ngIf="isLoading" class="loading-container">
+  <div class="spinner"></div>
+  <h3>A carregar detalhes...</h3>
+  <p>Por favor, aguarde um momento.</p>
 </div>
 
-<ng-template #loading>
-  <p class="loading-indicator">A carregar detalhes da encomenda...</p>
-</ng-template>
+<div *ngIf="!isLoading && pedido" class="container-fluid">
+  <div class="row">
+    <div class="col-lg-8">
+      
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-user-circle"></i>
+          Informações do Cliente e Pedido
+        </div>
+        <div class="card-body">
+          <div class="detail-item">
+            <span class="label"><i class="fas fa-user"></i>Cliente:</span>
+            <span class="value">{{ pedido.nomeCliente }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label"><i class="fab fa-whatsapp"></i>Contacto:</span>
+            <span class="value">{{ pedido.whatsappCliente }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label"><i class="fas fa-calendar-alt"></i>Data:</span>
+            <span class="value">{{ pedido.dataDoPedido | date:'dd/MM/yyyy, HH:mm' }}h</span>
+          </div>
+          <div class="detail-item">
+            <span class="label"><i class="fas fa-dollar-sign"></i>Valor Total:</span>
+            <span class="value total-price">{{ pedido.valorTotal | currency:'BRL' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-box-open"></i>
+          Itens da Encomenda
+        </div>
+        <ul class="list-group list-group-flush">
+          <li *ngFor="let item of pedido.itens" class="list-group-item">
+            <div class="item-info">
+              <div class="item-name">{{ item.nomeProduto }}</div>
+              <div class="item-details">
+                <span class="quantity">{{ item.quantidade }}x</span>
+                <span>Preço Unitário: {{ item.precoUnitario | currency:'BRL' }}</span>
+              </div>
+            </div>
+            <div class="item-price">
+              {{ (item.quantidade * item.precoUnitario) | currency:'BRL' }}
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card status-card">
+        <div class="card-header">
+          <i class="fas fa-tasks"></i>
+          Gerir Status da Encomenda
+        </div>
+        <div class="card-body">
+          <div class="current-status-badge" [ngClass]="'status-' + pedido.status.toLowerCase()">
+            <i class="fas fa-info-circle"></i>
+            <span>{{ pedido.status.replace('_', ' ') | titlecase }}</span>
+          </div>
+          <hr class="my-4">
+          <label for="statusSelect" class="form-label">Alterar status para:</label>
+          <select id="statusSelect" class="form-select mb-3" [(ngModel)]="statusSelecionado">
+            <option *ngFor="let status of listaDeStatus" [value]="status">
+              {{ status.replace('_', ' ') | titlecase }}
+            </option>
+          </select>
+          <button class="btn btn-action w-100" (click)="atualizarStatus()" [disabled]="statusSelecionado === pedido.status">
+            <i class="fas fa-save"></i>
+            Guardar Alteração
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!isLoading && !pedido" class="not-found-container">
+  <i class="empty-state-icon fas fa-exclamation-triangle"></i>
+  <h3>Encomenda Não Encontrada</h3>
+  <p>A encomenda que procura não existe ou o ID é inválido.</p>
+</div>

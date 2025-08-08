@@ -1,213 +1,338 @@
+// --- Variáveis Globais (Paleta de Cores e Estilos) ---
 :host {
-  --primary-color: #E91E63;
-  --text-color: #333;
-  --text-light: #666;
-  --border-color: #e0e0e0;
-  --background-color: #f5f5f5;
-  --surface-color: #ffffff;
-  --button-color: #3483fa; // Azul do Mercado Livre
+  --color-primary: #00a650; // Um verde confiável para ações de compra
+  --color-primary-dark: #008742;
+  --color-text-primary: #111;
+  --color-text-secondary: #666;
+  --color-surface: #ffffff;
+  --color-background: #f4f4f4;
+  --color-border: #e0e0e0;
+  --color-danger: #d93025;
+  --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --border-radius: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-.page-container {
-  max-width: 1200px;
+// --- Estrutura Principal ---
+.checkout-container {
+  max-width: 1100px;
   margin: 2rem auto;
-  padding: 0 1rem;
-  background-color: var(--background-color); // Fundo da página
+  padding: 1rem;
 }
 
-.page-title h1 {
-  font-size: 1.8rem;
-  font-weight: 600;
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
   margin-bottom: 1.5rem;
+  color: var(--color-text-primary);
 }
 
 .card {
-  background-color: var(--surface-color);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
   padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-// Estilo da Lista de Produtos
-.cart-items-container .cart-header {
-  border-bottom: 1px solid var(--border-color);
+.card-header {
   padding-bottom: 1rem;
   margin-bottom: 1rem;
-  h3 { margin: 0; font-size: 1.2rem; }
-}
-
-.cart-item {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto; // Coluna da imagem com tamanho automático
-  align-items: center;
-  gap: 1.5rem;
-  padding: 1.5rem 0;
-  border-bottom: 1px solid var(--border-color);
-  &:last-child {
-    border-bottom: none;
+  border-bottom: 1px solid var(--color-border);
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
   }
 }
 
-.product-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+// --- Layout do Checkout ---
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
 }
 
-.product-image {
+// Em telas maiores, o layout vira 2 colunas
+@media (min-width: 992px) {
+  .checkout-layout {
+    grid-template-columns: 2fr 1fr;
+    align-items: flex-start; // Alinha os cards no topo
+  }
+  .order-summary-section {
+    position: sticky;
+    top: 2rem;
+  }
+}
+
+// --- Estilos dos Itens do Carrinho ---
+.cart-item {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  grid-template-areas:
+    "image details price"
+    "image quantity price";
+  gap: 1rem 1.5rem;
+  padding: 1.5rem 0;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--color-border);
+  }
+}
+
+.cart-item__image {
+  grid-area: image;
   width: 80px;
   height: 80px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
 }
 
-.product-details .product-name {
-  font-weight: 500;
-  color: var(--text-color);
+.cart-item__details {
+  grid-area: details;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.remove-link {
+.cart-item__name {
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.cart-item__remove {
   background: none;
   border: none;
-  color: var(--button-color);
+  color: var(--color-text-secondary);
   cursor: pointer;
+  font-size: 0.875rem;
   padding: 0;
-  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   &:hover {
+    color: var(--color-danger);
     text-decoration: underline;
   }
 }
 
-.product-quantity {
+.cart-item__quantity {
+  grid-area: quantity;
   display: flex;
   align-items: center;
-  justify-content: center;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  .quantity-btn {
+  justify-self: start;
+  border: 1px solid var(--color-border);
+  border-radius: 99px; // Círculo
+  overflow: hidden;
+  
+  .quantity-button {
     background: none;
     border: none;
     cursor: pointer;
     font-size: 1.2rem;
-    padding: 0.5rem 1rem;
-    color: var(--button-color);
+    padding: 0.25rem 1rem;
+    color: var(--color-text-primary);
     &:disabled {
       color: #ccc;
       cursor: not-allowed;
     }
   }
   .quantity-value {
-    padding: 0 0.5rem;
+    padding: 0 0.25rem;
     font-weight: 500;
   }
 }
 
-.product-price {
-  text-align: right;
+.cart-item__price {
+  grid-area: price;
   font-size: 1.1rem;
-  font-weight: 500;
+  font-weight: 600;
+  align-self: center;
+  justify-self: end;
 }
 
-.empty-cart-message {
-  padding: 2rem;
+.empty-cart {
   text-align: center;
-  color: var(--text-light);
+  padding: 2rem;
+  p {
+    margin-bottom: 1rem;
+    color: var(--color-text-secondary);
+  }
 }
 
-// Estilo da Seção de Checkout
-.checkout-section {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+// Media query para carrinho em telas pequenas
+@media (max-width: 576px) {
+  .cart-item {
+    grid-template-columns: 80px 1fr;
+    grid-template-areas:
+      "image details"
+      "image quantity"
+      ". price";
+    row-gap: 0.5rem;
+  }
+  .cart-item__price {
+    justify-self: end;
+    margin-top: 0.5rem;
+  }
 }
 
-.checkout-form h3, .summary-card h3 {
-  font-size: 1.2rem;
-  margin-bottom: 1.5rem;
-}
 
+// --- Estilos do Formulário ---
 .form-group {
-  margin-bottom: 1rem;
-  label {
+  margin-bottom: 1.25rem;
+  label, legend {
     display: block;
     font-weight: 500;
     margin-bottom: 0.5rem;
+    color: var(--color-text-primary);
   }
-  input[type="text"] {
+  input[type="text"], input[type="tel"] {
     width: 100%;
-    padding: 0.8rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(0, 166, 80, 0.2);
+    }
+    // Estilo para campos inválidos tocados pelo usuário (Angular)
+    &.ng-invalid.ng-touched {
+      border-color: var(--color-danger);
+    }
+  }
+  fieldset { // Remove bordas padrão do fieldset
+    border: none;
+    padding: 0;
+    margin: 0;
   }
 }
 
-.radio-group {
+.radio-custom-group {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  margin-bottom: 1rem;
 }
 
-.summary-card {
-  position: sticky;
-  top: 2rem;
+.radio-custom {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  
+  input[type="radio"] {
+    display: none; // Esconde o rádio padrão
+  }
+  
+  &__label {
+    position: relative;
+    padding-left: 2rem;
+    &::before { // Círculo externo
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--color-border);
+      border-radius: 50%;
+      transition: border-color 0.2s;
+    }
+    &::after { // Círculo interno (marcado)
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 50%;
+      transform: translateY(-50%) scale(0);
+      width: 10px;
+      height: 10px;
+      background-color: var(--color-primary);
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  // Estilos quando o rádio está selecionado
+  input[type="radio"]:checked + &__label::before {
+    border-color: var(--color-primary);
+  }
+  input[type="radio"]:checked + &__label::after {
+    transform: translateY(-50%) scale(1);
+  }
+  &:hover {
+    border-color: var(--color-primary);
+  }
 }
 
-.summary-line, .summary-total {
+// --- Resumo do Pedido ---
+.summary-details {
+  padding-bottom: 1rem;
+}
+
+.summary-line {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  color: var(--color-text-secondary);
+  &:not(:last-child) {
+    margin-bottom: 0.75rem;
+  }
+}
+
+.summary-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
 }
 
 .summary-total {
-  font-size: 1.3rem;
-  font-weight: 600;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
 }
 
-.submit-button {
+// --- Botões ---
+.button-primary {
   width: 100%;
   padding: 1rem;
-  background-color: var(--button-color);
+  background-color: var(--color-primary);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: filter 0.2s, background-color 0.2s; // Adiciona filter à transição
-
+  transition: background-color 0.2s;
+  
   &:hover:not(:disabled) {
-    // A CORREÇÃO ESTÁ AQUI
-    filter: brightness(0.9); // Escurece o botão em 10% no navegador
+    background-color: var(--color-primary-dark);
   }
-
+  
   &:disabled {
     background-color: #ccc;
     cursor: not-allowed;
   }
 }
 
-// Media Query para layout de duas colunas em ecrãs maiores
-@media (min-width: 992px) {
-  .checkout-section {
-    grid-template-columns: 2fr 1fr;
-  }
-}
-
-// Media Query para o layout do item do carrinho em mobile
-@media (max-width: 576px) {
-  .cart-item {
-    grid-template-columns: 1fr; // Empilha tudo
-    text-align: center;
-  }
-  .product-info {
-    flex-direction: column;
-  }
-  .product-price {
-    text-align: center;
-    margin-top: 1rem;
+.button-secondary {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+  &:hover {
+    background-color: var(--color-primary);
+    color: var(--color-surface);
   }
 }

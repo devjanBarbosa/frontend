@@ -10,6 +10,7 @@ export interface Categoria {
 }
 
 // Interface do Produto atualizada
+// A interface corrigida
 export interface Produto {
   id: string;
   nome: string;
@@ -17,7 +18,8 @@ export interface Produto {
   preco: number;
   urlImagem: string;
   estoque: number;
-  categoria: Categoria; // Usando a interface Categoria ao invés de 'any'
+  categoria: Categoria;
+  ativo: boolean; // <-- ADICIONE APENAS ESTA LINHA
 }
 
 @Injectable({
@@ -95,6 +97,23 @@ export class ProductService {
     const params = new HttpParams().set('q', termo);
     const url = `${this.apiUrl}/buscar`;
     return this.http.get<Produto[]>(url, { params });
+  }
+
+   listarProdutosAdmin(filtros: any): Observable<Produto[]> {
+    let params = new HttpParams();
+    
+    // Adiciona os parâmetros apenas se eles existirem
+    if (filtros.nome) {
+      params = params.set('nome', filtros.nome);
+    }
+    if (filtros.categoriaId) {
+      params = params.set('categoriaId', filtros.categoriaId);
+    }
+    if (filtros.ativo !== null && filtros.ativo !== undefined) {
+      params = params.set('ativo', filtros.ativo);
+    }
+
+    return this.http.get<Produto[]>(`${this.apiUrl}/admin`, { params });
   }
   
 }

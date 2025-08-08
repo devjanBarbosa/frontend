@@ -1,25 +1,96 @@
-<div class="table-container">
-  <h3>Gerenciar Produtos</h3>
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>Produto</th>
-        <th>Preço</th>
-        <th>Estoque</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let produto of produtos">
-        <td>{{ produto.nome }}</td>
-        <td>{{ produto.preco | currency:'BRL' }}</td>
-        <td>{{ produto.estoque }}</td>
-        <td class="actions">
-  <a [routerLink]="['/admin/produtos/editar', produto.id]" class="btn btn-edit">Editar</a>
-  <button class="btn btn-delete" (click)="excluirProduto(produto.id)">Excluir</button>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <p *ngIf="produtos.length === 0">Nenhum produto cadastrado.</p>
+<div class="product-manager-container">
+
+  <header class="page-header">
+    <div class="title-section">
+      <h1 class="page-title"><i class="fas fa-boxes"></i> Gestão de Produtos</h1>
+      <p class="page-subtitle">Visualize, filtre e gira o seu inventário de produtos.</p>
+    </div>
+    <a routerLink="/admin/produtos/novo" class="btn btn-primary">
+      <i class="fas fa-plus-circle"></i> Cadastrar Novo Produto
+    </a>
+  </header>
+
+  <div class="card filter-card">
+    <div class="card-header">
+      <h5 class="card-title"><i class="fas fa-filter"></i> Filtros de Pesquisa</h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="filterForm" class="filter-form">
+        <div class="form-group">
+          <label for="nome">Pesquisar por Nome</label>
+          <input id="nome" type="text" formControlName="nome" placeholder="Nome do produto...">
+        </div>
+        <div class="form-group">
+          <label for="categoriaId">Filtrar por Categoria</label>
+          <select id="categoriaId" formControlName="categoriaId">
+            <option value="">Todas as Categorias</option>
+            <option *ngFor="let cat of categorias" [value]="cat.id">{{ cat.nome }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="ativo">Status</label>
+          <select id="ativo" formControlName="ativo">
+            <option [value]="true">Apenas Ativos</option>
+            <option [value]="false">Apenas Inativos</option>
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="form-group-button">
+          <button type="button" class="btn btn-secondary" (click)="limparFiltros()">Limpar Filtros</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card product-list-card">
+    <div class="card-header">
+      <h5 class="card-title">Lista de Produtos ({{ produtos.length }})</h5>
+    </div>
+    
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>A carregar produtos...</p>
+    </div>
+
+    <div *ngIf="!isLoading && produtos.length > 0" class="product-list">
+      <div class="product-list__header">
+        <div class="col-product">Produto</div>
+        <div class="col-category">Categoria</div>
+        <div class="col-price">Preço</div>
+        <div class="col-stock">Stock</div>
+        <div class="col-status">Status</div>
+        <div class="col-actions">Ações</div>
+      </div>
+      <div class="product-list__body">
+        <div *ngFor="let produto of produtos" class="product-list__row">
+          <div class="col-product">
+            <img [src]="produto.urlImagem" alt="{{ produto.nome }}" class="product-image">
+            <span class="product-name">{{ produto.nome }}</span>
+          </div>
+          <div class="col-category">{{ produto.categoria.nome || 'N/A' }}</div>
+          <div class="col-price">{{ produto.preco | currency:'BRL' }}</div>
+          <div class="col-stock">{{ produto.estoque }}</div>
+          <div class="col-status">
+            <span class="status-badge" [ngClass]="produto.ativo ? 'status--active' : 'status--inactive'">
+              {{ produto.ativo ? 'Ativo' : 'Inativo' }}
+            </span>
+          </div>
+          <div class="col-actions">
+            <a [routerLink]="['/admin/produtos/editar', produto.id]" class="btn-action btn-edit" title="Editar">
+              <i class="fas fa-pencil-alt"></i>
+            </a>
+            <button *ngIf="produto.ativo" class="btn-action btn-delete" (click)="excluirProduto(produto.id)" title="Inativar">
+              <i class="fas fa-toggle-on"></i>
+            </button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading && produtos.length === 0" class="empty-state">
+      <i class="fas fa-box-open"></i>
+      <h3>Nenhum produto encontrado</h3>
+      <p>Tente ajustar os seus filtros ou cadastre um novo produto.</p>
+    </div>
+  </div>
 </div>

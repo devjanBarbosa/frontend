@@ -1,0 +1,59 @@
+<div class="dashboard-container">
+  
+  <header class="page-header">
+    <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard de Análises</h1>
+    <p class="page-subtitle">Uma visão geral do desempenho da sua loja.</p>
+  </header>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>A calcular as métricas da sua loja...</p>
+  </div>
+
+  <div *ngIf="!isLoading && dashboardData" class="dashboard-content">
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon icon-revenue"><i class="fas fa-dollar-sign"></i></div>
+        <div class="stat-content">
+          <span class="stat-number">{{ dashboardData.faturamentoTotal | currency:'BRL' }}</span>
+          <span class="stat-label">Faturamento Total</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon icon-orders"><i class="fas fa-receipt"></i></div>
+        <div class="stat-content">
+          <span class="stat-number">{{ dashboardData.totalDePedidos }}</span>
+          <span class="stat-label">Pedidos Concluídos</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon icon-ticket"><i class="fas fa-shopping-basket"></i></div>
+        <div class="stat-content">
+          <span class="stat-number">{{ dashboardData.ticketMedio | currency:'BRL' }}</span>
+          <span class="stat-label">Ticket Médio</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="card chart-card">
+        <div class="card-body">
+          <canvas #barChartCanvas></canvas>
+        </div>
+      </div>
+      <div class="card chart-card">
+        <div class="card-body">
+          <canvas #pieChartCanvas></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div *ngIf="!isLoading && !dashboardData" class="empty-state">
+    <i class="fas fa-exclamation-triangle"></i>
+    <h3>Não foi possível carregar os dados</h3>
+    <p>Ocorreu um erro ao buscar as informações do dashboard. Tente novamente mais tarde.</p>
+  </div>
+</div>

@@ -31,7 +31,29 @@ export class CartService {
   }
 
   // Seus outros métodos (decrementar, remover, etc.) continuam iguais...
-  decrementarQuantidade(item: CartItem): void { /* ... */ }
-  removerItem(item: CartItem): void { /* ... */ }
-  limparCarrinho(): void { this.itemsSubject.next([]); }
+ decrementarQuantidade(itemParaDecrementar: CartItem): void {
+    let itemsAtuais = this.itemsSubject.getValue();
+    const itemExistente = itemsAtuais.find(i => i.produto.id === itemParaDecrementar.produto.id);
+
+    if (itemExistente && itemExistente.quantidade > 1) {
+      // Apenas diminui a quantidade se for maior que 1
+      itemExistente.quantidade--;
+    } else {
+      // Se a quantidade for 1, o item é removido do carrinho
+      itemsAtuais = itemsAtuais.filter(i => i.produto.id !== itemParaDecrementar.produto.id);
+    }
+    
+    this.itemsSubject.next([...itemsAtuais]);
+  }
+
+  // --- COMPLETE TAMBÉM ESTE MÉTODO ---
+  removerItem(itemParaRemover: CartItem): void {
+    const itemsAtuais = this.itemsSubject.getValue();
+    const itemsFiltrados = itemsAtuais.filter(i => i.produto.id !== itemParaRemover.produto.id);
+    this.itemsSubject.next(itemsFiltrados);
+  }
+
+  limparCarrinho(): void {
+    this.itemsSubject.next([]);
+  }
 }

@@ -1,87 +1,125 @@
-<div class="page-container">
-  <div class="page-title">
+<main class="checkout-container">
+  <header class="page-header">
     <h1>Meu Carrinho</h1>
-  </div>
+  </header>
 
-  <div class="cart-items-container card">
-    <div class="cart-header">
-      <h3>Produtos</h3>
-    </div>
+  <section class="cart-section card" aria-labelledby="cart-heading">
+    <header class="card-header">
+      <h2 id="cart-heading">Produtos</h2>
+    </header>
 
-    <div class="items-list" *ngIf="cartItems.length > 0; else emptyCart">
-      <div class="cart-item" *ngFor="let item of cartItems">
-        <div class="product-info">
-          <img [src]="item.produto.urlImagem" [alt]="item.produto.nome" class="product-image">
-          <div class="product-details">
-            <p class="product-name">{{ item.produto.nome }}</p>
-            <button class="remove-link" (click)="removerItem(item)">Excluir</button>
-          </div>
+    <div *ngIf="cartItems.length > 0; else emptyCart">
+      <article class="cart-item" *ngFor="let item of cartItems">
+        <img [src]="item.produto.urlImagem" [alt]="item.produto.nome" class="cart-item__image">
+        
+        <div class="cart-item__details">
+          <p class="cart-item__name">{{ item.produto.nome }}</p>
+          <button class="cart-item__remove" (click)="removerItem(item)">
+            <i class="icon-trash"></i> Remover
+          </button>
         </div>
-        <div class="product-quantity">
-          <button class="quantity-btn" (click)="decrementarQuantidade(item)" [disabled]="item.quantidade === 1">-</button>
+
+        <div class="cart-item__quantity">
+          <button class="quantity-button" (click)="decrementarQuantidade(item)" [disabled]="item.quantidade === 1" aria-label="Diminuir quantidade">-</button>
           <span class="quantity-value">{{ item.quantidade }}</span>
-          <button class="quantity-btn" (click)="incrementarQuantidade(item)">+</button>
+          <button class="quantity-button" (click)="incrementarQuantidade(item)" aria-label="Aumentar quantidade">+</button>
         </div>
-        <div class="product-price">
+
+        <div class="cart-item__price">
           <span>{{ (item.produto.preco * item.quantidade) | currency:'BRL' }}</span>
         </div>
-      </div>
+      </article>
     </div>
-    <ng-template #emptyCart>
-      <p class="empty-cart-message">Seu carrinho está vazio. Adicione produtos para continuar.</p>
-    </ng-template>
-  </div>
 
-  <div class="checkout-section" *ngIf="cartItems.length > 0">
-    <div class="checkout-form card">
-      <h3>Detalhes da Entrega e Pagamento</h3>
+    <ng-template #emptyCart>
+      <div class="empty-cart">
+        <p>Seu carrinho está vazio.</p>
+        <a routerLink="/" class="button-secondary">Ver produtos</a>
+      </div>
+    </ng-template>
+  </section>
+
+  <div class="checkout-layout" *ngIf="cartItems.length > 0">
+    <section class="checkout-form-section card" aria-labelledby="checkout-heading">
+      <header class="card-header">
+        <h2 id="checkout-heading">Detalhes da Compra</h2>
+      </header>
+      
       <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
           <label for="nomeCliente">Nome Completo</label>
-          <input id="nomeCliente" formControlName="nomeCliente" type="text" placeholder="Seu nome">
+          <input id="nomeCliente" formControlName="nomeCliente" type="text" placeholder="Digite seu nome completo">
         </div>
+
         <div class="form-group">
           <label for="whatsappCliente">WhatsApp</label>
-          <input id="whatsappCliente" formControlName="whatsappCliente" type="text" placeholder="(XX) 9XXXX-XXXX">
+          <input id="whatsappCliente" formControlName="whatsappCliente" type="tel" placeholder="(XX) 9XXXX-XXXX">
         </div>
-        <div class="radio-group">
-          <label><input type="radio" formControlName="metodoEntrega" value="Delivery"> Delivery</label>
-          <label><input type="radio" formControlName="metodoEntrega" value="Retirar na Loja"> Retirar na Loja</label>
-        </div>
+
+        <fieldset class="form-group">
+          <legend>Como você quer receber?</legend>
+          <div class="radio-custom-group">
+            <label class="radio-custom">
+              <input type="radio" formControlName="metodoEntrega" value="Delivery">
+              <span class="radio-custom__label">Delivery</span>
+            </label>
+            <label class="radio-custom">
+              <input type="radio" formControlName="metodoEntrega" value="Retirar na Loja">
+              <span class="radio-custom__label">Retirar na Loja</span>
+            </label>
+          </div>
+        </fieldset>
+
         <div class="address-fields" *ngIf="checkoutForm.get('metodoEntrega')?.value === 'Delivery'">
           <div class="form-group">
             <label for="endereco">Rua e Número</label>
-            <input id="endereco" formControlName="endereco" type="text">
+            <input id="endereco" formControlName="endereco" type="text" placeholder="Ex: Rua das Flores, 123">
           </div>
           <div class="form-group">
             <label for="bairro">Bairro</label>
-            <input id="bairro" formControlName="bairro" type="text">
+            <input id="bairro" formControlName="bairro" type="text" placeholder="Ex: Centro">
           </div>
         </div>
-        <div class="radio-group">
-          <label><input type="radio" formControlName="metodoPagamento" value="Pagar na Entrega"> Pagar na Entrega</label>
-          <label><input type="radio" formControlName="metodoPagamento" value="Pix"> Pix</label>
-        </div>
+        
+        <fieldset class="form-group">
+          <legend>Como você quer pagar?</legend>
+          <div class="radio-custom-group">
+            <label class="radio-custom">
+              <input type="radio" formControlName="metodoPagamento" value="Pagar na Entrega">
+              <span class="radio-custom__label">Pagar na Entrega</span>
+            </label>
+            <label class="radio-custom">
+              <input type="radio" formControlName="metodoPagamento" value="Pix">
+              <span class="radio-custom__label">Pix</span>
+            </label>
+          </div>
+        </fieldset>
       </form>
-    </div>
+    </section>
 
-    <div class="summary-card card">
-      <h3>Resumo da compra</h3>
-      <div class="summary-line">
-        <span>Subtotal</span>
-        <span>{{ subtotal | currency:'BRL' }}</span>
+    <aside class="order-summary-section card">
+      <header class="card-header">
+        <h2>Resumo do Pedido</h2>
+      </header>
+      <div class="summary-details">
+        <div class="summary-line">
+          <span>Subtotal</span>
+          <span>{{ subtotal | currency:'BRL' }}</span>
+        </div>
+        <div class="summary-line" *ngIf="checkoutForm.get('metodoEntrega')?.value === 'Delivery'">
+          <span>Taxa de Entrega</span>
+          <span>{{ taxaEntrega | currency:'BRL' }}</span>
+        </div>
       </div>
-      <div class="summary-line" *ngIf="checkoutForm.get('metodoEntrega')?.value === 'Delivery'">
-        <span>Entrega</span>
-        <span>{{ taxaEntrega | currency:'BRL' }}</span>
-      </div>
-      <div class="summary-total">
-        <span>Total</span>
-        <span>{{ total | currency:'BRL' }}</span>
-      </div>
-      <button class="submit-button" (click)="onSubmit()" [disabled]="checkoutForm.invalid || cartItems.length === 0">
-        Continuar a compra
-      </button>
-    </div>
+      <footer class="summary-footer">
+        <div class="summary-total">
+          <span>Total</span>
+          <span>{{ total | currency:'BRL' }}</span>
+        </div>
+        <button class="button-primary" (click)="onSubmit()" [disabled]="checkoutForm.invalid || cartItems.length === 0">
+          Finalizar Compra
+        </button>
+      </footer>
+    </aside>
   </div>
-</div>
+</main>

@@ -1,20 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe, CurrencyPipe, TitleCasePipe } from '@angular/common'; // Pipes importados
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { OrderService, Pedido } from '../../../services/order';
-import { Observable } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { OrderService } from '../../../services/order';
+import { Pedido } from '../../../services/order'; // Assumindo que a interface está aqui
+import { StatusPedido, ListaStatusPedido } from '../../../services/status-pedido.enum';
+
+// --- NOVA IMPORTAÇÃO ---
+import Swal from 'sweetalert2'; // Importamos a biblioteca que acabámos de instalar
 
 @Component({
   selector: 'app-order-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  // Adicionamos os pipes ao array de imports
+  imports: [CommonModule, RouterModule, FormsModule, DatePipe, CurrencyPipe, TitleCasePipe],
   templateUrl: './order-detail.html',
   styleUrls: ['./order-detail.scss']
 })
 export class OrderDetailComponent implements OnInit {
   
-  pedido$: Observable<Pedido> | undefined;
-  pedidoId: string | null = null; // Guardamos o ID para usar no botão
+  pedido: Pedido | null = null;
+  listaDeStatus = ListaStatusPedido;
+  statusSelecionado: StatusPedido | null = null;
+  isLoading = true; // Variável para controlar o ecrã de loading
 
   constructor(
     private route: ActivatedRoute,
@@ -22,35 +30,75 @@ export class OrderDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Busca o ID da rota quando o componente é inicializado
-    this.pedidoId = this.route.snapshot.paramMap.get('id');
     this.carregarPedido();
   }
 
-  // Método para carregar (ou recarregar) os detalhes do pedido
   carregarPedido(): void {
-    if (this.pedidoId) {
-      this.pedido$ = this.orderService.getPedidoById(this.pedidoId);
-    }
-  }
-
-  // --- ESTE É O MÉTODO QUE O SEU BOTÃO CHAMA ---
-  // Se este método estiver em falta, o botão não fará nada.
-  concluirPedido(): void {
-    if (!this.pedidoId) return;
-
-    // Pede confirmação ao utilizador antes de prosseguir
-    if (confirm('Tem a certeza que deseja marcar esta encomenda como "Entregue"?')) {
-      this.orderService.concluirPedido(this.pedidoId).subscribe({
-        next: () => {
-          alert('Encomenda concluída com sucesso!');
-          this.carregarPedido(); // Recarrega os dados para mostrar o novo status "ENTREGUE"
+    this.isLoading = true;
+    const pedidoId = this.route.snapshot.paramMap.get('id');
+    if (pedidoId) {
+      this.orderService.getPedidoById(pedidoId).subscribe({
+        next: (dadosDoPedido) => {
+          this.pedido = dadosDoPedido;
+          this.statusSelecionado = dadosDoPedido.status;
+          this.isLoading = false; // Desativa o loading quando os dados chegam
         },
         error: (err) => {
-          alert('Ocorreu um erro ao concluir a encomenda.');
           console.error(err);
+          this.isLoading = false;
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Não foi possível carregar os detalhes do pedido.',
+          });
         }
       });
     }
+  }
+
+  // --- MÉTODO ATUALIZADO COM SWEETALERT2 ---
+  atualizarStatus(): void {
+    if (!this.pedido || !this.statusSelecionado) {
+      return;
+    }
+
+    const statusFormatado = this.statusSelecionado.replace('_', ' ').toLowerCase();
+
+    // Usando SweetAlert2 para confirmação
+    Swal.fire({
+      title: 'Tem a certeza?',
+      text: `Deseja realmente alterar o status do pedido para "${statusFormatado}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#5a9a5a', // Um verde amigável
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, alterar!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      // Se o utilizador clicar em "Sim, alterar!"
+      if (result.isConfirmed) {
+        this.orderService.atualizarStatus(this.pedido!.id, this.statusSelecionado!).subscribe({
+          next: (pedidoAtualizado) => {
+            this.pedido = pedidoAtualizado;
+            this.statusSelecionado = pedidoAtualizado.status;
+            // Alerta de sucesso
+            Swal.fire(
+              'Atualizado!',
+              'O status do pedido foi alterado com sucesso.',
+              'success'
+            );
+          },
+          error: (err) => {
+            console.error(err);
+            // Alerta de erro
+            Swal.fire(
+              'Erro!',
+              'Ocorreu uma falha ao tentar atualizar o status.',
+              'error'
+            );
+          }
+        });
+      }
+    });
   }
 }

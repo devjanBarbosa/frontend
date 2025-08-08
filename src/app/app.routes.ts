@@ -15,6 +15,8 @@ import { ProductShopComponent } from './pages/product-shop/product-shop';
 import { AboutComponent } from './pages/about/about';
 import { CategoryManagementComponent } from './components/admin/category-management/category-management';
 import { GiftShopComponent } from './pages/gift-shop/gift-shop';
+import { DashboardComponent } from './components/admin/dashboard/dashboard';
+
 
 export const routes: Routes = [
   // --- ROTAS PÚBLICAS (Acessíveis a todos os visitantes) ---
@@ -46,7 +48,9 @@ export const routes: Routes = [
       { path: 'produtos/editar/:id', component: ProductFormComponent },
 
       // Rota de Categorias
-      { path: 'categorias', component: CategoryManagementComponent }
+      { path: 'categorias', component: CategoryManagementComponent },
+       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }, // <-- MUDANÇA: O admin agora começa no dashboard
+      { path: 'dashboard', component: DashboardComponent }
     ]
   },
 

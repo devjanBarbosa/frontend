@@ -1,0 +1,107 @@
+// Reutilizando as variáveis de design do seu tema
+:host {
+  --c-primary: #c7a4b1;
+  --c-text-base: #2c3e50;
+  --c-text-muted: #6c757d;
+  --c-bg-page: #f8fafc;
+  --c-bg-card: #ffffff;
+  --c-border: #e2e8f0;
+  --c-success: #27ae60;
+  --c-info: #3498db;
+  --c-warning: #f39c12;
+  --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.dashboard-container {
+  padding: 2rem;
+}
+
+// Cabeçalho
+.page-header {
+  margin-bottom: 2.5rem;
+}
+.page-title {
+  font-weight: 700;
+  color: var(--c-text-base);
+  i { color: var(--c-primary); margin-right: 0.75rem; }
+}
+.page-subtitle {
+  color: var(--c-text-muted);
+  margin-top: 0.25rem;
+}
+
+// Grelha de Métricas
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background-color: var(--c-bg-card);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--c-border);
+  box-shadow: var(--shadow-sm);
+
+  .stat-icon {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    color: white;
+
+    &.icon-revenue { background-color: var(--c-success); }
+    &.icon-orders { background-color: var(--c-info); }
+    &.icon-ticket { background-color: var(--c-warning); }
+  }
+
+  .stat-content {
+    .stat-number {
+      display: block;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--c-text-base);
+    }
+    .stat-label {
+      font-size: 1rem;
+      color: var(--c-text-muted);
+    }
+  }
+}
+
+// Grelha dos Gráficos
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  border: 1px solid var(--c-border);
+  border-radius: 0.75rem;
+}
+.card-header {
+  font-weight: 600;
+}
+
+// Estados
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem;
+  color: var(--c-text-muted);
+  .spinner {
+    /* (estilos do spinner que você já tem) */
+  }
+}

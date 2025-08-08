@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { StatusPedido } from './status-pedido.enum';
 
 // Interface para representar os dados de uma encomenda que vêm do backend
 export interface Pedido {
@@ -8,7 +9,7 @@ export interface Pedido {
   dataDoPedido: string; // Vem como string, podemos formatar depois
   nomeCliente: string;
   whatsappCliente: string; 
-  status: string;
+  status: StatusPedido;
   valorTotal: number;
   itens: any[]; // Simplificado por agora
 }
@@ -21,8 +22,6 @@ export class OrderService {
 
   constructor(private http: HttpClient) { }
 
-  // --- NOVO MÉTODO ---
-  // Busca todas as encomendas. O AuthInterceptor vai adicionar o token automaticamente.
   getPedidos(): Observable<Pedido[]> {
     return this.http.get<Pedido[]>(this.apiUrl);
   }
@@ -31,9 +30,13 @@ export class OrderService {
 getPedidoById(id: string): Observable<Pedido> {
   return this.http.get<Pedido>(`${this.apiUrl}/${id}`);
 }
+  
 
-concluirPedido(id: string): Observable<Pedido> {
-    const url = `${this.apiUrl}/${id}/concluir`;
-    return this.http.patch<Pedido>(url, {});
+   atualizarStatus(id: string, status: StatusPedido): Observable<Pedido> {
+    const url = `${this.apiUrl}/${id}/status`;
+    const body = { status }; // Forma curta de { status: status }
+    return this.http.patch<Pedido>(url, body);
   }
 }
+
+
