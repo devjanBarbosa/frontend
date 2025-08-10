@@ -1,37 +1,29 @@
-<div class="admin-panel">
-  <header class="admin-header">
-    <h2>Painel do Lojista</h2>
-    <nav>
-       <a routerLink="/admin/dashboard"
-          routerLinkActive="active-link"
-          class="admin-button">
-          Dashboard
-       </a>
+<app-admin-header></app-admin-header>
 
-       <a routerLink="/admin/pedidos"
-          routerLinkActive="active-link"
-          class="admin-button">
-          Ver Pedidos
-       </a>
-       <a routerLink="/admin/produtos" 
-          routerLinkActive="active-link" 
-          [routerLinkActiveOptions]="{exact: true}"
-          class="admin-button">
-          Gerir Produtos
-       </a>
-       <a routerLink="/admin/produtos/novo" 
-          routerLinkActive="active-link" 
-          class="admin-button">
-          Cadastrar Produto
-       </a>
-       <a routerLink="/admin/categorias"
-          routerLinkActive="active-link"
-          class="admin-button">
-          Gerir Categorias
-       </a>
-    </nav>
-  </header>
-  
+<div class="admin-panel-container">
+  <nav class="admin-nav-bar">
+    <a routerLink="/admin/dashboard" routerLinkActive="active-link" class="admin-nav-link">
+      <i class="bi bi-grid-1x2-fill"></i>
+      <span>Dashboard</span>
+    </a>
+    <a routerLink="/admin/pedidos" routerLinkActive="active-link" class="admin-nav-link">
+      <i class="bi bi-box-seam-fill"></i>
+      <span>Pedidos</span>
+    </a>
+    <a routerLink="/admin/produtos" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" class="admin-nav-link">
+      <i class="bi bi-shop-window"></i>
+      <span>Produtos</span>
+    </a>
+    <a routerLink="/admin/produtos/novo" routerLinkActive="active-link" class="admin-nav-link">
+      <i class="bi bi-plus-circle-fill"></i>
+      <span>Novo Produto</span>
+    </a>
+    <a routerLink="/admin/categorias" routerLinkActive="active-link" class="admin-nav-link">
+      <i class="bi bi-tags-fill"></i>
+      <span>Categorias</span>
+    </a>
+  </nav>
+
   <main class="admin-content">
     <router-outlet></router-outlet>
   </main>

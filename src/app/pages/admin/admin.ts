@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterModule, Router } from "@angular/router";
+import { AdminHeaderComponent } from '../../components/admin/admin-header/admin-header';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [RouterOutlet, RouterModule],
+  imports: [RouterOutlet, RouterModule, AdminHeaderComponent],
   templateUrl: './admin.html',
   styleUrls: ['./admin.scss']
 })

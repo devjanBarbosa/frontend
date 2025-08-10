@@ -1,38 +1,103 @@
-<div class="order-list-container">
-  <h3>Últimos Pedidos</h3>
-  <div class="table-responsive-wrapper">
-    <table class="data-table" *ngIf="pedidos.length > 0; else noOrders">
-      <thead>
-        <tr>
-          <th>ID da Encomenda</th>
-          <th>Data</th>
-          <th>Cliente</th>
-          <th>Total</th>
-          <th>Status</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let pedido of pedidos">
-          <td>#{{ pedido.id.substring(0, 8) }}</td>
-          <td>{{ pedido.dataDoPedido | date:'dd/MM/yyyy HH:mm' }}</td>
-          <td>{{ pedido.nomeCliente }}</td>
-          <td>{{ pedido.valorTotal | currency:'BRL' }}</td>
-          <td>
-            <span class="status-badge" [ngClass]="pedido.status.toLowerCase()">
-              {{ pedido.status.replace('_', ' ') }}
-            </span>
-          </td>
-          <td class="actions">
-            <a [routerLink]="['/admin/pedidos', pedido.id]" class="btn btn-details">
-              Ver Detalhes
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<div class="order-management-container">
+  
+  <section class="dashboard-metrics">
+  <div class="metric-card">
+    <div class="metric-icon pending">
+      <i class="bi bi-hourglass-split"></i>
+    </div>
+    <div class="metric-info">
+      <div class="metric-value">{{ pedidosPendentes }}</div>
+      <div class="metric-label">Pedidos Pendentes</div>
+    </div>
   </div>
-  <ng-template #noOrders>
-    <p class="no-orders">Nenhum pedido encontrado.</p>
-  </ng-template>
+  <div class="metric-card">
+    <div class="metric-icon in-progress">
+      <i class="bi bi-box-seam"></i>
+    </div>
+    <div class="metric-info">
+      <div class="metric-value">{{ pedidosEmPreparacao }}</div>
+      <div class="metric-label">Em Preparação</div>
+    </div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-icon ready">
+      <i class="bi bi-truck"></i>
+    </div>
+    <div class="metric-info">
+      <div class="metric-value">{{ pedidosProntosParaEntrega }}</div>
+      <div class="metric-label">Prontos para Sair</div>
+    </div>
+  </div>
+</section>
+
+  <div class="order-list-container card">
+    <header class="list-header">
+      <h3>Histórico de Pedidos</h3>
+      <div class="filters">
+        <select (change)="filtrarPorStatus($event)">
+          <option value="">Todos os Status</option>
+          <option value="PENDENTE">Pendentes</option>
+          <option value="EM_PREPARACAO">Em Preparação</option>
+          <option value="SAIU_PARA_ENTREGA">Saiu para Entrega</option>
+          <option value="PRONTO_PARA_RETIRADA">Pronto para Retirada</option>
+          <option value="ENTREGUE">Entregues</option>
+          <option value="CANCELADO">Cancelados</option>
+        </select>
+        <input type="text" placeholder="Buscar por nome do cliente..." (input)="buscarPorCliente($event)">
+      </div>
+    </header>
+    
+    <div class="table-responsive-wrapper">
+      <table class="data-table" *ngIf="pedidosFiltrados.length > 0; else noOrders">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Data</th>
+            <th>Cliente</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pedido of pedidosFiltrados">
+            <td>#{{ pedido.id.substring(0, 8) }}</td>
+            <td>{{ pedido.dataDoPedido | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              {{ pedido.nomeCliente }}
+              <a [href]="'https://wa.me/' + pedido.whatsappCliente" target="_blank" class="whatsapp-link" title="Falar com cliente">
+                <i class="bi bi-whatsapp"></i>
+              </a>
+            </td>
+            <td>{{ pedido.valorTotal | currency:'BRL' }}</td>
+            
+            <td>
+              <span class="status-badge" [ngClass]="pedido.status.toLowerCase()">
+                {{ pedido.status.replace('_', ' ') }}
+              </span>
+            </td>
+           <td class="actions">
+  <a [routerLink]="['/admin/pedidos', pedido.id]" class="btn btn-details">
+    <i class="bi bi-eye"></i> <span>Ver Detalhes</span>
+  </a>
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #noOrders>
+      <div class="empty-state">
+        <p>Nenhum pedido encontrado com os filtros atuais.</p>
+      </div>
+    </ng-template>
+
+    <div *ngIf="isLoading" class="loading-indicator">
+      <p>Carregando pedidos...</p>
+    </div>
+    
+    <div *ngIf="errorMessage" class="error-message">
+      <p>{{ errorMessage }}</p>
+    </div>
+  </div>
 </div>

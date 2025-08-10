@@ -1,91 +1,103 @@
-<div *ngIf="isLoading" class="loading-container">
-  <div class="spinner"></div>
-  <h3>A carregar detalhes...</h3>
-  <p>Por favor, aguarde um momento.</p>
-</div>
+<div class="page-container" *ngIf="pedido; else loadingOrError">
+  <header class="page-header">
+    <a routerLink="/admin/pedidos" class="back-button">
+      <i class="bi bi-arrow-left"></i>
+      <span>Voltar para Pedidos</span>
+    </a>
+    <div class="header-content">
+      <h1>Pedido #{{ pedido.id.substring(0, 8) }}</h1>
+      <span class="status-badge" [ngClass]="pedido.status.toLowerCase()">{{ pedido.status.replace('_', ' ') }}</span>
+    </div>
+    <div class="header-actions">
+      <a [href]="'https://wa.me/' + pedido.whatsappCliente" target="_blank" class="btn btn-secondary">
+        <i class="bi bi-whatsapp"></i> Falar com Cliente
+      </a>
+      <button class="btn btn-secondary" (click)="imprimirPedido()">
+        <i class="bi bi-printer"></i> Imprimir
+      </button>
+    </div>
+  </header>
 
-<div *ngIf="!isLoading && pedido" class="container-fluid">
-  <div class="row">
-    <div class="col-lg-8">
-      
+  <main class="order-layout">
+    <div class="main-column">
       <div class="card">
         <div class="card-header">
-          <i class="fas fa-user-circle"></i>
-          Informações do Cliente e Pedido
+          <i class="bi bi-box-seam"></i>
+          <h3>Itens do Pedido ({{ pedido.itens.length }})</h3>
         </div>
-        <div class="card-body">
-          <div class="detail-item">
-            <span class="label"><i class="fas fa-user"></i>Cliente:</span>
-            <span class="value">{{ pedido.nomeCliente }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="label"><i class="fab fa-whatsapp"></i>Contacto:</span>
-            <span class="value">{{ pedido.whatsappCliente }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="label"><i class="fas fa-calendar-alt"></i>Data:</span>
-            <span class="value">{{ pedido.dataDoPedido | date:'dd/MM/yyyy, HH:mm' }}h</span>
-          </div>
-          <div class="detail-item">
-            <span class="label"><i class="fas fa-dollar-sign"></i>Valor Total:</span>
-            <span class="value total-price">{{ pedido.valorTotal | currency:'BRL' }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-box-open"></i>
-          Itens da Encomenda
-        </div>
-        <ul class="list-group list-group-flush">
-          <li *ngFor="let item of pedido.itens" class="list-group-item">
-            <div class="item-info">
-              <div class="item-name">{{ item.nomeProduto }}</div>
-              <div class="item-details">
-                <span class="quantity">{{ item.quantidade }}x</span>
-                <span>Preço Unitário: {{ item.precoUnitario | currency:'BRL' }}</span>
-              </div>
+        <ul class="item-list">
+          <li *ngFor="let item of pedido.itens" class="item-list-row">
+            <div class="item-product-info">
+              <span class="item-quantity">{{ item.quantidade }}x</span>
+              <span class="item-name">{{ item.nomeProduto }}</span>
             </div>
-            <div class="item-price">
-              {{ (item.quantidade * item.precoUnitario) | currency:'BRL' }}
+            <div class="item-pricing">
+              <span class="item-unit-price">{{ item.precoUnitario | currency:'BRL' }}</span>
+              <span class="item-subtotal">{{ (item.quantidade * item.precoUnitario) | currency:'BRL' }}</span>
             </div>
           </li>
         </ul>
+        <div class="order-total-summary">
+          <span>Total do Pedido</span>
+          <strong>{{ pedido.valorTotal | currency:'BRL' }}</strong>
+        </div>
       </div>
 
+      <div class="card">
+        <div class="card-header">
+          <i class="bi bi-truck"></i>
+          <h3>Entrega e Pagamento</h3>
+        </div>
+        <div class="details-grid">
+          <div class="detail-item">
+            <span class="detail-label">Método de Entrega</span>
+            <span class="detail-value">{{ pedido.tipoEntrega === 'ENTREGA_LOCAL' ? 'Delivery' : 'Retirada na Loja' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Método de Pagamento</span>
+            <span class="detail-value">{{ pedido.metodoPagamento }}</span>
+          </div>
+          <div class="detail-item full-width" *ngIf="pedido.tipoEntrega === 'ENTREGA_LOCAL'">
+            <span class="detail-label">Endereço de Entrega</span>
+            <span class="detail-value">
+              {{ pedido.endereco }}, {{ pedido.numero }} {{ pedido.complemento ? '- ' + pedido.complemento : '' }}<br>
+              {{ pedido.bairro }} - CEP: {{ pedido.cep }}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="col-lg-4">
-      <div class="card status-card">
+    <aside class="sidebar-column">
+      <div class="card">
         <div class="card-header">
-          <i class="fas fa-tasks"></i>
-          Gerir Status da Encomenda
+          <i class="bi bi-toggles"></i>
+          <h3>Gerenciar Status</h3>
         </div>
         <div class="card-body">
-          <div class="current-status-badge" [ngClass]="'status-' + pedido.status.toLowerCase()">
-            <i class="fas fa-info-circle"></i>
-            <span>{{ pedido.status.replace('_', ' ') | titlecase }}</span>
-          </div>
-          <hr class="my-4">
-          <label for="statusSelect" class="form-label">Alterar status para:</label>
-          <select id="statusSelect" class="form-select mb-3" [(ngModel)]="statusSelecionado">
+          <p>Selecione o novo status do pedido:</p>
+          <select class="form-select" [(ngModel)]="statusSelecionado">
             <option *ngFor="let status of listaDeStatus" [value]="status">
-              {{ status.replace('_', ' ') | titlecase }}
+              {{ formatarStatus(status) }}
             </option>
           </select>
-          <button class="btn btn-action w-100" (click)="atualizarStatus()" [disabled]="statusSelecionado === pedido.status">
-            <i class="fas fa-save"></i>
-            Guardar Alteração
+          <button class="btn btn-primary" (click)="atualizarStatus()" [disabled]="statusSelecionado === pedido.status">
+            Salvar Alteração
           </button>
         </div>
       </div>
-    </div>
-  </div>
+    </aside>
+  </main>
 </div>
 
-<div *ngIf="!isLoading && !pedido" class="not-found-container">
-  <i class="empty-state-icon fas fa-exclamation-triangle"></i>
-  <h3>Encomenda Não Encontrada</h3>
-  <p>A encomenda que procura não existe ou o ID é inválido.</p>
-</div>
+<ng-template #loadingOrError>
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>A carregar detalhes do pedido...</p>
+  </div>
+  <div *ngIf="!isLoading && !pedido" class="not-found-container">
+    <i class="bi bi-exclamation-triangle"></i>
+    <h3>Pedido não encontrado</h3>
+    <p>O pedido que você procura não existe ou o ID é inválido.</p>
+  </div>
+</ng-template>

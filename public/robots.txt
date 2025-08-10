@@ -1,0 +1,13 @@
+# Permite o acesso a todos os robôs
+User-agent: *
+
+# Permite o acesso à maioria do site
+Allow: /
+
+# Informa ao Google onde encontrar o mapa do seu site
+# IMPORTANTE: Substitua pelo seu domínio real quando for para produção
+Sitemap: https://www.ledacosmeticos.com.br/sitemap.xml
+
+Disallow: /admin/
+Disallow: /carrinho/
+Disallow: /login/

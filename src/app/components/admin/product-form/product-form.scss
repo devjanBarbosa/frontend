@@ -1,55 +1,77 @@
-/* product-form.scss - Versão Profissional */
-
 // --- 1. Design System (Variáveis) ---
 :host {
   --primary-color: #E91E63;
   --primary-color-rgb: 233, 30, 99;
-  --border-color: #dee2e6;
-  --text-color: #212529;
+  --text-color-dark: #2c3e50;
+  --text-color-light: #8492a6;
   --surface-color: #ffffff;
-  --background-color: #f8f9fa;
-  --error-color: #d9534f;
-  --border-radius: 8px;
-  --form-shadow: 0 6px 24px rgba(0, 0, 0, 0.07);
+  --background-color: #f7f9fc;
+  --border-color: #e9ecef;
+  --error-color: #e53935;
+  --border-radius: 12px;
+  --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-// --- 2. Container Principal ---
-.form-container {
-  max-width: 900px;
-  margin: 2rem auto;
-  background-color: var(--surface-color);
-  padding: 2.5rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--form-shadow);
+// ====================================================================
+// >>> INÍCIO DA CORREÇÃO DO BUG <<<
+// ====================================================================
 
-  h3 {
-    text-align: center;
-    font-size: 1.8rem;
-    font-weight: 600;
-    margin-bottom: 2.5rem;
-    color: var(--text-color);
-  }
+// --- 2. Layout da Página e Container Principal ---
+.form-page-container {
+  // Define uma largura máxima para o formulário não se esticar infinitamente em telas grandes
+  max-width: 1100px;
+  margin: 0 auto; // Centraliza o container
+  padding: 1.5rem;
 }
 
-// --- 3. Layout do Formulário (Grid) ---
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+// Aplica a regra de box-sizing a todos os elementos dentro do componente.
+// Isso garante que padding e bordas não causem estouro de layout.
+* {
+  box-sizing: border-box;
 }
-@media (min-width: 768px) {
-  .form-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
+// ====================================================================
+// >>> FIM DA CORREÇÃO <<<
+// ====================================================================
 
-// --- 4. Estilos dos Campos do Formulário ---
-.form-group {
+
+.form-header {
   display: flex;
-  flex-direction: column;
-  margin-bottom: 1.5rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  h3 { margin: 0; font-size: 1.8rem; }
+}
 
+.form-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr; // Coluna única em mobile
+  gap: 1.5rem;
+  @media (min-width: 992px) {
+    grid-template-columns: 2fr 1fr; // Layout de duas colunas em desktop
+  }
+}
+
+// --- 3. Componentes (Cards, Inputs) ---
+.card {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-subtle);
+  margin-bottom: 1.5rem;
+}
+.card-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  h4 { margin: 0; font-size: 1.1rem; }
+}
+.card-body {
+  padding: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
   label {
+    display: block;
     font-weight: 500;
     margin-bottom: 0.5rem;
   }
@@ -57,90 +79,95 @@
     width: 100%;
     padding: 0.8rem 1rem;
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
+    border-radius: 8px;
     font-size: 1rem;
+    background-color: var(--background-color);
     transition: all 0.2s ease-in-out;
     &:focus {
-      border-color: var(--primary-color);
       outline: none;
+      border-color: var(--primary-color);
       box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.15);
     }
   }
 }
 
-// --- 5. Estilo Específico para Upload de Imagem ---
-.image-upload-group {
-  .btn-secondary {
-    background-color: #fff;
-    color: var(--primary-color);
-    border: 1px solid var(--primary-color);
-    padding: 0.8rem 1.5rem;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    width: fit-content;
+// --- 4. Área de Upload de Imagem ---
+.image-upload-area {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  min-height: 300px;
+  transition: border-color 0.2s ease;
+  overflow: hidden;
 
-    &:hover {
-      background-color: var(--primary-color);
-      color: #fff;
-    }
-  }
-
-  .cropper-container {
-    margin-top: 1.5rem;
-    width: 100%;
-    height: 300px;
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-  }
-
-  .image-preview {
-    margin-top: 1.5rem;
-    p {
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-    }
-    img {
-      max-width: 200px;
-      border-radius: var(--border-radius);
-      border: 1px solid var(--border-color);
-    }
+  &:hover {
+    border-color: var(--primary-color);
   }
 }
 
-// --- 6. Feedback de Validação e Ações ---
+.upload-prompt {
+  text-align: center;
+  color: var(--text-color-light);
+  font-weight: 500;
+}
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  i { font-size: 3rem; color: #ced4da; }
+  small { font-size: 0.8rem; }
+}
+.image-preview {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+}
+
+// --- 5. Ações e Feedback ---
 .validation-error { color: var(--error-color); font-size: 0.85rem; margin-top: 0.5rem; }
+.alert-danger {
+  background-color: #ffebee; color: var(--error-color);
+  padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;
+}
 
 .form-actions {
-  text-align: right;
-  margin-top: 2.5rem;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border-color);
 }
 
-.submit-button {
+.btn-submit, .btn-cancel {
+  padding: 0.75rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-submit {
   background-color: var(--primary-color);
   color: white;
   border: none;
-  padding: 0.8rem 2.5rem;
-  border-radius: 50px;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+  &:not(:disabled):hover { background-color: var(--primary-color-dark); }
   &:disabled { background-color: #ccc; cursor: not-allowed; }
-  &:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(var(--primary-color-rgb), 0.3); }
+}
+.btn-cancel {
+  background: none;
+  color: var(--text-color-light);
+  &:hover { background-color: var(--border-color); }
 }
 
 .spinner {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
+  display: inline-block; width: 20px; height: 20px;
   border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s ease-in-out infinite;
+  border-radius: 50%; border-top-color: #fff;
+  animation: spin 1s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }

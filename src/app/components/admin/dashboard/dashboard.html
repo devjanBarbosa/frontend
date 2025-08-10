@@ -1,8 +1,14 @@
 <div class="dashboard-container">
-  
   <header class="page-header">
-    <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard de Análises</h1>
-    <p class="page-subtitle">Uma visão geral do desempenho da sua loja.</p>
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Desempenho da sua loja em tempo real.</p>
+    </div>
+    <div class="period-filter">
+      <button (click)="carregarDados('dia')" [class.active]="periodoAtivo === 'dia'">Hoje</button>
+      <button (click)="carregarDados('semana')" [class.active]="periodoAtivo === 'semana'">7 Dias</button>
+      <button (click)="carregarDados('mes')" [class.active]="periodoAtivo === 'mes'">30 Dias</button>
+    </div>
   </header>
 
   <div *ngIf="isLoading" class="loading-state">
@@ -11,49 +17,77 @@
   </div>
 
   <div *ngIf="!isLoading && dashboardData" class="dashboard-content">
-    
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon icon-revenue"><i class="fas fa-dollar-sign"></i></div>
-        <div class="stat-content">
-          <span class="stat-number">{{ dashboardData.faturamentoTotal | currency:'BRL' }}</span>
-          <span class="stat-label">Faturamento Total</span>
+    <section class="dashboard-metrics">
+      <div class="metric-card">
+        <div class="metric-icon income"><i class="bi bi-cash-stack"></i></div>
+        <div class="metric-info">
+          <div class="metric-value">{{ dashboardData.faturamentoTotal | currency:'BRL' }}</div>
+          <div class="metric-label">Faturamento no Período</div>
         </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon icon-orders"><i class="fas fa-receipt"></i></div>
-        <div class="stat-content">
-          <span class="stat-number">{{ dashboardData.totalDePedidos }}</span>
-          <span class="stat-label">Pedidos Concluídos</span>
+      <div class="metric-card">
+        <div class="metric-icon orders"><i class="bi bi-box-seam-fill"></i></div>
+        <div class="metric-info">
+          <div class="metric-value">{{ dashboardData.totalDePedidos }}</div>
+          <div class="metric-label">Pedidos Concluídos</div>
         </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon icon-ticket"><i class="fas fa-shopping-basket"></i></div>
-        <div class="stat-content">
-          <span class="stat-number">{{ dashboardData.ticketMedio | currency:'BRL' }}</span>
-          <span class="stat-label">Ticket Médio</span>
+      <div class="metric-card">
+        <div class="metric-icon ticket"><i class="bi bi-receipt"></i></div>
+        <div class="metric-info">
+          <div class="metric-value">{{ dashboardData.ticketMedio | currency:'BRL' }}</div>
+          <div class="metric-label">Ticket Médio</div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="charts-grid">
-      <div class="card chart-card">
-        <div class="card-body">
-          <canvas #barChartCanvas></canvas>
+    <section class="dashboard-layout">
+      <div class="main-content">
+        <div class="card chart-card">
+          <div class="card-header"><h3>Faturamento no Período</h3></div>
+          <div class="chart-container">
+            <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="lineChartType"></canvas>
+          </div>
         </div>
-      </div>
-      <div class="card chart-card">
-        <div class="card-body">
-          <canvas #pieChartCanvas></canvas>
+        
+        <div class="card chart-card">
+          <div class="card-header"><h3>Vendas por Categoria</h3></div>
+          <div class="chart-container">
+             <canvas baseChart [data]="pieChartData" [type]="pieChartType" [options]="pieChartOptions"></canvas>
+          </div>
         </div>
+        
       </div>
-    </div>
-
+      <aside class="sidebar-content">
+        <div class="card">
+          <div class="card-header"><h3>Últimos Pedidos</h3></div>
+          <ul class="activity-list">
+            <li *ngFor="let pedido of dashboardData.ultimosPedidos">
+              <a [routerLink]="['/admin/pedidos', pedido.id]">
+                <span class="activity-title">Pedido de {{ pedido.nomeCliente }}</span>
+                <span class="activity-value">{{ pedido.valorTotal | currency:'BRL' }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Estoque Baixo (Alerta)</h3></div>
+          <ul class="activity-list">
+            <li *ngFor="let produto of dashboardData.produtosComEstoqueBaixo">
+               <a [routerLink]="['/admin/produtos/editar', produto.id]">
+                <span class="activity-title">{{ produto.nome }}</span>
+                <span class="activity-value low-stock">{{ produto.estoque }} un.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </section>
   </div>
 
   <div *ngIf="!isLoading && !dashboardData" class="empty-state">
-    <i class="fas fa-exclamation-triangle"></i>
+    <i class="bi bi-exclamation-triangle"></i>
     <h3>Não foi possível carregar os dados</h3>
-    <p>Ocorreu um erro ao buscar as informações do dashboard. Tente novamente mais tarde.</p>
+    <p>Ocorreu um erro ao buscar as informações. Tente novamente mais tarde.</p>
   </div>
 </div>

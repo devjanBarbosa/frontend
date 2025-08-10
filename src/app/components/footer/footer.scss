@@ -159,4 +159,27 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
   }
+  
+}
+.developer-credit {
+  color: var(--footer-text);
+  text-align: center;
+  flex-grow: 1;
+
+  i {
+    color: var(--primary-color);
+    position: relative;
+    top: 1px;
+  }
+
+  a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    &:hover {
+      color: var(--primary-color);
+      text-decoration: underline;
+    }
+  }
 }

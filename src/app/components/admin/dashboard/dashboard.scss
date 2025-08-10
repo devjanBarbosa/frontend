@@ -1,107 +1,157 @@
-// Reutilizando as variáveis de design do seu tema
+// --- 1. Design System (Variáveis) ---
 :host {
-  --c-primary: #c7a4b1;
-  --c-text-base: #2c3e50;
-  --c-text-muted: #6c757d;
-  --c-bg-page: #f8fafc;
-  --c-bg-card: #ffffff;
-  --c-border: #e2e8f0;
-  --c-success: #27ae60;
-  --c-info: #3498db;
-  --c-warning: #f39c12;
-  --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.04);
+  --primary-color: #E91E63;
+  --text-color-dark: #2c3e50;
+  --text-color-light: #8492a6;
+  --surface-color: #ffffff;
+  --background-color: #f7f9fc;
+  --border-color: #e9ecef;
+  --border-radius: 12px;
+  --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.04);
+
+  // Cores de ícones para métricas
+  --color-income: #28a745; --color-income-bg: #e8f5e9;
+  --color-orders: #17a2b8; --color-orders-bg: #e0f7fa;
+  --color-ticket: #fd7e14; --color-ticket-bg: #fff3e0;
 }
 
+// --- 2. Estrutura e Cabeçalho ---
 .dashboard-container {
-  padding: 2rem;
-}
-
-// Cabeçalho
-.page-header {
-  margin-bottom: 2.5rem;
-}
-.page-title {
-  font-weight: 700;
-  color: var(--c-text-base);
-  i { color: var(--c-primary); margin-right: 0.75rem; }
-}
-.page-subtitle {
-  color: var(--c-text-muted);
-  margin-top: 0.25rem;
-}
-
-// Grelha de Métricas
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2.5rem;
-}
-
-.stat-card {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  background-color: var(--c-bg-card);
   padding: 1.5rem;
-  border-radius: 0.75rem;
-  border: 1px solid var(--c-border);
-  box-shadow: var(--shadow-sm);
+  background-color: var(--background-color);
+}
 
-  .stat-icon {
-    flex-shrink: 0;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.75rem;
-    color: white;
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
 
-    &.icon-revenue { background-color: var(--c-success); }
-    &.icon-orders { background-color: var(--c-info); }
-    &.icon-ticket { background-color: var(--c-warning); }
-  }
+.page-title { font-size: 1.8rem; font-weight: 700; margin: 0; color: var(--text-color-dark); }
+.page-subtitle { margin: 0; color: var(--text-color-light); font-weight: 500; }
 
-  .stat-content {
-    .stat-number {
-      display: block;
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--c-text-base);
-    }
-    .stat-label {
-      font-size: 1rem;
-      color: var(--c-text-muted);
+.period-filter {
+  display: flex;
+  background-color: var(--surface-color);
+  border-radius: 50px;
+  border: 1px solid var(--border-color);
+  padding: 0.25rem;
+  button {
+    background: none; border: none; padding: 0.5rem 1.25rem;
+    font-weight: 600; cursor: pointer; color: var(--text-color-light);
+    border-radius: 50px; transition: all 0.2s ease-in-out;
+    &.active, &:hover {
+      background-color: var(--primary-color);
+      color: white;
+      box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
     }
   }
 }
 
-// Grelha dos Gráficos
-.charts-grid {
+// --- 3. Cards de Métricas ---
+.dashboard-metrics {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
+  margin-bottom: 2rem;
 }
+
+.metric-card {
+  display: flex; align-items: center; gap: 1.5rem;
+  background-color: var(--surface-color); padding: 1.5rem;
+  border-radius: var(--border-radius); border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-subtle);
+}
+.metric-icon {
+  flex-shrink: 0; width: 50px; height: 50px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+  &.income { background-color: var(--color-income-bg); color: var(--color-income); }
+  &.orders { background-color: var(--color-orders-bg); color: var(--color-orders); }
+  &.ticket { background-color: var(--color-ticket-bg); color: var(--color-ticket); }
+}
+.metric-info {
+  .metric-value { font-size: 2rem; font-weight: 700; line-height: 1; }
+  .metric-label { font-size: 0.9rem; color: var(--text-color-light); }
+}
+
+// ====================================================================
+// >>> CORREÇÃO DO LAYOUT PRINCIPAL <<<
+// ====================================================================
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 1fr; // Layout de coluna única para mobile
+  gap: 1.5rem;
+
+  // Em telas maiores, cria a divisão entre conteúdo principal e sidebar
+  @media (min-width: 1024px) {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+// O conteúdo principal (gráficos) agora é um grid interno
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr; // Uma coluna por padrão
+  gap: 1.5rem;
+  
+  // Em telas muito grandes, os gráficos ficam lado a lado
+  @media (min-width: 1400px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+// ====================================================================
 
 .card {
-  border: 1px solid var(--c-border);
-  border-radius: 0.75rem;
-}
-.card-header {
-  font-weight: 600;
-}
-
-// Estados
-.loading-state {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-subtle);
+  // Garante que o card não estique o grid desnecessariamente
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 4rem;
-  color: var(--c-text-muted);
-  .spinner {
-    /* (estilos do spinner que você já tem) */
+}
+
+.card-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  h3 { margin: 0; font-size: 1.1rem; font-weight: 600; }
+}
+
+.chart-card {
+  height: 400px;
+}
+
+.chart-container {
+  position: relative;
+  height: 100%;
+  padding: 1.5rem;
+}
+
+.activity-list {
+  list-style: none; padding: 0; margin: 0;
+  li a {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 1.5rem; text-decoration: none; color: var(--text-color-dark);
+    transition: background-color 0.2s ease;
+    &:not(:last-child) { border-bottom: 1px solid var(--border-color); }
+    &:hover { background-color: var(--background-color); }
+    .activity-title { font-weight: 500; }
+    .activity-value.low-stock { color: #e53935; font-weight: 700; }
   }
 }
+
+// --- 5. Estados de Loading e Erro ---
+.loading-state, .empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 4rem; text-align: center; color: var(--text-color-light);
+  .spinner {
+    width: 40px; height: 40px; border: 4px solid var(--border-color);
+    border-top-color: var(--primary-color); border-radius: 50%;
+    animation: spin 1s linear infinite; margin-bottom: 1rem;
+  }
+  i { font-size: 3rem; margin-bottom: 1rem; color: var(--primary-color); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }

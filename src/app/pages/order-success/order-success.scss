@@ -1,0 +1,137 @@
+// --- 1. Design System (Variáveis) ---
+:host {
+  
+  --primary-color: #E91E63;
+  --primary-color-dark: #C2185B;
+  --success-color: #28a745;
+  --text-color-dark: #2c3e50;
+  --text-color-light: #8492a6;
+  --surface-color: #ffffff;
+  --background-color: #f7f9fc;
+  --border-color: #e9ecef;
+  --border-radius: 16px; // Mais arredondado para um visual moderno
+  --shadow-strong: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+// --- 2. Layout Principal ---
+.success-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background-color: var(--background-color);
+  min-height: 80vh;
+}
+
+.success-card {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-strong);
+  width: 100%;
+  max-width: 650px;
+  text-align: center;
+  overflow: hidden; // Garante que o conteúdo respeite o border-radius
+}
+
+// --- 3. Seções do Card ---
+.success-header {
+  padding: 2.5rem; // Mais espaçamento para um visual premium
+  border-bottom: 1px solid var(--border-color);
+  .success-icon { font-size: 4rem; color: var(--success-color); }
+  .success-title { font-size: 2rem; font-weight: 700; margin: 0.5rem 0; }
+  .success-subtitle { font-size: 1.1rem; color: var(--text-color-light); margin: 0.5rem 0 1.5rem; }
+  .order-id {
+    background-color: var(--background-color);
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    display: inline-block;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+}
+
+.card-content { // Nova classe para o conteúdo principal
+  padding: 2rem;
+}
+
+.card-footer { // Novo footer para as ações
+  padding: 1.5rem;
+  background-color: var(--background-color);
+  border-top: 1px solid var(--border-color);
+}
+
+// --- 4. Detalhes do Pagamento ---
+.section-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+.section-description { color: var(--text-color-light); margin-bottom: 2rem; max-width: 450px; margin-left: auto; margin-right: auto; }
+
+.pix-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  @media (min-width: 600px) {
+    grid-template-columns: 220px 1fr;
+  }
+}
+
+.qr-code-wrapper {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  margin: 0 auto;
+  width: fit-content;
+  img { display: block; width: 200px; height: 200px; }
+}
+
+.copy-paste-wrapper {
+  text-align: left;
+  label { font-weight: 500; margin-bottom: 0.5rem; display: block; }
+}
+
+.input-group {
+  display: flex;
+  textarea {
+    flex-grow: 1; padding: 0.75rem; border: 1px solid var(--border-color);
+    border-radius: 8px 0 0 8px; resize: none; height: 100px; font-size: 0.85rem;
+    background-color: var(--background-color); color: var(--text-color-light);
+    &:focus { outline: none; }
+  }
+  .btn-copy {
+    border: 1px solid var(--border-color); border-left: none;
+    background-color: var(--surface-color); padding: 0 1rem;
+    border-radius: 0 8px 8px 0; cursor: pointer; font-size: 1.2rem;
+    color: var(--text-color-light);
+    transition: background-color 0.2s ease;
+    &:hover { background-color: var(--background-color); }
+  }
+}
+
+// --- 5. Botões e Estados ---
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 0.8rem 1.5rem; border-radius: 50px; font-weight: 600;
+  text-decoration: none; cursor: pointer; border: none; transition: all 0.2s ease;
+}
+.btn-whatsapp {
+  background-color: #25D366; color: white;
+  &:hover { filter: brightness(0.9); transform: translateY(-2px); }
+}
+.btn-secondary {
+  background-color: transparent; border: 2px solid var(--border-color);
+  color: var(--text-color-dark);
+  &:hover { border-color: var(--primary-color); color: var(--primary-color); }
+}
+
+// --- 6. Estados de Loading e Erro ---
+.state-container, .loading-container {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 4rem; text-align: center; color: var(--text-color-light);
+  .spinner {
+    width: 40px; height: 40px; border: 4px solid var(--border-color);
+    border-top-color: var(--primary-color); border-radius: 50%;
+    animation: spin 1s linear infinite; margin-bottom: 1rem;
+  }
+}
+@keyframes spin { to { transform: rotate(360deg); } }

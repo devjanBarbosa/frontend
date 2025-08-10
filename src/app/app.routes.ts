@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-// Importações
+// Importações existentes
 import { HomeComponent } from './pages/home/home';
 import { ProductDetailComponent } from './pages/product-detail/product-detail';
 import { LoginComponent } from './pages/login/login';
@@ -15,11 +15,15 @@ import { ProductShopComponent } from './pages/product-shop/product-shop';
 import { AboutComponent } from './pages/about/about';
 import { CategoryManagementComponent } from './components/admin/category-management/category-management';
 import { GiftShopComponent } from './pages/gift-shop/gift-shop';
-import { DashboardComponent } from './components/admin/dashboard/dashboard';
 
+// --- NOVA IMPORTAÇÃO ---
+import { DashboardComponent } from './components/admin/dashboard/dashboard'; // 1. Importe o novo componente
+import { OrderSuccessComponent } from './pages/order-success/order-success';
+import { TermsComponent } from './pages/terms/terms';
+import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy';
 
 export const routes: Routes = [
-  // --- ROTAS PÚBLICAS (Acessíveis a todos os visitantes) ---
+  // --- ROTAS PÚBLICAS ---
   { path: '', component: HomeComponent },
   { path: 'produtos', component: ProductShopComponent },
   { path: 'produtos/:id', component: ProductDetailComponent },
@@ -28,32 +32,31 @@ export const routes: Routes = [
   { path: 'pesquisa', component: SearchResultsComponent },
   { path: 'carrinho', component: CheckoutComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'pedido-sucesso/:id', component: OrderSuccessComponent },
 
-  // --- ROTA PROTEGIDA DE ADMINISTRAÇÃO (Só acessível após login) ---
+  // ... (sua rota de pedido-sucesso já deve estar aqui)
+   { path: 'termos', component: TermsComponent }, // 2. Adicione as rotas
+  { path: 'privacidade', component: PrivacyPolicyComponent },
+
+  // --- ROTA PROTEGIDA DE ADMINISTRAÇÃO ---
   {
     path: 'admin',
     component: AdminComponent,
-    canActivate: [authGuard], // O "porteiro" que protege todas as rotas filhas
+    canActivate: [authGuard],
     children: [
-      // Redireciona a rota '/admin' para '/admin/pedidos' por defeito
-      { path: '', redirectTo: 'pedidos', pathMatch: 'full' },
+      // --- ALTERAÇÃO AQUI ---
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }, // 2. Dashboard é agora a página padrão
 
-      // Rotas de Encomendas
+      // --- NOVA ROTA ADICIONADA ---
+      { path: 'dashboard', component: DashboardComponent }, // 3. Rota para o dashboard
       { path: 'pedidos', component: OrderListComponent },
       { path: 'pedidos/:id', component: OrderDetailComponent },
-
-      // Rotas de Produtos
       { path: 'produtos', component: AdminProductListComponent },
       { path: 'produtos/novo', component: ProductFormComponent },
       { path: 'produtos/editar/:id', component: ProductFormComponent },
-
-      // Rota de Categorias
       { path: 'categorias', component: CategoryManagementComponent },
-       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }, // <-- MUDANÇA: O admin agora começa no dashboard
-      { path: 'dashboard', component: DashboardComponent }
     ]
   },
 
-  // Rota "catch-all" para redirecionar URLs inválidas para a home
   { path: '**', redirectTo: '' }
 ];

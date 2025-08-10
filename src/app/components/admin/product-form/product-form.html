@@ -1,75 +1,92 @@
-<div class="form-container">
-  <h3>{{ pageTitle }}</h3>
+<div class="form-page-container">
+  <header class="form-header">
+    <h3>{{ pageTitle }}</h3>
+    <a routerLink="/admin/produtos" class="btn-cancel">Cancelar</a>
+  </header>
 
   <div *ngIf="submitErrorMessage" class="alert alert-danger">
     {{ submitErrorMessage }}
   </div>
 
   <form [formGroup]="productForm" (ngSubmit)="onSubmit()" novalidate>
-    <div class="form-grid">
-      <div class="form-column">
-        <div class="form-group">
-          <label for="nome">Nome do Produto</label>
-          <input id="nome" type="text" formControlName="nome">
-          <div *ngIf="nome?.invalid && (nome?.dirty || nome?.touched)" class="validation-error">
-            <small *ngIf="nome?.errors?.['required']">Nome é obrigatório.</small>
+    <div class="form-layout-grid">
+      <div class="main-column">
+        <div class="card">
+          <div class="card-body">
+            <div class="form-group">
+              <label for="nome">Nome do Produto</label>
+              <input id="nome" type="text" formControlName="nome" placeholder="Ex: Hidratante Corporal de Cereja">
+              <div *ngIf="nome?.invalid && (nome?.dirty || nome?.touched)" class="validation-error">
+                <small *ngIf="nome?.errors?.['required']">O nome do produto é obrigatório.</small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="descricao">Descrição</label>
+              <textarea id="descricao" formControlName="descricao" rows="6" placeholder="Descreva os benefícios, aroma, textura, etc."></textarea>
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="descricao">Descrição</label>
-          <textarea id="descricao" formControlName="descricao" rows="5"></textarea>
-        </div>
-
-        <div class="form-group image-upload-group">
-          <label>Imagem do Produto</label>
-          <button type="button" class="btn-secondary" (click)="fileInput.click()">
-            Escolher Imagem
-          </button>
-          <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" style="display: none;">
-
-          <div class="cropper-container" *ngIf="imageChangedEvent">
-            <image-cropper
-                [imageChangedEvent]="imageChangedEvent"
-                [maintainAspectRatio]="true"
-                [aspectRatio]="1 / 1"
-                [resizeToWidth]="400"
-                format="jpeg"
-                (imageCropped)="imageCropped($event)"
-            ></image-cropper>
+        <div class="card">
+           <div class="card-header">
+            <h4>Imagem do Produto</h4>
           </div>
+          <div class="card-body">
+             <div class="image-upload-area" (click)="fileInput.click()">
+                <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" style="display: none;">
+                
+                <image-cropper *ngIf="imageChangedEvent"
+                    [imageChangedEvent]="imageChangedEvent"
+                    [maintainAspectRatio]="true" [aspectRatio]="1 / 1"
+                    [resizeToWidth]="400" format="jpeg"
+                    (imageCropped)="imageCropped($event)">
+                </image-cropper>
 
-          <div class="image-preview" *ngIf="croppedImage">
-            <p>Pré-visualização Final:</p>
-            <img [src]="croppedImage" alt="Pré-visualização da Imagem Enquadrada">
+                <div *ngIf="!imageChangedEvent" class="upload-prompt">
+                    <img *ngIf="croppedImage" [src]="croppedImage" alt="Pré-visualização da Imagem" class="image-preview">
+                    <div *ngIf="!croppedImage" class="upload-placeholder">
+                        <i class="bi bi-image"></i>
+                        <span>Clique ou arraste para enviar uma imagem</span>
+                        <small>JPG ou PNG, quadrado (1:1)</small>
+                    </div>
+                </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="form-column">
-        <div class="form-group">
-          <label for="preco">Preço (R$)</label>
-          <input id="preco" type="number" formControlName="preco">
+      <aside class="sidebar-column">
+        <div class="card">
+          <div class="card-header">
+            <h4>Organização</h4>
           </div>
-        <div class="form-group">
-          <label for="estoque">Estoque</label>
-          <input id="estoque" type="number" formControlName="estoque">
+          <div class="card-body">
+            <div class="form-group">
+              <label for="preco">Preço (R$)</label>
+              <input id="preco" type="number" formControlName="preco" placeholder="Ex: 49.90">
+            </div>
+            <div class="form-group">
+              <label for="estoque">Estoque</label>
+              <input id="estoque" type="number" formControlName="estoque" placeholder="Nº de unidades">
+            </div>
+            <div class="form-group">
+              <label for="categoria">Categoria</label>
+              <select id="categoria" formControlName="categoria">
+                <option [ngValue]="null" disabled>Selecione uma categoria</option>
+                <option *ngFor="let cat of categorias" [ngValue]="cat.id">
+                  {{ cat.nome }}
+                </option>
+              </select>
+            </div>
           </div>
-        <div class="form-group">
-          <label for="categoria">Categoria</label>
-          <select id="categoria" formControlName="categoria">
-            <option [ngValue]="null" disabled>Selecione uma categoria</option>
-            <option *ngFor="let cat of categorias" [ngValue]="cat.id">
-              {{ cat.nome }}
-            </option>
-          </select>
-          </div>
-      </div>
+        </div>
+      </aside>
     </div>
 
     <div class="form-actions">
-      <button type="submit" [disabled]="isLoading" class="submit-button">
-        <span *ngIf="!isLoading">Salvar Alterações</span>
+      <button type="submit" [disabled]="isLoading" class="btn-submit">
+        <span *ngIf="!isLoading">Salvar Produto</span>
         <span *ngIf="isLoading" class="spinner"></span>
       </button>
     </div>

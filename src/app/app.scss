@@ -24,3 +24,7 @@ main {
 h1, h2, h3 {
   color: var(--rosa-principal);
 }
+main.admin-main {
+  max-width: none; // Remove a limitação de largura
+  padding: 0;      // Remove o padding para que os componentes de admin controlem seu próprio espaço
+}

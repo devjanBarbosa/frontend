@@ -11,8 +11,17 @@ export interface Pedido {
   whatsappCliente: string; 
   status: StatusPedido;
   valorTotal: number;
-  itens: any[]; // Simplificado por agora
-}
+  itens: any[];
+  tipoEntrega: 'ENTREGA_LOCAL' | 'RETIRADA_NA_LOJA';
+  metodoPagamento: string;
+  cep: string;
+  endereco: string;
+  numero: string;
+  complemento: string;
+  bairro: string;
+  pixCopiaECola: string;
+  pixQrCodeBase64: string;
+} 
 
 @Injectable({
   providedIn: 'root'
@@ -32,10 +41,9 @@ getPedidoById(id: string): Observable<Pedido> {
 }
   
 
-   atualizarStatus(id: string, status: StatusPedido): Observable<Pedido> {
+   atualizarStatus(id: string, novoStatus: string): Observable<Pedido> {
     const url = `${this.apiUrl}/${id}/status`;
-    const body = { status }; // Forma curta de { status: status }
-    return this.http.patch<Pedido>(url, body);
+    return this.http.patch<Pedido>(url, { status: novoStatus });
   }
 }
 

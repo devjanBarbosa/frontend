@@ -1,118 +1,81 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Chart, registerables } from 'chart.js/auto'; // Importação direta do Chart.js
-
-import Swal from 'sweetalert2';
-import { AnalyticsService } from '../../../services/analytics';
-import { DashboardData } from '../../../services/analytics';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { AnalyticsService, DashboardData } from '../../../services/analytics';
+import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { ChartConfiguration, ChartType } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe], // Apenas CommonModule e CurrencyPipe são necessários
+  imports: [CommonModule, RouterLink, BaseChartDirective],
   templateUrl: './dashboard.html',
-  styleUrls: ['./dashboard.scss']
+  styleUrls: ['./dashboard.scss'],
+  providers: [provideCharts(withDefaultRegisterables())],
 })
-export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('pieChartCanvas') private pieChartCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('barChartCanvas') private barChartCanvas!: ElementRef<HTMLCanvasElement>;
+export class DashboardComponent implements OnInit {
 
   isLoading = true;
   dashboardData: DashboardData | null = null;
-  
-  private pieChart?: Chart;
-  private barChart?: Chart;
+  periodoAtivo: 'dia' | 'semana' | 'mes' = 'mes';
 
-  constructor(private analyticsService: AnalyticsService) {
-    Chart.register(...registerables);
-  }
+  // Configuração para o gráfico de linhas (Faturamento)
+  public lineChartData: ChartConfiguration['data'] = {
+    labels: [],
+    datasets: [{ data: [], label: 'Faturamento', fill: true, tension: 0.4, borderColor: '#E91E63', backgroundColor: 'rgba(233, 30, 99, 0.1)' }]
+  };
+  public lineChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } }
+  };
+  public lineChartType: ChartType = 'line';
+
+  // --- NOVA CONFIGURAÇÃO PARA O GRÁFICO DE PIZZA ---
+  public pieChartData: ChartConfiguration['data'] = {
+    labels: [],
+    datasets: [{ data: [] }]
+  };
+  public pieChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: true, position: 'bottom' } }
+  };
+  public pieChartType: ChartType = 'doughnut'; // Usamos 'doughnut' para um visual mais moderno
+
+  constructor(private analyticsService: AnalyticsService) {}
 
   ngOnInit(): void {
-    this.carregarDadosDashboard();
+    this.carregarDados('mes');
   }
 
-  ngAfterViewInit(): void {
-    if (this.dashboardData) {
-      this.createCharts();
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.pieChart?.destroy();
-    this.barChart?.destroy();
-  }
-
-  carregarDadosDashboard(): void {
+  carregarDados(periodo: 'dia' | 'semana' | 'mes'): void {
     this.isLoading = true;
-    this.analyticsService.getDashboardData().subscribe({
+    this.periodoAtivo = periodo;
+    this.analyticsService.getDashboardData(periodo).subscribe({
       next: (data) => {
         this.dashboardData = data;
-        if (this.pieChartCanvas && this.barChartCanvas) {
-          this.createCharts();
-        }
+        this.prepararGraficoVendas(data);
+        this.prepararGraficoCategorias(data); // <-- Adicionamos esta chamada
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Erro ao carregar dados do dashboard:', err);
         this.isLoading = false;
-        Swal.fire('Erro!', 'Não foi possível carregar os dados do dashboard.', 'error');
+        this.dashboardData = null;
       }
     });
   }
 
-  private createCharts(): void {
-    if (!this.dashboardData) return;
-    
-    this.createPieChart(this.dashboardData);
-    this.createBarChart(this.dashboardData);
+  private prepararGraficoVendas(data: DashboardData): void {
+    // ... (seu código existente para o gráfico de linhas)
   }
 
-  private createPieChart(data: DashboardData): void {
-    this.pieChart?.destroy();
-    const canvas = this.pieChartCanvas.nativeElement;
-    this.pieChart = new Chart(canvas, {
-      type: 'pie',
-      data: {
-        labels: data.vendasPorCategoria.map(c => c.nome),
-        datasets: [{
-          data: data.vendasPorCategoria.map(c => c.totalVendido),
-          backgroundColor: ['#c7a4b1', '#3498db', '#e67e22', '#27ae60', '#6c757d', '#f1c40f', '#9b59b6'],
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'top' },
-          title: { display: true, text: 'Vendas por Categoria' }
-        }
-      }
-    });
-  }
+  // --- NOVA FUNÇÃO PARA PREPARAR OS DADOS DO GRÁFICO DE PIZZA ---
+  private prepararGraficoCategorias(data: DashboardData): void {
+    if (!data?.vendasPorCategoria) return;
 
-  private createBarChart(data: DashboardData): void {
-    this.barChart?.destroy();
-    const canvas = this.barChartCanvas.nativeElement;
-    this.barChart = new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels: data.produtosMaisVendidos.map(p => p.nome),
-        datasets: [{
-          label: 'Unidades Vendidas',
-          data: data.produtosMaisVendidos.map(p => p.quantidadeVendida),
-          backgroundColor: '#c7a4b1'
-        }]
-      },
-      options: {
-        responsive: true,
-        indexAxis: 'y',
-        scales: {
-          x: { beginAtZero: true }
-        },
-        plugins: {
-          legend: { display: false },
-          title: { display: true, text: 'Top 5 Produtos Mais Vendidos' }
-        }
-      }
-    });
+    this.pieChartData.labels = data.vendasPorCategoria.map(c => c.nome);
+    this.pieChartData.datasets[0].data = data.vendasPorCategoria.map(c => c.totalVendido);
   }
 }

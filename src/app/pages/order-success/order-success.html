@@ -1,0 +1,57 @@
+<main class="success-page-container">
+  <div *ngIf="(pedido$ | async) as pedido; else loadingOrError">
+
+    <article class="success-card">
+      <header class="card-header">
+        <div class="header-icon">
+          <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+        </div>
+        <h1 class="header-title">Pedido Recebido!</h1>
+        <p class="header-subtitle">Obrigado pela sua compra, {{ pedido.nomeCliente }}!</p>
+        <p class="order-id">ID do Pedido: <strong>#{{ pedido.id.substring(0, 8) }}</strong></p>
+      </header>
+
+      <section class="card-content">
+        <div *ngIf="pedido.metodoPagamento === 'Pix' && pedido.pixQrCodeBase64" class="payment-details">
+          <h2 class="section-title">Finalize o Pagamento via Pix</h2>
+          <p class="section-description">Aponte a câmara para o QR Code ou use o código para pagar.</p>
+          
+          <div class="pix-layout">
+            <div class="qr-code-wrapper">
+              <img [src]="pedido.pixQrCodeBase64" alt="PIX QR Code para pagamento">
+            </div>
+            <div class="copy-paste-wrapper">
+              <label for="pixCode">PIX Copia e Cola</label>
+              <div class="input-group">
+                <textarea id="pixCode" readonly rows="4">{{ pedido.pixCopiaECola }}</textarea>
+                <button (click)="copiarPix(pedido.pixCopiaECola)" title="Copiar código PIX" class="btn-copy">
+                  <i class="bi bi-clipboard-check-fill"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="pedido.metodoPagamento !== 'Pix'" class="other-payment-details">
+          <h2 class="section-title">Próximos Passos</h2>
+          <p class="section-description">Já estamos a preparar o seu pedido com muito carinho! O pagamento será realizado no momento da entrega.</p>
+        </div>
+      </section>
+
+      <footer class="card-actions">
+        <a *ngIf="pedido.metodoPagamento === 'Pix'" [href]="getLinkWhatsApp(pedido)" target="_blank" class="btn btn-whatsapp">
+          <i class="bi bi-whatsapp"></i> Enviar Comprovativo (Opcional)
+        </a>
+        <a routerLink="/produtos" class="btn btn-secondary">Continuar a Comprar</a>
+      </footer>
+    </article>
+
+  </div>
+</main>
+
+<ng-template #loadingOrError>
+  <div class="state-container">
+    <div class="spinner"></div>
+    <p>A carregar detalhes do seu pedido...</p>
+  </div>
+</ng-template>

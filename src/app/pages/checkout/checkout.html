@@ -7,30 +7,25 @@
     <header class="card-header">
       <h2 id="cart-heading">Produtos</h2>
     </header>
-
     <div *ngIf="cartItems.length > 0; else emptyCart">
       <article class="cart-item" *ngFor="let item of cartItems">
         <img [src]="item.produto.urlImagem" [alt]="item.produto.nome" class="cart-item__image">
-        
         <div class="cart-item__details">
           <p class="cart-item__name">{{ item.produto.nome }}</p>
           <button class="cart-item__remove" (click)="removerItem(item)">
             <i class="icon-trash"></i> Remover
           </button>
         </div>
-
         <div class="cart-item__quantity">
           <button class="quantity-button" (click)="decrementarQuantidade(item)" [disabled]="item.quantidade === 1" aria-label="Diminuir quantidade">-</button>
           <span class="quantity-value">{{ item.quantidade }}</span>
           <button class="quantity-button" (click)="incrementarQuantidade(item)" aria-label="Aumentar quantidade">+</button>
         </div>
-
         <div class="cart-item__price">
           <span>{{ (item.produto.preco * item.quantidade) | currency:'BRL' }}</span>
         </div>
       </article>
     </div>
-
     <ng-template #emptyCart>
       <div class="empty-cart">
         <p>Seu carrinho está vazio.</p>
@@ -46,14 +41,16 @@
       </header>
       
       <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <label for="nomeCliente">Nome Completo</label>
-          <input id="nomeCliente" formControlName="nomeCliente" type="text" placeholder="Digite seu nome completo">
-        </div>
-
-        <div class="form-group">
-          <label for="whatsappCliente">WhatsApp</label>
-          <input id="whatsappCliente" formControlName="whatsappCliente" type="tel" placeholder="(XX) 9XXXX-XXXX">
+        
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="nomeCliente">Nome Completo</label>
+            <input id="nomeCliente" formControlName="nomeCliente" type="text" placeholder="Digite seu nome completo">
+          </div>
+          <div class="form-group full-width">
+            <label for="whatsappCliente">WhatsApp</label>
+            <input id="whatsappCliente" formControlName="whatsappCliente" type="tel" placeholder="(XX) 9XXXX-XXXX">
+          </div>
         </div>
 
         <fieldset class="form-group">
@@ -71,13 +68,30 @@
         </fieldset>
 
         <div class="address-fields" *ngIf="checkoutForm.get('metodoEntrega')?.value === 'Delivery'">
-          <div class="form-group">
-            <label for="endereco">Rua e Número</label>
-            <input id="endereco" formControlName="endereco" type="text" placeholder="Ex: Rua das Flores, 123">
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="cep">CEP</label>
+              <input id="cep" formControlName="cep" type="text" placeholder="Digite o CEP e aguarde" (blur)="buscarEnderecoPorCep()">
+            </div>
           </div>
-          <div class="form-group">
-            <label for="bairro">Bairro</label>
-            <input id="bairro" formControlName="bairro" type="text" placeholder="Ex: Centro">
+          
+          <div class="form-grid" *ngIf="enderecoVisivel">
+            <div class="form-group two-thirds">
+              <label for="endereco">Rua</label>
+              <input id="endereco" formControlName="endereco" type="text" [readonly]="true" class="readonly-field">
+            </div>
+            <div class="form-group one-third">
+              <label for="numero">Número</label>
+              <input id="numero" formControlName="numero" type="text" placeholder="Ex: 123">
+            </div>
+            <div class="form-group half-width">
+              <label for="bairro">Bairro</label>
+              <input id="bairro" formControlName="bairro" type="text" [readonly]="true" class="readonly-field">
+            </div>
+            <div class="form-group half-width">
+              <label for="complemento">Complemento (Opcional)</label>
+              <input id="complemento" formControlName="complemento" type="text" placeholder="Ex: Apto 101">
+            </div>
           </div>
         </div>
         
@@ -94,7 +108,8 @@
             </label>
           </div>
         </fieldset>
-      </form>
+        
+        </form>
     </section>
 
     <aside class="order-summary-section card">

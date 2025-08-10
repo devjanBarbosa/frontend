@@ -336,3 +336,45 @@
     color: var(--color-surface);
   }
 }
+
+/* Adicione estas novas regras ao seu arquivo checkout.scss */
+
+// Garante que o padding e a borda não aumentem o tamanho do input
+input[type="text"], input[type="tel"] {
+  box-sizing: border-box;
+}
+
+// A base do nosso grid de formulário
+.form-grid {
+  display: grid;
+  // Em telas pequenas, é sempre uma coluna única
+  grid-template-columns: 1fr;
+  // Em telas maiores, ativamos múltiplas colunas
+  // O espaçamento só se aplica entre as colunas
+  gap: 0 1.5rem; 
+
+  @media (min-width: 768px) {
+    // Usamos 6 colunas para ter mais flexibilidade (2, 3, 4 colunas)
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+// Classes utilitárias para controlar a largura dos campos dentro da grade
+.form-group {
+  // Por padrão, todo .form-group ocupará a largura total
+  grid-column: 1 / -1;
+
+  // Em telas maiores, aplicamos as larguras específicas
+  @media (min-width: 768px) {
+    &.full-width { grid-column: span 6; } // Ocupa 6 de 6 colunas
+    &.half-width { grid-column: span 3; } // Ocupa 3 de 6 colunas (metade)
+    &.one-third { grid-column: span 2; } // Ocupa 2 de 6 colunas (um terço)
+    &.two-thirds { grid-column: span 4; } // Ocupa 4 de 6 colunas (dois terços)
+  }
+}
+
+// Estilo para campos somente leitura (feedback visual para o usuário)
+.readonly-field {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}

@@ -1,25 +1,31 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ProductListComponent } from '../../components/product-list/product-list';
 import { WelcomeComponent } from '../../components/welcome/welcome';
+import { ProductListComponent } from '../../components/product-list/product-list';
 import { ProductService, Produto } from '../../services/product';
 import { CategoryService, Categoria } from '../../services/category';
-import { FooterComponent } from "../../components/footer/footer";
+import { ReviewsComponent } from '../../components/reviews/reviews'; // 1. IMPORTE O NOVO COMPONENTE
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, WelcomeComponent, ProductListComponent, FooterComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    WelcomeComponent,
+    ProductListComponent,
+    ReviewsComponent // 2. ADICIONE-O AOS IMPORTS
+  ],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-
 export class HomeComponent implements OnInit {
+  
   produtosEmDestaque: Produto[] = [];
-  categoriasDeProduto: Categoria[] = []; // Renomeado para clareza
-  categoriasDePresente: Categoria[] = []; // 1. Crie uma variável para as categorias de presentes
+  categoriasDeProduto: Categoria[] = [];
+  categoriasDePresente: Categoria[] = [];
 
   constructor(
     private productService: ProductService,
@@ -27,17 +33,16 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Busca os produtos em destaque
+    // A sua lógica de carregamento de produtos e categorias continua a mesma
     this.productService.listarProdutos().subscribe(data => {
-      this.produtosEmDestaque = data.slice(0, 4);
+      // Aumentei para 8 para preencher melhor o carrossel em ecrãs grandes
+      this.produtosEmDestaque = data.slice(0, 8); 
     });
 
-    // Busca as categorias do tipo PRODUTO para o carrossel
     this.categoryService.listarCategorias('PRODUTO').subscribe(data => {
       this.categoriasDeProduto = data;
     });
 
-    // 2. Busca as categorias do tipo PRESENTE para a nova secção
     this.categoryService.listarCategorias('PRESENTE').subscribe(data => {
       this.categoriasDePresente = data;
     });

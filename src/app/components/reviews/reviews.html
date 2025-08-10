@@ -1,0 +1,30 @@
+<section class="reviews-section" *ngIf="(reviews$ | async) as reviews">
+  <div class="container" *ngIf="reviews && reviews.length > 0">
+    <h2>O que as nossas clientes dizem</h2>
+    <p>Avaliações reais de quem já comprou e amou!</p>
+
+    <swiper-container
+      slides-per-view="auto"
+      space-between="30"
+      navigation="true"
+      loop="true">
+      
+      <swiper-slide *ngFor="let review of reviews">
+        <div class="review-card">
+          <div class="review-header">
+            <img [src]="review.profile_photo_url" alt="Foto de {{ review.author_name }}">
+            <div class="author-info">
+              <strong>{{ review.author_name }}</strong>
+              <span>{{ review.relative_time_description }}</span>
+            </div>
+          </div>
+          <div class="review-rating">
+            <i *ngFor="let star of getStars(review.rating)" class="bi bi-star-fill"></i>
+          </div>
+          <p class="review-text">"{{ review.text }}"</p>
+        </div>
+      </swiper-slide>
+      
+    </swiper-container>
+  </div>
+</section>

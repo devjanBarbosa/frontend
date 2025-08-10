@@ -6,13 +6,17 @@ import { Observable } from 'rxjs';
 export interface PedidoPayload {
   nomeCliente: string;
   whatsappCliente: string;
-  endereco: string;
-  bairro: string;
-  complemento?: string;
   metodoEntrega: string;
   metodoPagamento: string;
+  // --- CAMPOS ATUALIZADOS ---
+  cep: string;
+  endereco: string;
+  numero: string;
+  complemento?: string;
+  bairro: string;
+  // -------------------------
   itens: {
-    produto: { id: string };
+    produtoId: string; // Verifique se este já foi corrigido
     quantidade: number;
   }[];
 }

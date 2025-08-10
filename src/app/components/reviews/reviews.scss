@@ -1,0 +1,125 @@
+// --- 1. Design System (Variáveis) ---
+:host {
+  --primary-color: #E91E63;
+  --text-color-dark: #2c3e50;
+  --text-color-light: #8492a6;
+  --surface-color: #ffffff;
+  --background-color: #f7f9fc;
+  --border-color: #e9ecef;
+  --star-color: #f59e0b; // Amarelo/dourado para as estrelas
+  --border-radius: 12px;
+  --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-strong: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+// --- 2. Container Principal da Secção ---
+.reviews-section {
+  padding: 4rem 0;
+  background-color: var(--background-color);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-color-dark);
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    font-size: 1.1rem;
+    color: var(--text-color-light);
+    margin-bottom: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+// --- 3. Estilos do Carrossel (Swiper) ---
+swiper-container {
+  padding-bottom: 3rem; // Espaço para a paginação
+}
+
+swiper-slide {
+  height: auto; // Garante que a altura se ajuste ao conteúdo do card
+  max-width: 350px;
+  padding: 0.5rem; // Pequeno espaçamento para a sombra não ser cortada
+}
+
+// --- 4. Card de Avaliação (Onde a magia acontece) ---
+.review-card {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-subtle);
+  padding: 1.5rem;
+  height: 100%; // Faz com que todos os cards tenham a mesma altura
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-strong);
+  }
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+  }
+
+  .author-info {
+    strong {
+      display: block;
+      font-weight: 600;
+      color: var(--text-color-dark);
+    }
+    span {
+      font-size: 0.85rem;
+      color: var(--text-color-light);
+    }
+  }
+}
+
+.review-rating {
+  margin-bottom: 1rem;
+  color: var(--star-color);
+  font-size: 1rem;
+}
+
+.review-text {
+  flex-grow: 1; // Faz o texto ocupar o espaço disponível, alinhando os rodapés
+  color: var(--text-color-light);
+  line-height: 1.7;
+  margin: 0;
+  // Limita o texto a um número de linhas para um visual mais limpo
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+
+// --- 5. Estado de Feedback (caso não haja avaliações) ---
+.empty-reviews {
+  padding: 2rem;
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  color: var(--text-color-light);
+}

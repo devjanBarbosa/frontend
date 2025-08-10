@@ -1,143 +1,62 @@
-/* admin.scss - Versão Profissional */
-
-// --- 1. Design System (Variáveis) ---
-// Centraliza as decisões de design para consistência e fácil manutenção.
 :host {
-  --primary-color: #E91E63; // Seu rosa principal
-  --background-color: #f8f9fa; // Um cinza muito claro para o fundo da página
-  --surface-color: #ffffff; // Cor de fundo para os painéis
-  --border-color: #e9ecef;
-  --text-color-dark: #212529;
+  // Variáveis de design para manter a consistência
+  --primary-color: #E91E63;
   --text-color-light: #6c757d;
-  --border-radius: 12px;
-  --panel-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  --surface-color: #ffffff;
+  --background-color: #f8f9fa;
+  --border-color: #e9ecef;
 }
 
-// --- 2. Layout Principal do Painel ---
-.admin-panel {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 1.5rem; // Padding inicial para mobile
+// O contêiner principal do painel, que agora ocupa a tela inteira
+.admin-panel-container {
+  background-color: var(--background-color);
+  min-height: calc(100vh - 60px); // Garante que o fundo ocupe toda a altura da tela abaixo do header
+}
+
+// --- Estilo para a Nova Barra de Navegação ---
+.admin-nav-bar {
+  display: flex;
   background-color: var(--surface-color);
-  border-radius: var(--border-radius);
-  box-shadow: var(--panel-shadow);
-  border: 1px solid var(--border-color);
-}
-
-// --- 3. Cabeçalho do Painel ---
-.admin-header {
-  display: flex;
-  flex-direction: column; // Empilha em ecrãs pequenos
-  align-items: flex-start;
-  gap: 1rem;
   border-bottom: 1px solid var(--border-color);
-  padding-bottom: 1.5rem;
-  margin-bottom: 2rem;
-
-  h2 {
-    margin: 0;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--text-color-dark);
-  }
-
-  nav {
-    display: flex;
-    flex-wrap: wrap; // Permite que os botões quebrem a linha
-    gap: 0.75rem;
+  padding: 0 1.5rem; // Espaçamento nas laterais
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow-x: auto; // Permite rolar os links em telas pequenas
+  scrollbar-width: none; // Esconde a barra de rolagem no Firefox
+  &::-webkit-scrollbar {
+    display: none; // Esconde a barra de rolagem no Chrome/Safari
   }
 }
 
-// --- 4. Botões de Navegação ---
-.admin-button {
-  background-color: #f1f3f5;
-  color: var(--text-color-light);
-  padding: 0.6rem 1.25rem;
-  text-decoration: none;
-  border-radius: 50px;
-  font-weight: 500;
-  transition: all 0.2s ease-in-out;
-  border: 1px solid transparent;
-
-  &:hover {
-    background-color: rgba(var(--primary-color), 0.1);
-    color: var(--primary-color);
-    transform: translateY(-2px); // Efeito subtil de elevação
-  }
-
-  // Estilo para o link ativo (página atual)
-  &.active-link {
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
-  }
-}
-
-// --- 5. Área de Conteúdo ---
-// O <router-outlet> irá renderizar o conteúdo aqui
-.admin-content {
-  padding-top: 1rem;
-}
-
-// --- 6. Responsividade (Desktop) ---
-// Ajusta o layout para ecrãs maiores
-@media (min-width: 768px) {
-  .admin-panel {
-    padding: 2.5rem;
-  }
-
-  .admin-header {
-    flex-direction: row; // Lado a lado em ecrãs maiores
-    align-items: center;
-    justify-content: space-between;
-  }
-}
-/* admin.scss - Adições para alinhar com o novo HTML */
-
-// --- 7. Estrutura do Cabeçalho ---
-.header-title p {
-  margin: 0;
-  color: var(--text-color-light);
-  font-size: 0.9rem;
-}
-
-.header-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-}
-
-// --- 8. Botão de Logout ---
-.logout-button {
+.admin-nav-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  background-color: transparent;
+  gap: 0.5rem; // Espaço entre o ícone e o texto
+  
+  padding: 1rem;
   color: var(--text-color-light);
-  padding: 0.6rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 50px;
+  text-decoration: none;
   font-weight: 500;
-  cursor: pointer;
+  white-space: nowrap; // Impede que o texto quebre a linha
+
+  border-bottom: 3px solid transparent; // Borda indicadora
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    color: white;
+    color: var(--primary-color);
+  }
+
+  // Estilo do link ativo (página atual)
+  &.active-link {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
   }
 }
 
-// --- Ajustes Finais de Responsividade ---
-@media (min-width: 992px) { // Um breakpoint maior para este layout
-  .admin-header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .header-actions {
-     justify-content: flex-end;
-  }
+// --- Área de Conteúdo Principal ---
+// Onde o <router-outlet> renderiza cada página
+.admin-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem;
 }

@@ -1,123 +1,245 @@
-/* home.scss - Versão Profissional e Unificada */
+// --- 1. Design System (Variáveis) ---
+:host {
+  --primary-color: #E91E63;
+  --primary-color-dark: #C2185B;
+  --text-color-dark: #2c3e50;
+  --text-color-light: #8492a6;
+  --text-on-primary: #ffffff;
+  --surface-color: #ffffff;
+  --background-color: #f7f9fc;
+  --border-color: #e9ecef;
+  --border-radius: 12px;
+  --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-strong: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
 
-// --- 1. Estilos para as Secções de Carrossel ---
-// Regra única que se aplica a ambas as secções
+// ====================================================================
+// >>> HERO BANNER REFINADO <<<
+// ====================================================================
+.hero-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1.5rem; // Reduzimos o padding para um visual mais equilibrado
+  min-height: 50vh; // Altura mais contida
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('/about-banner.jpg');
+  background-size: cover;
+  background-position: center 70%; // Foca um pouco mais para baixo na imagem
+  color: var(--text-on-primary);
+}
+
+.hero-content {
+  max-width: 650px; // Limita a largura do texto em ecrãs grandes
+
+  h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3); // Sombra subtil para legibilidade
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem; // Mais espaço antes do botão
+    line-height: 1.7;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+}
+
+// ====================================================================
+// >>> ESTILO PROFISSIONAL PARA O BOTÃO <<<
+// ====================================================================
+.btn-primary {
+  display: inline-block; // Permite a aplicação de padding
+  background-color: var(--primary-color);
+  color: var(--text-on-primary);
+  text-decoration: none;
+  padding: 0.8rem 2.5rem; // Ligeiramente maior para mais destaque
+  border-radius: 50px;
+  font-weight: 600; // Um pouco mais forte
+  font-size: 1rem;
+  border: 2px solid transparent;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
+
+  &:hover {
+    background-color: var(--primary-color-dark);
+    transform: translateY(-2px); // Efeito de elevação
+    box-shadow: 0 6px 20px rgba(233, 30, 99, 0.3);
+  }
+}
+
+.diferenciais-section {
+  padding: 4rem 1.5rem;
+  background-color: var(--surface-color);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .diferencial-item {
+    text-align: center;
+    i {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-color-dark);
+    }
+    p {
+      color: var(--text-color-light);
+      line-height: 1.7;
+    }
+  }
+}
+
+// --- 4. Secções de Carrossel (Categorias e Presentes) ---
 .category-section,
 .gift-section {
-  position: relative; // Essencial para o posicionamento das setas
-  padding: 3rem 0;
+  position: relative;
+  padding: 4rem 0;
   text-align: center;
-  background-color: #f8f9fa;
+  background-color: var(--background-color);
 
   h2 {
     font-size: 2.5rem;
     font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-color-dark);
   }
   p {
-    font-size: 1.2rem;
-    color: #666;
+    font-size: 1.1rem;
+    color: var(--text-color-light);
     margin-bottom: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
-
-// Fundo diferente para a seção de presentes para criar contraste
 .gift-section {
-  background-color: #ffffff;
+  background-color: var(--surface-color);
 }
 
-
-/* home.scss - Estilo Específico para as Setas do Carrossel */
-
+// --- 5. Estilos Aprimorados para o Carrossel (Swiper) ---
 swiper-container {
-  // Certifique-se de que position: relative esteja aqui para o posicionamento absoluto das setas
-  position: relative;
-  // ... (outros estilos do swiper-container)
+  padding: 0 1.5rem 3rem; // Espaço para navegação e paginação
 }
 
 swiper-container::part(button-next),
 swiper-container::part(button-prev) {
-  // Posicionamento
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  cursor: pointer;
-
-  // Aparência - Estilo mais básico para teste
-  width: 30px;
-  height: 30px;
-  background-color: rgba(0, 0, 0, 0.3); /* Cor de fundo escura para verificar */
-  color: white;
-  border-radius: 15px;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
+  width: 44px;
+  height: 44px;
+  background-color: var(--surface-color);
+  color: var(--primary-color);
+  border-radius: 50%;
+  box-shadow: var(--shadow-strong);
+  transition: transform 0.2s ease;
 
   &:hover {
-    opacity: 1;
-    background-color: rgba(0, 0, 0, 0.5);
+    transform: scale(1.1);
+    background-color: var(--primary-color);
+    color: white;
   }
-}
-
-swiper-container::part(button-prev) {
-  left: 10px;
-}
-
-swiper-container::part(button-next) {
-  right: 10px;
 }
 
 swiper-slide {
   height: auto;
-  max-width: 280px; // Garante que os cards não fiquem demasiado largos
+  max-width: 280px;
+  display: flex;
 }
 
-// Regra única que se aplica tanto a .category-card quanto a .gift-card
+// --- 6. Cards de Categoria Aprimorados ---
 .category-card {
   display: flex;
   flex-direction: column;
   text-decoration: none;
-  background-color: #ffffff;
-  border-radius: 12px;
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-subtle);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
-  height: 100%; // Força todos os cards a terem a mesma altura
+  height: 100%;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-strong);
   }
-}
 
-.category-image-wrapper {
-  width: 100%;
-  height: 220px;
-  overflow: hidden;
-  img {
+  .category-image-wrapper {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+    height: 220px;
+    overflow: hidden;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+  }
+  &:hover .category-image-wrapper img {
+    transform: scale(1.05);
+  }
+
+  .category-name {
+    padding: 1.25rem;
+    text-align: center;
+    margin-top: auto;
+    h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-color-dark);
+    }
   }
 }
 
-.category-card:hover .category-image-wrapper img {
-  transform: scale(1.05);
-}
-
-.category-name {
-  padding: 1.25rem;
+// --- 7. Secção de Depoimentos (Prova Social) ---
+.depoimentos-section {
+  padding: 4rem 1.5rem;
+  background-color: var(--surface-color);
   text-align: center;
-  margin-top: auto; // Garante que o nome fique na base
-  h3 {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #333;
+  
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+  }
+
+  .depoimentos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .depoimento-card {
+    background-color: var(--background-color);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    
+    p {
+      font-style: italic;
+      line-height: 1.8;
+      color: var(--text-color-dark);
+      margin: 0 0 1.5rem 0;
+    }
+    .cliente-nome {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+  }
+}
+@media (max-width: 768px) {
+  swiper-container::part(button-next),
+  swiper-container::part(button-prev) {
+    display: none;
   }
 }

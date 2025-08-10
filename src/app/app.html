@@ -1,7 +1,12 @@
-<app-header></app-header>
+<div class="app-container">
 
-<main>
-  <router-outlet></router-outlet>
-</main>
+  <app-header *ngIf="!isAdminRoute"></app-header>
 
-<app-whatsapp-button></app-whatsapp-button>
+  <main [class.admin-main]="isAdminRoute">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-footer *ngIf="!isAdminRoute"></app-footer>
+</div>
+
+<app-whatsapp-button *ngIf="!isAdminRoute"></app-whatsapp-button>
