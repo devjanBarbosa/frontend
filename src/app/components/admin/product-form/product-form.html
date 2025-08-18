@@ -1,94 +1,342 @@
 <div class="form-page-container">
+  <!-- Header com breadcrumb para melhor navegação -->
   <header class="form-header">
-    <h3>{{ pageTitle }}</h3>
-    <a routerLink="/admin/produtos" class="btn-cancel">Cancelar</a>
+    <div class="header-content">
+      <nav class="breadcrumb" aria-label="Navegação">
+        <a routerLink="/admin" class="breadcrumb-link">Admin</a>
+        <span class="breadcrumb-separator">/</span>
+        <a routerLink="/admin/produtos" class="breadcrumb-link">Produtos</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">{{ pageTitle }}</span>
+      </nav>
+      <h1 class="page-title">{{ pageTitle }}</h1>
+    </div>
+    <button type="button" class="btn-secondary" routerLink="/admin/produtos">
+      <i class="bi bi-arrow-left"></i>
+      Voltar
+    </button>
   </header>
 
-  <div *ngIf="submitErrorMessage" class="alert alert-danger">
+  <!-- Mensagem de erro global -->
+  <div *ngIf="submitErrorMessage" class="alert alert-error" role="alert">
+    <i class="bi bi-exclamation-circle"></i>
     {{ submitErrorMessage }}
   </div>
 
   <form [formGroup]="productForm" (ngSubmit)="onSubmit()" novalidate>
     <div class="form-layout-grid">
+      
+      <!-- Coluna Principal -->
       <div class="main-column">
-        <div class="card">
+        <!-- Informações Básicas -->
+        <section class="card" aria-label="Informações básicas do produto">
+          <div class="card-header">
+            <h2 class="card-title">Informações Básicas</h2>
+            <span class="required-info">
+              <i class="bi bi-asterisk"></i> Campos obrigatórios
+            </span>
+          </div>
           <div class="card-body">
             <div class="form-group">
-              <label for="nome">Nome do Produto</label>
-              <input id="nome" type="text" formControlName="nome" placeholder="Ex: Hidratante Corporal de Cereja">
-              <div *ngIf="nome?.invalid && (nome?.dirty || nome?.touched)" class="validation-error">
-                <small *ngIf="nome?.errors?.['required']">O nome do produto é obrigatório.</small>
+              <label for="nome" class="form-label required">
+                Nome do Produto
+              </label>
+              <div class="input-wrapper">
+                <input 
+                  id="nome" 
+                  type="text" 
+                  formControlName="nome" 
+                  class="form-input"
+                  [class.error]="nome?.invalid && nome?.touched"
+                  placeholder="Ex: Hidratante Corporal de Cereja"
+                  aria-describedby="nome-error"
+                  maxlength="100">
+                <span class="char-counter">
+                  {{ productForm.get('nome')?.value?.length || 0 }}/100
+                </span>
+              </div>
+               <div *ngIf="nome?.invalid && nome?.touched" 
+                   id="nome-error"
+                   class="form-error" 
+                   role="alert">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                O nome do produto é obrigatório
               </div>
             </div>
 
             <div class="form-group">
-              <label for="descricao">Descrição</label>
-              <textarea id="descricao" formControlName="descricao" rows="6" placeholder="Descreva os benefícios, aroma, textura, etc."></textarea>
+              <label for="descricao" class="form-label">
+                Descrição
+                <span class="label-hint">(opcional)</span>
+              </label>
+              <textarea 
+                id="descricao" 
+                formControlName="descricao" 
+                class="form-textarea"
+                rows="4" 
+                placeholder="Descreva os benefícios, ingredientes principais, modo de uso..."
+                maxlength="500"></textarea>
+              <span class="char-counter">
+                {{ productForm.get('descricao')?.value?.length || 0 }}/500
+              </span>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="card">
-           <div class="card-header">
-            <h4>Imagem do Produto</h4>
+        <!-- Upload de Imagem -->
+        <section class="card" aria-label="Imagem do produto">
+          <div class="card-header">
+            <h2 class="card-title">Imagem do Produto</h2>
+            <button type="button" 
+                    class="btn-text"
+                    *ngIf="croppedImage && !imageChangedEvent"
+                    (click)="removeImage()">
+              <i class="bi bi-trash"></i>
+              Remover
+            </button>
           </div>
           <div class="card-body">
-             <div class="image-upload-area" (click)="fileInput.click()">
-                <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" style="display: none;">
-                
-                <image-cropper *ngIf="imageChangedEvent"
-                    [imageChangedEvent]="imageChangedEvent"
-                    [maintainAspectRatio]="true" [aspectRatio]="1 / 1"
-                    [resizeToWidth]="400" format="jpeg"
-                    (imageCropped)="imageCropped($event)">
+            <div 
+              class="image-upload-container"
+              [class.has-image]="croppedImage || imageChangedEvent"
+              [class.is-dragging]="isDragging">
+              
+              <!-- Cropper ativo -->
+              <div *ngIf="imageChangedEvent" class="cropper-wrapper">
+                <image-cropper
+                  [imageChangedEvent]="imageChangedEvent"
+                  [maintainAspectRatio]="true" 
+                  [aspectRatio]="1 / 1"
+                  [resizeToWidth]="400" 
+                  format="jpeg"
+                  [cropperMinWidth]="100"
+                  [roundCropper]="false"
+                  (imageCropped)="imageCropped($event)">
                 </image-cropper>
-
-                <div *ngIf="!imageChangedEvent" class="upload-prompt">
-                    <img *ngIf="croppedImage" [src]="croppedImage" alt="Pré-visualização da Imagem" class="image-preview">
-                    <div *ngIf="!croppedImage" class="upload-placeholder">
-                        <i class="bi bi-image"></i>
-                        <span>Clique ou arraste para enviar uma imagem</span>
-                        <small>JPG ou PNG, quadrado (1:1)</small>
-                    </div>
+                <div class="cropper-actions">
+                  <button type="button" class="btn-primary" (click)="confirmCrop()">
+                    <i class="bi bi-check"></i>
+                    Confirmar Recorte
+                  </button>
+                  <button type="button" class="btn-ghost" (click)="cancelCrop()">
+                    Cancelar
+                  </button>
                 </div>
+              </div>
+
+              <!-- Área de upload/preview -->
+              <div *ngIf="!imageChangedEvent" 
+                   class="upload-area"
+                   (click)="fileInput.click()"
+                   (dragover)="onDragOver($event)"
+                   (dragleave)="onDragLeave($event)"
+                   (drop)="onDrop($event)"
+                   role="button"
+                   tabindex="0"
+                   aria-label="Clique ou arraste para enviar imagem">
+                
+                <!-- Preview da imagem -->
+                <div *ngIf="croppedImage" class="image-preview-container">
+                  <img [src]="croppedImage" 
+                       alt="Preview do produto" 
+                       class="image-preview">
+                  <div class="image-overlay">
+                    <i class="bi bi-camera"></i>
+                    <span>Alterar imagem</span>
+                  </div>
+                </div>
+                
+                <!-- Estado vazio -->
+                <div *ngIf="!croppedImage" class="upload-placeholder">
+                  <div class="upload-icon">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                  </div>
+                  <p class="upload-text">
+                    Arraste uma imagem ou <span class="text-primary">clique aqui</span>
+                  </p>
+                  <p class="upload-hint">
+                     JPG, PNG ou WebP • Máx. 5MB • Proporção 1:1 recomendada
+                  </p>
+                </div>
+              </div>
+              
+              <input 
+                #fileInput 
+                type="file" 
+                (change)="onFileSelected($event)" 
+                accept="image/jpeg,image/png,image/webp" 
+                class="hidden-input"
+                aria-hidden="true">
             </div>
           </div>
-        </div>
+        </section>
       </div>
 
+      <!-- Sidebar -->
       <aside class="sidebar-column">
-        <div class="card">
+        <!-- Precificação e Estoque -->
+        <section class="card" aria-label="Precificação e estoque">
           <div class="card-header">
-            <h4>Organização</h4>
+            <h2 class="card-title">Precificação e Estoque</h2>
           </div>
           <div class="card-body">
             <div class="form-group">
-              <label for="preco">Preço (R$)</label>
-              <input id="preco" type="number" formControlName="preco" placeholder="Ex: 49.90">
+              <label for="preco" class="form-label required">
+                Preço
+              </label>
+              <div class="input-group">
+                <span class="input-prefix">R$</span>
+                <input 
+                  id="preco" 
+                  type="number" 
+                  formControlName="preco" 
+                  class="form-input"
+                  [class.error]="preco?.invalid && preco?.touched"
+                  placeholder="0,00"
+                  step="0.01"
+                  min="0.01"
+                  aria-describedby="preco-error preco-hint">
+              </div>
+              <div *ngIf="preco?.invalid && preco?.touched" 
+                   id="preco-error"
+                   class="form-error" 
+                   role="alert">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                {{ preco?.errors?.['required'] ? 'O preço é obrigatório' : 'O preço deve ser maior que zero' }}
+              </div>
+              <p id="preco-hint" class="form-hint">
+                Use ponto para separar decimais (ex: 49.90)
+              </p>
             </div>
+
             <div class="form-group">
-              <label for="estoque">Estoque</label>
-              <input id="estoque" type="number" formControlName="estoque" placeholder="Nº de unidades">
+              <label for="estoque" class="form-label required">
+                Quantidade em Estoque
+              </label>
+              <div class="input-wrapper">
+                <input 
+                  id="estoque" 
+                  type="number" 
+                  formControlName="estoque" 
+                  class="form-input"
+                  [class.error]="estoque?.invalid && estoque?.touched"
+                  placeholder="0"
+                  min="0"
+                  step="1"
+                  aria-describedby="estoque-error">
+                <span class="input-suffix">unidades</span>
+              </div>
+              <div *ngIf="estoque?.invalid && estoque?.touched" 
+                   id="estoque-error"
+                   class="form-error" 
+                   role="alert">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                {{ estoque?.errors?.['required'] ? 'O estoque é obrigatório' : 'O estoque não pode ser negativo' }}
+              </div>
             </div>
+          </div>
+        </section>
+
+        <!-- Categorização -->
+        <section class="card" aria-label="Categorização">
+          <div class="card-header">
+            <h2 class="card-title">Categorização</h2>
+          </div>
+          <div class="card-body">
             <div class="form-group">
-              <label for="categoria">Categoria</label>
-              <select id="categoria" formControlName="categoria">
+              <label for="categoria" class="form-label required">
+                Categoria
+              </label>
+              <select 
+                id="categoria" 
+                formControlName="categoria"
+                class="form-select"
+                [class.error]="categoria?.invalid && categoria?.touched"
+                aria-describedby="categoria-error">
                 <option [ngValue]="null" disabled>Selecione uma categoria</option>
                 <option *ngFor="let cat of categorias" [ngValue]="cat.id">
                   {{ cat.nome }}
                 </option>
               </select>
+               <div *ngIf="categoria?.invalid && categoria?.touched" 
+                   id="categoria-error"
+                   class="form-error" 
+                   role="alert">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                Por favor, selecione uma categoria
+              </div>
+            </div>
+
+            <!-- Status do Produto -->
+            <div class="form-group">
+              <div class="toggle-wrapper">
+                <label for="ativo" class="toggle-label">
+                  <span>Status do Produto</span>
+                  <label class="toggle-switch">
+                    <input 
+                      id="ativo" 
+                      type="checkbox" 
+                      formControlName="ativo"
+                      role="switch"
+                      aria-checked="true">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </label>
+                <p class="form-hint">
+                  {{ productForm.get('ativo')?.value ? 'Produto visível na loja' : 'Produto oculto na loja' }}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
+
+        <!-- Dicas e Ajuda -->
+        <section class="help-card" aria-label="Dicas">
+          <div class="help-header">
+            <i class="bi bi-lightbulb"></i>
+            <h3>Dicas para um bom cadastro</h3>
+          </div>
+          <ul class="help-list">
+            <li>Use nomes descritivos e únicos</li>
+            <li>Adicione imagens de alta qualidade</li>
+            <li>Mantenha o estoque atualizado</li>
+            <li>Categorize corretamente seus produtos</li>
+          </ul>
+        </section>
       </aside>
     </div>
 
+    <!-- Ações do Formulário -->
     <div class="form-actions">
-      <button type="submit" [disabled]="isLoading" class="btn-submit">
-        <span *ngIf="!isLoading">Salvar Produto</span>
-        <span *ngIf="isLoading" class="spinner"></span>
-      </button>
+      <div class="actions-info">
+        <p class="last-saved" *ngIf="isEditMode && lastSaved">
+          <i class="bi bi-clock"></i>
+          Última alteração: {{ lastSaved | date:'short' }}
+        </p>
+      </div>
+      <div class="actions-buttons">
+        <button 
+          type="button" 
+          class="btn-ghost"
+          routerLink="/admin/produtos"
+          [disabled]="isLoading">
+          Cancelar
+        </button>
+        <button 
+          type="submit" 
+          class="btn-primary"
+          [disabled]="isLoading || productForm.invalid"
+          [class.loading]="isLoading">
+          <span class="btn-content" *ngIf="!isLoading">
+            <i class="bi bi-check-lg"></i>
+            {{ isEditMode ? 'Salvar Alterações' : 'Criar Produto' }}
+          </span>
+          <span class="btn-content" *ngIf="isLoading">
+            <span class="spinner"></span>
+            Salvando...
+          </span>
+        </button>
+      </div>
     </div>
   </form>
 </div>

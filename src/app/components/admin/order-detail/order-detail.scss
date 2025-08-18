@@ -1,3 +1,5 @@
+/* order-detail.scss */
+
 // --- 1. Design System (Variáveis) ---
 :host {
   --primary-color: #E91E63;
@@ -51,10 +53,8 @@
 
   .header-content {
     flex-grow: 1;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
     h1 { margin: 0; font-size: 1.8rem; }
+    .order-date { color: var(--text-color-light); font-size: 0.9rem; }
   }
 
   .header-actions {
@@ -71,7 +71,7 @@
   margin: 0 auto;
 
   @media (min-width: 992px) {
-    grid-template-columns: 1fr 340px; // Aumentamos um pouco a sidebar
+    grid-template-columns: 1fr 340px;
   }
 }
 
@@ -81,7 +81,7 @@
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-subtle);
-  margin-bottom: 0; // Removemos a margem para o grid controlar o espaçamento
+  margin-bottom: 0;
 }
 
 .card-header {
@@ -94,10 +94,17 @@
   font-weight: 600;
   color: var(--text-color-dark);
   i { color: var(--primary-color); }
+  h3 { margin: 0; }
 }
 
 .card-body {
   padding: 1.5rem;
+}
+
+.card-footer {
+  padding: 1rem 1.5rem;
+  background-color: var(--background-color);
+  border-top: 1px solid var(--border-color);
 }
 
 .btn {
@@ -125,7 +132,7 @@
     &:hover:not(:disabled) { border-color: var(--primary-color); color: var(--primary-color); }
   }
   &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-strong); }
-  &:disabled { background-color: #ccc; cursor: not-allowed; }
+  &:disabled { background-color: #e9ecef; color: #adb5bd; cursor: not-allowed; box-shadow: none; transform: none; }
 }
 
 .status-badge {
@@ -179,16 +186,17 @@
   .item-subtotal { font-weight: 600; }
 }
 
-.order-total-summary {
+.order-totals .total-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 1.25rem 1.5rem;
-  background-color: var(--background-color);
-  border-top: 1px solid var(--border-color);
-  font-size: 1.2rem;
-  font-weight: 500;
-  strong { font-size: 1.4rem; font-weight: 700; }
+  padding: 0.25rem 0;
+  color: var(--text-color-light);
+  &.grand-total { 
+    font-size: 1.2rem; 
+    font-weight: 600;
+    color: var(--text-color-dark);
+    margin-top: 0.5rem;
+  }
 }
 
 .details-grid {
@@ -196,11 +204,43 @@
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   padding: 1.5rem;
-  .detail-item {
-    &.full-width { grid-column: 1 / -1; }
-    .detail-label { display: block; font-size: 0.85rem; color: var(--text-color-light); margin-bottom: 0.25rem; font-weight: 500; }
-    .detail-value { font-weight: 600; line-height: 1.5; }
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+
+  &.full-width { 
+    grid-column: 1 / -1; 
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
   }
+
+  .detail-label { 
+    font-size: 0.9rem; 
+    color: var(--text-color-light); 
+    font-weight: 500; 
+    white-space: nowrap;
+  }
+  .detail-value { 
+    font-weight: 600; 
+    line-height: 1.5; 
+    text-align: right;
+  }
+
+  &.full-width .detail-value {
+    text-align: left;
+  }
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border-color);
+  margin: 1.5rem 0;
 }
 
 .form-select {
@@ -210,8 +250,14 @@
   border: 1px solid var(--border-color);
   margin-bottom: 1rem;
   font-weight: 500;
-  background-color: var(--background-color);
+  background-color: var(--surface-color);
   transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+  padding-right: 2.5rem;
   &:focus {
     outline: none;
     border-color: var(--primary-color);
@@ -238,3 +284,126 @@
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+
+/* =============================================================== */
+/* ==               ESTILOS GLOBAIS PARA IMPRESSÃO              == */
+/* =============================================================== */
+
+@media print {
+  // Esconde a interface principal do app (header, botões, etc.)
+  app-header, 
+  app-whatsapp-button, 
+  .page-container {
+    display: none !important;
+  }
+  
+  // Mostra SOMENTE o recibo e seus filhos
+  .printable-receipt, .printable-receipt * {
+    visibility: visible;
+  }
+  
+  .printable-receipt {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    font-family: 'Arial', sans-serif;
+    color: #000;
+    background-color: #fff;
+  }
+
+  // Estilos do Recibo
+  .receipt-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border-bottom: 2px solid #000;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .receipt-logo {
+    max-width: 80px;
+    height: auto;
+  }
+
+  .company-details {
+    h2 { font-size: 1.2rem; margin: 0 0 0.25rem 0; color: #000; }
+    p { font-size: 0.8rem; margin: 0; line-height: 1.4; }
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin: 2rem 0;
+    color: #000;
+  }
+
+  .receipt-section {
+    margin-bottom: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .client-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .info-block {
+    font-size: 0.9rem;
+    strong { display: block; color: #555; }
+  }
+
+  .items-info h3 {
+    font-size: 1.1rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #000;
+  }
+
+  .items-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    
+    th, td {
+      padding: 0.5rem;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+
+    td:last-child, th:last-child {
+      text-align: right;
+    }
+
+    tfoot {
+      font-weight: bold;
+      .total-label { text-align: right; }
+      .grand-total { font-size: 1.1rem; border-top: 2px solid #000; }
+    }
+  }
+
+  .receipt-footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    color: #555;
+    p { margin: 0.25rem; }
+  }
+
+  // Garante que nenhum botão apareça na impressão
+  .btn, .back-button, .header-actions {
+    display: none !important;
+  }
+}

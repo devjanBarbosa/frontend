@@ -2,15 +2,27 @@
   
   <div class="product-gallery">
     <div class="main-image-wrapper">
-      <img [src]="produto.urlImagem" [alt]="produto.nome">
+      <img [src]="produto.urlImagem" [alt]="'Imagem principal do produto ' + produto.nome">
     </div>
-    </div>
+  </div>
 
   <div class="product-info">
     <h1 class="product-title">{{ produto.nome }}</h1>
+
+    <div class="reviews-summary">
+      <div class="star-rating">
+        <i class="bi bi-star-fill"></i>
+        <i class="bi bi-star-fill"></i>
+        <i class="bi bi-star-fill"></i>
+        <i class="bi bi-star-fill"></i>
+        <i class="bi bi-star-half"></i>
+      </div>
+      <a href="#reviews" class="reviews-count">(12 avaliações)</a>
+    </div>
     
     <div class="price-section">
       <span class="product-price">{{ produto.preco | currency:'BRL' }}</span>
+      <span class="installment-option">ou em até 3x de {{ (produto.preco / 3) | currency:'BRL' }} sem juros</span>
     </div>
 
     <div class="local-perks">
@@ -22,29 +34,57 @@
       </div>
     </div>
     
-    <div class="stock-info" *ngIf="produto.estoque > 0">
-      <p><strong>Estoque disponível</strong> ({{ produto.estoque }} unidades)</p>
+    <div *ngIf="produto.estoque > 0" class="stock-info in-stock">
+      <p>✅ <strong>Em estoque</strong> ({{ produto.estoque }} unidades restantes)</p>
     </div>
-    <div class="stock-info out-of-stock" *ngIf="produto.estoque === 0">
-      <p><strong>Produto indisponível no momento.</strong></p>
+    <div *ngIf="produto.estoque === 0" class="stock-info out-of-stock">
+      <p>❌ <strong>Produto esgotado.</strong></p>
     </div>
     
-    <div class="actions">
-      <button class="add-to-cart-button" (click)="adicionarAoCarrinho()" [disabled]="produto.estoque === 0">
-        Adicionar ao carrinho
-      </button>
-      <a [href]="getWhatsappLink()" target="_blank" class="whatsapp-button">
-        <i class="bi bi-whatsapp"></i> Dúvidas? Fale com a Leda
-      </a>
-    </div>
+    <!-- AÇÕES DO UTILIZADOR -->
+<div class="actions">
+  <ng-container *ngIf="produto.estoque > 0">
+    <!-- 1. Botão "Comprar agora" (ação primária) -->
+    <button class="buy-now-button" (click)="comprarAgora()">
+      <i class="bi bi-lightning-charge-fill"></i> Comprar agora
+    </button>
+    <!-- 2. Botão "Adicionar ao carrinho" (ação secundária) -->
+    <button class="add-to-cart-button" (click)="adicionarAoCarrinho()">
+      Adicionar ao carrinho
+    </button>
+  </ng-container>
+
+  <ng-container *ngIf="produto.estoque === 0">
+    <button class="notify-button" (click)="notificarDisponibilidade()">
+      Avise-me quando chegar
+    </button>
+  </ng-container>
+
+  <!-- 3. Botão "Dúvidas" (ação terciária) -->
+  <a [href]="getWhatsappLink()" target="_blank" rel="noopener" class="whatsapp-button">
+    <i class="bi bi-whatsapp"></i> <span>Dúvidas? Fale connosco</span>
+  </a>
+</div>
+
+
+  <ng-container *ngIf="produto.estoque === 0">
+    <button class="notify-button" (click)="notificarDisponibilidade()">
+      Avise-me quando chegar
+    </button>
+  </ng-container>
+
+</div>
+
 
     <div class="description-section">
       <h2>Descrição</h2>
       <p>{{ produto.descricao }}</p>
     </div>
   </div>
-</div>
 
 <ng-template #loading>
-  <p class="loading-message">A carregar produto...</p>
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p class="loading-message">Carregando produto...</p>
+  </div>
 </ng-template>

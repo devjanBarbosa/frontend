@@ -1,17 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { CartService, CartItem } from '../../services/cart';
-import { PedidoService, PedidoPayload } from '../../services/pedido';
+import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
+
+import { CartService, CartItem } from '../../services/cart';
+import { OrderService, PedidoPayload, Pedido } from '../../services/order'; 
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './checkout.html',
   styleUrls: ['./checkout.scss']
 })
@@ -22,27 +24,29 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   subtotal = 0;
   total = 0;
   taxaEntrega = 5.00;
+  enderecoVisivel = true;
   private destroy$ = new Subject<void>();
-
-  // --- NOVA VARIÁVEL DE CONTROLE ---
-  enderecoVisivel = false;
 
   constructor(
     private fb: FormBuilder,
     private cartService: CartService,
-    private pedidoService: PedidoService,
+    private orderService: OrderService,
     private router: Router,
+    private toastr: ToastrService,
     private http: HttpClient
   ) {}
 
   ngOnInit(): void {
     this.iniciarFormulario();
     this.carregarDadosDoCarrinho();
-    this.observarMudancas();
-    this.buscarTaxaDeEntrega();
+    this.observarMetodoDeEntrega();
   }
-  
-  // O método iniciarFormulario permanece o mesmo
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   private iniciarFormulario(): void {
     this.checkoutForm = this.fb.group({
       nomeCliente: ['', Validators.required],
@@ -51,13 +55,49 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       metodoPagamento: ['Pagar na Entrega', Validators.required],
       cep: [''],
       endereco: [''],
+      bairro: [''],
       numero: [''],
-      complemento: [''],
-      bairro: ['']
+      complemento: ['']
     });
   }
 
-  // --- FUNÇÃO DE BUSCA DE CEP ATUALIZADA ---
+  private carregarDadosDoCarrinho(): void {
+    this.cartService.items$.pipe(takeUntil(this.destroy$)).subscribe(items => {
+      this.cartItems = items;
+      this.calcularTotal();
+    });
+  }
+
+  private calcularTotal(): void {
+    this.subtotal = this.cartItems.reduce((acc, item) => acc + (item.produto.preco * item.quantidade), 0);
+    const entregaSelecionada = this.checkoutForm.get('metodoEntrega')?.value;
+    
+    this.total = (entregaSelecionada === 'Delivery')
+      ? this.subtotal + this.taxaEntrega
+      : this.subtotal;
+  }
+
+  private observarMetodoDeEntrega(): void {
+    this.checkoutForm.get('metodoEntrega')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      this.enderecoVisivel = value === 'Delivery';
+      const cepControl = this.checkoutForm.get('cep');
+      const numeroControl = this.checkoutForm.get('numero');
+      
+      if (this.enderecoVisivel) {
+        cepControl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
+        numeroControl?.setValidators([Validators.required]);
+      } else {
+        cepControl?.clearValidators();
+        numeroControl?.clearValidators();
+      }
+      cepControl?.updateValueAndValidity();
+      numeroControl?.updateValueAndValidity();
+      this.calcularTotal();
+    });
+    // Dispara a validação inicial
+    this.checkoutForm.get('metodoEntrega')?.updateValueAndValidity();
+  }
+  
   buscarEnderecoPorCep(): void {
     const cep = this.checkoutForm.get('cep')?.value;
 
@@ -68,52 +108,14 @@ export class CheckoutComponent implements OnInit, OnDestroy {
             endereco: dados.logradouro,
             bairro: dados.bairro
           });
-          this.enderecoVisivel = true; // <-- MOSTRA os campos de endereço
         } else {
-          alert('CEP não encontrado.');
+          this.toastr.error('CEP não encontrado. Por favor, verifique o número.', 'Erro');
           this.checkoutForm.patchValue({ endereco: '', bairro: '' });
-          this.enderecoVisivel = false; // <-- ESCONDE os campos se o CEP for inválido
         }
       });
-    } else {
-      this.enderecoVisivel = false; // <-- ESCONDE se o CEP for apagado ou inválido
     }
   }
 
-  // --- FUNÇÃO DE OBSERVAR MUDANÇAS ATUALIZADA ---
-  private observarMudancas(): void {
-    this.checkoutForm.get('metodoEntrega')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      const cepControl = this.checkoutForm.get('cep');
-      const numeroControl = this.checkoutForm.get('numero');
-      
-      if (value === 'Delivery') {
-        cepControl?.setValidators([Validators.required, Validators.pattern('^[0-9]{8}$')]);
-        numeroControl?.setValidators([Validators.required]);
-      } else {
-        cepControl?.clearValidators();
-        numeroControl?.clearValidators();
-        this.enderecoVisivel = false; // <-- ESCONDE os campos se o método não for Delivery
-      }
-      cepControl?.updateValueAndValidity();
-      numeroControl?.updateValueAndValidity();
-      this.calcularTotal();
-    });
-  }
-
-  // Nenhum dos outros métodos (ngOnDestroy, carregarDadosDoCarrinho, onSubmit, etc.) precisa de alteração.
-  // ...
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private carregarDadosDoCarrinho(): void {
-    this.cartService.items$.pipe(takeUntil(this.destroy$)).subscribe(items => {
-      this.cartItems = items;
-      this.calcularTotal();
-    });
-  }
-  
   incrementarQuantidade(item: CartItem): void { this.cartService.adicionarAoCarrinho(item.produto); }
   decrementarQuantidade(item: CartItem): void { this.cartService.decrementarQuantidade(item); }
   removerItem(item: CartItem): void { this.cartService.removerItem(item); }
@@ -121,10 +123,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.checkoutForm.invalid || this.cartItems.length === 0) {
       this.checkoutForm.markAllAsTouched();
+      this.toastr.warning('Por favor, preencha todos os campos obrigatórios.', 'Atenção');
       return;
     }
-
     const formValues = this.checkoutForm.value;
+    
     const pedidoPayload: PedidoPayload = {
       ...formValues,
       itens: this.cartItems.map(item => ({
@@ -132,59 +135,20 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         quantidade: item.quantidade
       }))
     };
-
-    // --- LÓGICA DE REDIRECIONAMENTO CORRIGIDA ---
-    this.pedidoService.criarEncomenda(pedidoPayload).subscribe({
-      next: (resposta) => {
-        // Log para depuração na consola do navegador (F12)
-        console.log('Pedido criado com sucesso! Resposta da API:', resposta);
-
-        // Verificação de segurança para garantir que a resposta tem um ID
-        if (resposta && resposta.id) {
-          this.cartService.limparCarrinho();
-          // NAVEGA para a página de sucesso, passando o ID do novo pedido
-          this.router.navigate(['/pedido-sucesso', resposta.id]);
-        } else {
-          // Se não houver ID, algo está errado com a resposta do backend
-          console.error('A resposta do backend não continha um ID de pedido válido.');
-          alert('Ocorreu um erro ao processar o seu pedido. Por favor, tente novamente.');
-          this.router.navigate(['/']); // Em caso de erro inesperado, volta para a home
-        }
+    
+    this.orderService.criarPedido(pedidoPayload).subscribe({
+      // --- CORREÇÃO APLICADA AQUI ---
+      next: (respostaDoPedido) => {
+        this.toastr.success('Entraremos em contacto pelo WhatsApp para confirmar.', 'Encomenda Realizada!');
+        this.cartService.limparCarrinho();
+        // Redireciona para a página de sucesso com o ID do pedido criado.
+        this.router.navigate(['/pedido-sucesso', respostaDoPedido.id]);
       },
       error: (err) => {
-        console.error('Falha ao criar a encomenda:', err);
-        let mensagem = 'Ocorreu um erro ao finalizar a sua encomenda.';
-        if (err.error && err.error.error) {
-          mensagem += ` Detalhe: ${err.error.error}`;
-        }
-        alert(mensagem);
+        console.error('Erro ao criar a encomenda:', err);
+        const mensagemErro = err.error?.error || 'Ocorreu um erro ao finalizar a sua encomenda.';
+        this.toastr.error(mensagemErro, 'Falha!');
       }
     });
   }
-
-   private buscarTaxaDeEntrega(): void {
-    this.http.get<{ taxaEntrega: string }>('http://localhost:8080/api/config/taxa-entrega')
-      .subscribe({
-        next: (response) => {
-          this.taxaEntrega = parseFloat(response.taxaEntrega);
-          this.calcularTotal(); // Recalcula o total com a nova taxa
-        },
-        error: (err) => {
-          console.error("Erro ao buscar taxa de entrega, usando valor padrão.", err);
-          this.taxaEntrega = 5.00; // Valor de fallback em caso de erro
-          this.calcularTotal();
-        }
-      });
-  }
-
-   private calcularTotal(): void {
-    this.subtotal = this.cartItems.reduce((acc, item) => acc + (item.produto.preco * item.quantidade), 0);
-    const entregaSelecionada = this.checkoutForm.get('metodoEntrega')?.value;
-    
-    // Agora a taxaEntrega é dinâmica
-    this.total = (entregaSelecionada === 'Delivery')
-      ? this.subtotal + this.taxaEntrega
-      : this.subtotal;
-  }
-
 }

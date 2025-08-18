@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -74,4 +74,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
   hasCartItems(): boolean {
     return this.quantidadeItensCarrinho > 0;
   }
+  @HostListener('document:click', ['$event'])
+onDocumentClick(event: Event): void {
+  const target = event.target as HTMLElement;
+  const isMenuButton = target.closest('.menu-toggle');
+  const isNavMenu = target.closest('.main-nav');
+  
+  if (!isMenuButton && !isNavMenu && this.isMenuOpen) {
+    this.closeMenu();
+  }
+}
+
+@HostListener('window:resize', ['$event'])
+onWindowResize(event: Event): void {
+  if (window.innerWidth >= 992 && this.isMenuOpen) {
+    this.closeMenu();
+  }
+}
 }

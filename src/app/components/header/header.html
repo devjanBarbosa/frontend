@@ -56,11 +56,11 @@
           <i class="bi bi-cart3"></i> 
           <span *ngIf="hasCartItems()" class="cart-badge">{{ quantidadeItensCarrinho }}</span>
         </a>
-        <button class="menu-toggle" (click)="toggleMenu()" aria-label="Abrir menu">
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
-        </button>
+        <button class="menu-toggle" [class.is-active]="isMenuOpen" (click)="toggleMenu()" aria-label="Abrir menu">
+  <span class="bar"></span>
+  <span class="bar"></span>
+  <span class="bar"></span>
+</button>
       </div>
     </div>
   </div>

@@ -1,4 +1,8 @@
-<div class="page-container" *ngIf="pedido; else loadingOrError">
+<!-- Usamos o 'async' pipe para extrair os dados do observable 'pedido$' 
+     e os atribuímos a uma variável local 'pedido' que pode ser usada no template. -->
+<div class="page-container" *ngIf="(pedido$ | async) as pedido; else loadingOrError">
+  
+  <!-- CABEÇALHO -->
   <header class="page-header">
     <a routerLink="/admin/pedidos" class="back-button">
       <i class="bi bi-arrow-left"></i>
@@ -6,10 +10,10 @@
     </a>
     <div class="header-content">
       <h1>Pedido #{{ pedido.id.substring(0, 8) }}</h1>
-      <span class="status-badge" [ngClass]="pedido.status.toLowerCase()">{{ pedido.status.replace('_', ' ') }}</span>
+      <span class="order-date">Recebido em: {{ pedido.dataCriacao | date:'dd/MM/yyyy HH:mm' }}</span>
     </div>
     <div class="header-actions">
-      <a [href]="'https://wa.me/' + pedido.whatsappCliente" target="_blank" class="btn btn-secondary">
+      <a [href]="'https://wa.me/' + pedido.whatsappCliente" target="_blank" rel="noopener" class="btn btn-secondary">
         <i class="bi bi-whatsapp"></i> Falar com Cliente
       </a>
       <button class="btn btn-secondary" (click)="imprimirPedido()">
@@ -18,8 +22,39 @@
     </div>
   </header>
 
+  <!-- LAYOUT PRINCIPAL -->
   <main class="order-layout">
+    
+    <!-- COLUNA PRINCIPAL (INFORMAÇÕES) -->
     <div class="main-column">
+      
+      <!-- CARD DE CLIENTE E ENTREGA -->
+      <div class="card">
+        <div class="card-header">
+          <i class="bi bi-person-circle"></i>
+          <h3>Cliente e Entrega</h3>
+        </div>
+        <div class="details-grid">
+          <div class="detail-item">
+            <span class="detail-label">Nome</span>
+            <span class="detail-value">{{ pedido.nomeCliente }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">WhatsApp</span>
+            <span class="detail-value">{{ pedido.whatsappCliente }}</span>
+          </div>
+          <!-- Endereço só aparece se for entrega -->
+          <div class="detail-item full-width" *ngIf="pedido.metodoEntrega === 'ENTREGA_LOCAL'">
+            <span class="detail-label">Endereço de Entrega</span>
+            <span class="detail-value">
+              {{ pedido.endereco }}, {{ pedido.numero }} {{ pedido.complemento ? '- ' + pedido.complemento : '' }}<br>
+              {{ pedido.bairro }} - CEP: {{ pedido.cep }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD DE ITENS E VALORES -->
       <div class="card">
         <div class="card-header">
           <i class="bi bi-box-seam"></i>
@@ -32,53 +67,74 @@
               <span class="item-name">{{ item.nomeProduto }}</span>
             </div>
             <div class="item-pricing">
-              <span class="item-unit-price">{{ item.precoUnitario | currency:'BRL' }}</span>
+              <span class="item-unit-price">{{ item.precoUnitario | currency:'BRL' }} cada</span>
               <span class="item-subtotal">{{ (item.quantidade * item.precoUnitario) | currency:'BRL' }}</span>
             </div>
           </li>
         </ul>
-        <div class="order-total-summary">
-          <span>Total do Pedido</span>
-          <strong>{{ pedido.valorTotal | currency:'BRL' }}</strong>
+        <div class="card-footer order-totals">
+            <div class="total-row">
+                <span>Subtotal</span>
+                <span>{{ pedido.subtotal | currency:'BRL' }}</span>
+            </div>
+            <div class="total-row" *ngIf="pedido.taxaEntrega > 0">
+                <span>Taxa de Entrega</span>
+                <span>{{ pedido.taxaEntrega | currency:'BRL' }}</span>
+            </div>
+            <div class="total-row grand-total">
+                <strong>Total do Pedido</strong>
+                <strong>{{ pedido.valorTotal | currency:'BRL' }}</strong>
+            </div>
         </div>
       </div>
 
-      <div class="card">
+      <!-- CARD DE PAGAMENTO PIX -->
+      <div class="card" *ngIf="pedido.metodoPagamento === 'Pix' && pedido.pixQrCodeBase64">
         <div class="card-header">
-          <i class="bi bi-truck"></i>
-          <h3>Entrega e Pagamento</h3>
+          <i class="bi bi-qr-code"></i>
+          <h3>Pagamento PIX</h3>
         </div>
-        <div class="details-grid">
-          <div class="detail-item">
-            <span class="detail-label">Método de Entrega</span>
-            <span class="detail-value">{{ pedido.tipoEntrega === 'ENTREGA_LOCAL' ? 'Delivery' : 'Retirada na Loja' }}</span>
+        <div class="pix-container">
+          <div class="pix-qr-code">
+            <img [src]="pedido.pixQrCodeBase64" alt="PIX QR Code">
           </div>
-          <div class="detail-item">
-            <span class="detail-label">Método de Pagamento</span>
-            <span class="detail-value">{{ pedido.metodoPagamento }}</span>
-          </div>
-          <div class="detail-item full-width" *ngIf="pedido.tipoEntrega === 'ENTREGA_LOCAL'">
-            <span class="detail-label">Endereço de Entrega</span>
-            <span class="detail-value">
-              {{ pedido.endereco }}, {{ pedido.numero }} {{ pedido.complemento ? '- ' + pedido.complemento : '' }}<br>
-              {{ pedido.bairro }} - CEP: {{ pedido.cep }}
-            </span>
+          <div class="pix-details">
+            <p class="detail-label">PIX Copia e Cola:</p>
+            <textarea class="pix-code-area" readonly>{{ pedido.pixCopiaECola }}</textarea>
+            <button class="btn btn-secondary" (click)="copiarPix()">
+              <i class="bi bi-clipboard-check"></i>
+              Copiar Código
+            </button>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- BARRA LATERAL (AÇÕES) -->
     <aside class="sidebar-column">
       <div class="card">
         <div class="card-header">
           <i class="bi bi-toggles"></i>
-          <h3>Gerenciar Status</h3>
+          <h3>Gerenciar Pedido</h3>
         </div>
         <div class="card-body">
-          <p>Selecione o novo status do pedido:</p>
+          <div class="detail-item">
+            <span class="detail-label">Status Atual</span>
+            <span class="status-badge" [ngClass]="pedido.status.toLowerCase()">{{ pedido.status.replace('_', ' ') }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Método de Entrega</span>
+            <span class="detail-value">{{ pedido.metodoEntrega.replace('_', ' ') | titlecase }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Pagamento</span>
+            <span class="detail-value">{{ pedido.metodoPagamento }}</span>
+          </div>
+          <hr>
+          <p class="detail-label">Alterar status para:</p>
           <select class="form-select" [(ngModel)]="statusSelecionado">
             <option *ngFor="let status of listaDeStatus" [value]="status">
-              {{ formatarStatus(status) }}
+              {{ status.replace('_', ' ') | titlecase }}
             </option>
           </select>
           <button class="btn btn-primary" (click)="atualizarStatus()" [disabled]="statusSelecionado === pedido.status">
@@ -90,14 +146,95 @@
   </main>
 </div>
 
+<!-- TEMPLATE DE LOADING E ERRO -->
 <ng-template #loadingOrError>
-  <div *ngIf="isLoading" class="loading-container">
-    <div class="spinner"></div>
-    <p>A carregar detalhes do pedido...</p>
-  </div>
-  <div *ngIf="!isLoading && !pedido" class="not-found-container">
-    <i class="bi bi-exclamation-triangle"></i>
-    <h3>Pedido não encontrado</h3>
-    <p>O pedido que você procura não existe ou o ID é inválido.</p>
-  </div>
+    <div class="page-container">
+        <div *ngIf="isLoading" class="loading-container">
+            <div class="spinner"></div>
+            <p>A carregar detalhes do pedido...</p>
+        </div>
+        <div *ngIf="!isLoading" class="not-found-container">
+            <i class="bi bi-exclamation-triangle"></i>
+            <h3>Pedido não encontrado</h3>
+            <p>O pedido que você procura não existe ou o ID é inválido.</p>
+        </div>
+    </div>
 </ng-template>
+
+<!-- =============================================================== -->
+<!-- ==                      RECIBO PARA IMPRESSÃO                == -->
+<!-- =============================================================== -->
+<!-- Esta seção só será visível ao clicar em "Imprimir" -->
+<div class="printable-receipt" *ngIf="(pedido$ | async) as pedido">
+  <header class="receipt-header">
+    <img src="logo-leda-freitas.jpg" alt="Logo Leda Cosméticos" class="receipt-logo">
+    <div class="company-details">
+      <h2>Leda Freitas Cosméticos</h2>
+      <p>Estr. da Água Branca, 4497 - Bangu</p>
+      <p>Rio de Janeiro - RJ, CEP: 21862-371</p>
+      <p>WhatsApp: (21) 99788-3761</p>
+    </div>
+  </header>
+
+  <h1>Recibo do Pedido #{{ pedido.id.substring(0, 8) }}</h1>
+
+  <section class="receipt-section client-info">
+    <div class="info-block">
+      <strong>Cliente:</strong>
+      <span>{{ pedido.nomeCliente }}</span>
+    </div>
+    <div class="info-block">
+      <strong>Data do Pedido:</strong>
+      <span>{{ pedido.dataCriacao | date:'dd/MM/yyyy HH:mm' }}</span>
+    </div>
+    <div class="info-block">
+      <strong>WhatsApp:</strong>
+      <span>{{ pedido.whatsappCliente }}</span>
+    </div>
+    <div class="info-block">
+      <strong>Status:</strong>
+      <span>{{ pedido.status.replace('_', ' ') }}</span>
+    </div>
+  </section>
+
+  <section class="receipt-section items-info">
+    <h3>Itens do Pedido</h3>
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>Qtd.</th>
+          <th>Produto</th>
+          <th>Preço Unit.</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of pedido.itens">
+          <td>{{ item.quantidade }}</td>
+          <td>{{ item.nomeProduto }}</td>
+          <td>{{ item.precoUnitario | currency:'BRL' }}</td>
+          <td>{{ (item.quantidade * item.precoUnitario) | currency:'BRL' }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="total-label">Subtotal</td>
+          <td class="total-value">{{ pedido.subtotal | currency:'BRL' }}</td>
+        </tr>
+        <tr *ngIf="pedido.taxaEntrega > 0">
+          <td colspan="3" class="total-label">Taxa de Entrega</td>
+          <td class="total-value">{{ pedido.taxaEntrega | currency:'BRL' }}</td>
+        </tr>
+        <tr class="grand-total">
+          <td colspan="3" class="total-label">Total do Pedido</td>
+          <td class="total-value">{{ pedido.valorTotal | currency:'BRL' }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+  
+  <footer class="receipt-footer">
+    <p>Obrigado pela sua preferência!</p>
+    <p>www.ledacosmeticos.com.br</p>
+  </footer>
+</div>

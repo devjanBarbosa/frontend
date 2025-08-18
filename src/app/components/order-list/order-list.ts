@@ -35,7 +35,7 @@ export class OrderListComponent implements OnInit {
     this.isLoading = true;
     this.orderService.getPedidos().subscribe({
       next: (data) => {
-        this.todosOsPedidos = data.sort((a, b) => new Date(b.dataDoPedido).getTime() - new Date(a.dataDoPedido).getTime()); // Ordena por mais recente
+        this.todosOsPedidos = data.sort((a, b) => new Date(b.dataCriacao).getTime() - new Date(a.dataCriacao).getTime()); // Ordena por mais recente
         this.pedidosFiltrados = this.todosOsPedidos;
         this.calcularMetricas();
         this.isLoading = false;

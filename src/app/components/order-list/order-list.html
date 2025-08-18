@@ -62,7 +62,7 @@
         <tbody>
           <tr *ngFor="let pedido of pedidosFiltrados">
             <td>#{{ pedido.id.substring(0, 8) }}</td>
-            <td>{{ pedido.dataDoPedido | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ pedido.dataCriacao | date:'dd/MM/yyyy HH:mm' }}</td>
             <td>
               {{ pedido.nomeCliente }}
               <a [href]="'https://wa.me/' + pedido.whatsappCliente" target="_blank" class="whatsapp-link" title="Falar com cliente">

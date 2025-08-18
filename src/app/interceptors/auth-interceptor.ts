@@ -1,16 +1,11 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { AuthService } from '../services/auth';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
-  const authToken = authService.getToken();
+  // Clona a requisição e define 'withCredentials' como true.
+  // Isto instrui o navegador a enviar cookies com a requisição.
+  const authReq = req.clone({
+    withCredentials: true,
+  });
 
-  if (authToken) {
-    const authReq = req.clone({
-      setHeaders: { Authorization: `Bearer ${authToken}` }
-    });
-    return next(authReq);
-  }
-  return next(req);
+  return next(authReq);
 };

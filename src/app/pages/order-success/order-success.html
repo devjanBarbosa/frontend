@@ -1,57 +1,92 @@
-<main class="success-page-container">
+<!-- 
+  Arquivo: checkout-success.html (Versão Melhorada)
+  Descrição: Este template foi otimizado para usar as melhores práticas de UI/UX,
+  aproveitando o design system definido no arquivo SCSS. A estrutura foi
+  refinada para maior clareza, semântica e acessibilidade.
+-->
+
+<main class="success-container">
+  <!-- 
+    Usa o pipe 'async' para resolver o Observable 'pedido$'.
+    Mostra o conteúdo principal quando o pedido é carregado, ou o template de loading/erro.
+  -->
   <div *ngIf="(pedido$ | async) as pedido; else loadingOrError">
 
-    <article class="success-card">
-      <header class="card-header">
-        <div class="header-icon">
-          <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+    <article class="success-card" aria-labelledby="success-title">
+      <!-- 
+        HEADER: Contém o feedback principal de sucesso e a identidade do pedido.
+        Classes como 'success-header' e 'success-icon' são aplicadas para um visual premium.
+      -->
+      <header class="success-header">
+        <div class="success-icon" aria-hidden="true">
+          <i class="bi bi-check-circle-fill"></i>
         </div>
-        <h1 class="header-title">Pedido Recebido!</h1>
-        <p class="header-subtitle">Obrigado pela sua compra, {{ pedido.nomeCliente }}!</p>
-        <p class="order-id">ID do Pedido: <strong>#{{ pedido.id.substring(0, 8) }}</strong></p>
+        <h1 id="success-title" class="success-title">Pedido Recebido!</h1>
+        <p class="success-subtitle">Obrigado pela sua compra, {{ pedido.nomeCliente }}!</p>
+        <p class="order-id">
+          ID do Pedido: <strong>#{{ pedido.id.substring(0, 8) }}</strong>
+        </p>
       </header>
 
+      <!-- 
+        CONTENT: Corpo principal do card, onde os detalhes de pagamento são exibidos.
+        A estrutura é condicional com base no método de pagamento.
+      -->
       <section class="card-content">
-        <div *ngIf="pedido.metodoPagamento === 'Pix' && pedido.pixQrCodeBase64" class="payment-details">
+        <!-- 
+          Caso 1: Pagamento via PIX 
+          CORRIGIDO: A diretiva *ngIf agora também verifica se 'pixCopiaECola' existe,
+          prevenindo erros de acesso a propriedades indefinidas.
+        -->
+        <div *ngIf="pedido.metodoPagamento === 'Pix' && pedido.pixQrCodeBase64 && pedido.pixCopiaECola" class="payment-details">
           <h2 class="section-title">Finalize o Pagamento via Pix</h2>
-          <p class="section-description">Aponte a câmara para o QR Code ou use o código para pagar.</p>
+          <p class="section-description">Aponte a câmera do seu celular para o QR Code ou utilize o código abaixo para pagar.</p>
           
           <div class="pix-layout">
             <div class="qr-code-wrapper">
-              <img [src]="pedido.pixQrCodeBase64" alt="PIX QR Code para pagamento">
+              <img [src]="pedido.pixQrCodeBase64" alt="PIX QR Code para pagamento do pedido">
             </div>
             <div class="copy-paste-wrapper">
               <label for="pixCode">PIX Copia e Cola</label>
               <div class="input-group">
-                <textarea id="pixCode" readonly rows="4">{{ pedido.pixCopiaECola }}</textarea>
+                <textarea id="pixCode" readonly rows="4" aria-label="Código PIX para copiar e colar">{{ pedido.pixCopiaECola }}</textarea>
                 <button (click)="copiarPix(pedido.pixCopiaECola)" title="Copiar código PIX" class="btn-copy">
-                  <i class="bi bi-clipboard-check-fill"></i>
+                  <i class="bi bi-clipboard-check-fill" aria-hidden="true"></i>
+                  <span class="sr-only">Copiar Código</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- Caso 2: Outros métodos de pagamento (ex: Pagar na Entrega) -->
         <div *ngIf="pedido.metodoPagamento !== 'Pix'" class="other-payment-details">
           <h2 class="section-title">Próximos Passos</h2>
-          <p class="section-description">Já estamos a preparar o seu pedido com muito carinho! O pagamento será realizado no momento da entrega.</p>
+          <p class="section-description">Já estamos preparando o seu pedido com muito carinho! O pagamento será realizado no momento da entrega.</p>
         </div>
       </section>
 
-      <footer class="card-actions">
-        <a *ngIf="pedido.metodoPagamento === 'Pix'" [href]="getLinkWhatsApp(pedido)" target="_blank" class="btn btn-whatsapp">
-          <i class="bi bi-whatsapp"></i> Enviar Comprovativo (Opcional)
+      <!-- 
+        FOOTER: Contém as ações principais que o usuário pode tomar após a compra.
+      -->
+      <footer class="card-footer">
+        <a *ngIf="pedido.metodoPagamento === 'Pix'" [href]="getLinkWhatsApp(pedido)" target="_blank" rel="noopener" class="btn btn-whatsapp">
+          <i class="bi bi-whatsapp" aria-hidden="true"></i> 
+          <span>Enviar Comprovante</span>
         </a>
-        <a routerLink="/produtos" class="btn btn-secondary">Continuar a Comprar</a>
+        <a routerLink="/produtos" class="btn btn-secondary">Continuar Comprando</a>
       </footer>
     </article>
 
   </div>
 </main>
 
+<!-- 
+  TEMPLATE DE ESTADO: Exibido enquanto o pedido está sendo carregado ou se ocorrer um erro.
+-->
 <ng-template #loadingOrError>
   <div class="state-container">
-    <div class="spinner"></div>
-    <p>A carregar detalhes do seu pedido...</p>
+    <div class="spinner" role="status" aria-label="Carregando"></div>
+    <p>Carregando detalhes do seu pedido...</p>
   </div>
 </ng-template>

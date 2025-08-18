@@ -1,25 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { OrderService, Pedido } from '../../../services/order'; // Verifique o caminho
-import { FormsModule } from '@angular/forms'; // Importe o FormsModule
-import { Observable } from 'rxjs';
+import { OrderService, Pedido } from '../../../services/order';
+import { FormsModule } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-order-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule], // Adicione FormsModule e TitleCasePipe
+  imports: [CommonModule, RouterModule, FormsModule, TitleCasePipe],
   templateUrl: './order-detail.html',
   styleUrls: ['./order-detail.scss']
 })
 export class OrderDetailComponent implements OnInit {
   
-  pedido$: Observable<Pedido> | undefined;
-  pedido: Pedido | undefined; // Para uso síncrono
+  pedido$: Observable<Pedido | null> | undefined;
   isLoading = true;
-
-  // Lista de todos os status possíveis para o dropdown
+  
   listaDeStatus: string[] = [
     'PENDENTE', 
     'EM_PREPARACAO', 
@@ -29,6 +28,8 @@ export class OrderDetailComponent implements OnInit {
     'CANCELADO'
   ];
   statusSelecionado: string = '';
+
+  private pedidoAtual: Pedido | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -42,38 +43,38 @@ export class OrderDetailComponent implements OnInit {
       this.carregarPedido(pedidoId);
     } else {
       this.isLoading = false;
+      this.pedido$ = of(null);
     }
   }
 
   carregarPedido(id: string): void {
     this.isLoading = true;
-    this.pedido$ = this.orderService.getPedidoById(id);
-    this.pedido$.subscribe({
-      next: (data) => {
-        this.pedido = data;
-        this.statusSelecionado = data.status; // Define o status inicial do select
+    this.pedido$ = this.orderService.getPedidoById(id).pipe(
+      tap(data => {
+        this.pedidoAtual = data;
+        this.statusSelecionado = data.status;
         this.isLoading = false;
-      },
-      error: () => {
-        this.pedido = undefined;
+      }),
+      catchError(() => {
         this.isLoading = false;
-      }
-    });
+        this.pedidoAtual = null;
+        this.toastr.error('Pedido não encontrado.');
+        return of(null);
+      })
+    );
   }
 
-  // Função para atualizar o status
   atualizarStatus(): void {
-    if (!this.pedido || this.statusSelecionado === this.pedido.status) {
-      return; // Não faz nada se o status não mudou
+    if (!this.pedidoAtual || this.statusSelecionado === this.pedidoAtual.status) {
+      return;
     }
 
-    // Chama o serviço para salvar a alteração no backend
-    this.orderService.atualizarStatus(this.pedido.id, this.statusSelecionado).subscribe({
+    // A chamada para o serviço agora envia o status no formato correto
+    this.orderService.atualizarStatus(this.pedidoAtual.id, this.statusSelecionado).subscribe({
       next: (pedidoAtualizado) => {
-        this.toastr.success(`Status do pedido #${this.pedido?.id.substring(0,8)} alterado com sucesso!`);
-        // Recarrega os dados com a resposta do servidor para garantir consistência
-        this.pedido = pedidoAtualizado;
-        this.statusSelecionado = pedidoAtualizado.status;
+        this.toastr.success(`Status do pedido #${this.pedidoAtual?.id.substring(0,8)} alterado com sucesso!`);
+        // Recarrega os dados para garantir que tudo está sincronizado
+        this.carregarPedido(this.pedidoAtual!.id);
       },
       error: (err) => {
         this.toastr.error('Ocorreu um erro ao atualizar o status.');
@@ -82,13 +83,17 @@ export class OrderDetailComponent implements OnInit {
     });
   }
   
-  // Função para imprimir (abre a janela de impressão do navegador)
   imprimirPedido(): void {
     window.print();
   }
 
-  // Função para formatar o nome do status para exibição
-  formatarStatus(status: string): string {
-    return status.replace('_', ' ');
+  copiarPix(): void {
+    if (this.pedidoAtual?.pixCopiaECola) {
+      navigator.clipboard.writeText(this.pedidoAtual.pixCopiaECola).then(() => {
+        this.toastr.success('Código PIX copiado para a área de transferência!');
+      }, () => {
+        this.toastr.error('Falha ao copiar o código PIX.');
+      });
+    }
   }
 }

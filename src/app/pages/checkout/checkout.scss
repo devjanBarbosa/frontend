@@ -1,82 +1,230 @@
-// --- Variáveis Globais (Paleta de Cores e Estilos) ---
+// === VARIÁVEIS GLOBAIS MELHORADAS ===
 :host {
-  --color-primary: #00a650; // Um verde confiável para ações de compra
+  // Sistema de cores para negócio local brasileiro
+  --color-primary: #00a650;
   --color-primary-dark: #008742;
-  --color-text-primary: #111;
-  --color-text-secondary: #666;
+  --color-primary-light: #e8f5e8;
+  --color-primary-hover: #00b85a;
+  
+  // Cores semânticas
+  --color-success: #28a745;
+  --color-danger: #dc3545;
+  --color-warning: #ffc107;
+  
+  // Texto com melhor contraste (WCAG AA)
+  --color-text-primary: #212529;
+  --color-text-secondary: #6c757d;
+  --color-text-muted: #868e96;
+  
+  // Superfícies
   --color-surface: #ffffff;
-  --color-background: #f4f4f4;
-  --color-border: #e0e0e0;
-  --color-danger: #d93025;
-  --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --color-surface-secondary: #f8f9fa;
+  --color-background: #f5f5f5;
+  
+  // Bordas
+  --color-border: #dee2e6;
+  --color-border-light: #e9ecef;
+  --color-border-focus: var(--color-primary);
+  
+  // Sombras melhoradas
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-focus: 0 0 0 3px rgba(0, 166, 80, 0.15);
+  
+  // Raios de borda consistentes
+  --border-radius-sm: 6px;
   --border-radius: 8px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --border-radius-lg: 12px;
+  --border-radius-pill: 50px;
+  
+  // Espaçamentos baseados em grid 8px
+  --space-xs: 0.25rem;   // 4px
+  --space-sm: 0.5rem;    // 8px
+  --space-md: 1rem;      // 16px
+  --space-lg: 1.5rem;    // 24px
+  --space-xl: 2rem;      // 32px
+  --space-2xl: 3rem;     // 48px
+  
+  // Transições suaves
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  
+  // Typography melhorada
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-// --- Estrutura Principal ---
+// === ESTRUTURA PRINCIPAL MELHORADA ===
 .checkout-container {
-  max-width: 1100px;
-  margin: 2rem auto;
-  padding: 1rem;
+  max-width: 1200px;
+  margin: var(--space-xl) auto;
+  padding: var(--space-md);
+  
+  @media (min-width: 768px) {
+    padding: var(--space-lg);
+  }
+  
+  @media (min-width: 1024px) {
+    padding: var(--space-xl);
+  }
 }
 
-.page-header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: var(--color-text-primary);
+.page-header {
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+  
+  h1 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    
+    // Adiciona um gradiente sutil no texto para negócios locais
+    background: linear-gradient(135deg, var(--color-text-primary), var(--color-text-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
+// === CARDS MELHORADOS ===
 .card {
   background-color: var(--color-surface);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
-  padding: 1.5rem;
-  margin-bottom: 2rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  border: 1px solid var(--color-border-light);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  
+  // Efeito hover sutil
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+  
+  // Melhor foco para acessibilidade
+  &:focus-within {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
 }
 
 .card-header {
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  border-bottom: 2px solid var(--color-border-light);
+  position: relative;
+  
+  // Adiciona uma linha de destaque sutil
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+    border-radius: 1px;
+  }
+  
   h2 {
-    font-size: 1.25rem;
+    font-size: 1.375rem;
     font-weight: 600;
     margin: 0;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
   }
 }
 
-// --- Layout do Checkout ---
+// === LAYOUT RESPONSIVO MELHORADO ===
 .checkout-layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
-}
-
-// Em telas maiores, o layout vira 2 colunas
-@media (min-width: 992px) {
-  .checkout-layout {
+  gap: var(--space-xl);
+  
+  @media (min-width: 1024px) {
     grid-template-columns: 2fr 1fr;
-    align-items: flex-start; // Alinha os cards no topo
-  }
-  .order-summary-section {
-    position: sticky;
-    top: 2rem;
+    align-items: flex-start;
   }
 }
 
-// --- Estilos dos Itens do Carrinho ---
+.order-summary-section {
+  @media (min-width: 1024px) {
+    position: sticky;
+    top: var(--space-xl);
+    max-height: calc(100vh - var(--space-2xl));
+    overflow-y: auto;
+  }
+}
+
+// === ITENS DO CARRINHO MELHORADOS ===
+.cart-section {
+  // Adiciona um indicador visual quando há itens
+  &:not(:empty) {
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-success));
+      border-radius: var(--border-radius) var(--border-radius) 0 0;
+    }
+  }
+}
+
 .cart-item {
   display: grid;
-  grid-template-columns: 80px 1fr auto;
+  grid-template-columns: auto 1fr auto;
   grid-template-areas:
     "image details price"
     "image quantity price";
-  gap: 1rem 1.5rem;
-  padding: 1.5rem 0;
+  gap: var(--space-md) var(--space-lg);
+  padding: var(--space-lg) 0;
+  align-items: start;
+  transition: all var(--transition-base);
+  border-radius: var(--border-radius);
+  
+  // Hover effect para melhor UX
+  &:hover {
+    background-color: var(--color-surface-secondary);
+    margin: 0 calc(-1 * var(--space-md));
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+  }
 
   &:not(:last-child) {
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+  
+  // Layout mobile otimizado
+  @media (max-width: 576px) {
+    grid-template-columns: 80px 1fr;
+    grid-template-areas:
+      "image details"
+      "image quantity"
+      ". price";
+    gap: var(--space-sm) var(--space-md);
+    
+    &:hover {
+      margin: 0 calc(-1 * var(--space-sm));
+      padding-left: var(--space-sm);
+      padding-right: var(--space-sm);
+    }
   }
 }
 
@@ -86,7 +234,19 @@
   height: 80px;
   object-fit: cover;
   border-radius: var(--border-radius);
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border-light);
+  background-color: var(--color-surface-secondary);
+  transition: all var(--transition-base);
+  
+  &:hover {
+    border-color: var(--color-primary);
+    transform: scale(1.05);
+  }
+  
+  @media (min-width: 768px) {
+    width: 100px;
+    height: 100px;
+  }
 }
 
 .cart-item__details {
@@ -94,11 +254,23 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-width: 0; // Permite truncamento
 }
 
 .cart-item__name {
   font-weight: 600;
-  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  margin: 0 0 var(--space-sm) 0;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+  
+  // Truncamento responsivo
+  @media (max-width: 576px) {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 }
 
 .cart-item__remove {
@@ -107,13 +279,34 @@
   color: var(--color-text-secondary);
   cursor: pointer;
   font-size: 0.875rem;
-  padding: 0;
+  padding: var(--space-xs) var(--space-sm);
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--space-xs);
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-base);
+  min-height: 36px; // Touch target adequado
+  
   &:hover {
     color: var(--color-danger);
-    text-decoration: underline;
+    background-color: rgba(220, 53, 69, 0.1);
+    transform: translateX(-2px);
+  }
+  
+  &:focus {
+    outline: 2px solid var(--color-danger);
+    outline-offset: 2px;
+  }
+  
+  // Ícone responsivo
+  .icon-trash {
+    width: 16px;
+    height: 16px;
+    transition: transform var(--transition-fast);
+  }
+  
+  &:hover .icon-trash {
+    transform: scale(1.1);
   }
 }
 
@@ -122,259 +315,516 @@
   display: flex;
   align-items: center;
   justify-self: start;
-  border: 1px solid var(--color-border);
-  border-radius: 99px; // Círculo
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-pill);
   overflow: hidden;
+  transition: all var(--transition-base);
+  
+  &:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-focus);
+  }
   
   .quantity-button {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.2rem;
-    padding: 0.25rem 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: var(--space-sm) var(--space-md);
     color: var(--color-text-primary);
+    min-width: 44px; // Touch target mínimo
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    
+    &:hover:not(:disabled) {
+      background-color: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+    
+    &:active {
+      transform: scale(0.95);
+    }
+    
     &:disabled {
-      color: #ccc;
+      color: var(--color-text-muted);
       cursor: not-allowed;
+      opacity: 0.5;
+    }
+    
+    &:focus {
+      outline: 2px solid var(--color-primary);
+      outline-offset: -2px;
     }
   }
+  
   .quantity-value {
-    padding: 0 0.25rem;
-    font-weight: 500;
+    padding: 0 var(--space-sm);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    min-width: 2ch;
+    text-align: center;
+    font-size: 1rem;
   }
 }
 
 .cart-item__price {
   grid-area: price;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-primary);
   align-self: center;
   justify-self: end;
+  text-align: right;
+  
+  @media (max-width: 576px) {
+    font-size: 1.25rem;
+    margin-top: var(--space-sm);
+  }
 }
 
 .empty-cart {
   text-align: center;
-  padding: 2rem;
+  padding: var(--space-2xl);
+  
   p {
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-lg);
     color: var(--color-text-secondary);
+    font-size: 1.1rem;
+  }
+  
+  // Adiciona um ícone visual para carrinho vazio
+  &::before {
+    content: "🛒";
+    display: block;
+    font-size: 4rem;
+    margin-bottom: var(--space-lg);
+    opacity: 0.3;
   }
 }
 
-// Media query para carrinho em telas pequenas
-@media (max-width: 576px) {
-  .cart-item {
-    grid-template-columns: 80px 1fr;
-    grid-template-areas:
-      "image details"
-      "image quantity"
-      ". price";
-    row-gap: 0.5rem;
-  }
-  .cart-item__price {
-    justify-self: end;
-    margin-top: 0.5rem;
+// === FORMULÁRIOS MELHORADOS ===
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0 var(--space-lg);
+  
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0 var(--space-xl);
   }
 }
 
-
-// --- Estilos do Formulário ---
 .form-group {
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--space-lg);
+  grid-column: 1 / -1;
+  
+  @media (min-width: 768px) {
+    &.full-width { grid-column: span 6; }
+    &.half-width { grid-column: span 3; }
+    &.one-third { grid-column: span 2; }
+    &.two-thirds { grid-column: span 4; }
+  }
+  
   label, legend {
     display: block;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
     color: var(--color-text-primary);
-  }
-  input[type="text"], input[type="tel"] {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    &:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 2px rgba(0, 166, 80, 0.2);
-    }
-    // Estilo para campos inválidos tocados pelo usuário (Angular)
-    &.ng-invalid.ng-touched {
-      border-color: var(--color-danger);
+    font-size: 0.95rem;
+    
+    // Indicador de campo obrigatório melhorado
+    &::after {
+      content: " *";
+      color: var(--color-danger);
+      font-weight: 700;
     }
   }
-  fieldset { // Remove bordas padrão do fieldset
+  
+  // Remove asterisco de campos opcionais
+  &:has(input:not([required])) label::after,
+  &:has(select:not([required])) label::after {
+    display: none;
+  }
+  
+  fieldset {
     border: none;
     padding: 0;
     margin: 0;
   }
 }
 
+// Inputs melhorados
+input[type="text"], 
+input[type="tel"], 
+input[type="email"] {
+  width: 100%;
+  padding: var(--space-md);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-family: inherit;
+  background-color: var(--color-surface);
+  transition: all var(--transition-base);
+  min-height: 48px; // Touch target adequado
+  box-sizing: border-box;
+  
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+  
+  &:hover:not(:disabled) {
+    border-color: var(--color-primary-hover);
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-focus);
+    background-color: var(--color-surface);
+  }
+  
+  // Estados de validação melhorados
+  &.ng-invalid.ng-touched {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+  }
+  
+  &.ng-valid.ng-touched {
+    border-color: var(--color-success);
+  }
+  
+  // Campo readonly melhorado
+  &.readonly-field {
+    background-color: var(--color-surface-secondary);
+    color: var(--color-text-secondary);
+    cursor: not-allowed;
+    border-style: dashed;
+    
+    &:focus {
+      box-shadow: none;
+      border-color: var(--color-border);
+    }
+  }
+  
+  // Mobile: previne zoom automático no iOS
+  @media (max-width: 576px) {
+    font-size: 16px;
+    min-height: 52px;
+  }
+}
+
+// === RADIO BUTTONS CUSTOMIZADOS MELHORADOS ===
 .radio-custom-group {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--space-md);
 }
 
 .radio-custom {
   display: flex;
   align-items: center;
   cursor: pointer;
-  border: 1px solid var(--color-border);
-  padding: 1rem;
+  border: 2px solid var(--color-border);
+  padding: var(--space-lg);
   border-radius: var(--border-radius);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all var(--transition-base);
+  background-color: var(--color-surface);
+  position: relative;
+  
+  // Melhor hover
+  &:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+  }
   
   input[type="radio"] {
-    display: none; // Esconde o rádio padrão
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
   }
   
   &__label {
     position: relative;
-    padding-left: 2rem;
-    &::before { // Círculo externo
+    padding-left: var(--space-xl);
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--color-text-primary);
+    transition: color var(--transition-base);
+    
+    &::before {
       content: '';
       position: absolute;
       left: 0;
       top: 50%;
       transform: translateY(-50%);
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       border: 2px solid var(--color-border);
       border-radius: 50%;
-      transition: border-color 0.2s;
+      background-color: var(--color-surface);
+      transition: all var(--transition-base);
     }
-    &::after { // Círculo interno (marcado)
+    
+    &::after {
       content: '';
       position: absolute;
-      left: 5px;
+      left: 6px;
       top: 50%;
       transform: translateY(-50%) scale(0);
       width: 10px;
       height: 10px;
       background-color: var(--color-primary);
       border-radius: 50%;
-      transition: transform 0.2s ease;
+      transition: transform var(--transition-base) ease-out;
     }
   }
 
-  // Estilos quando o rádio está selecionado
-  input[type="radio"]:checked + &__label::before {
-    border-color: var(--color-primary);
+  // Estado selecionado melhorado
+  input[type="radio"]:checked + &__label {
+    color: var(--color-primary);
+    font-weight: 600;
+    
+    &::before {
+      border-color: var(--color-primary);
+      background-color: var(--color-primary-light);
+      box-shadow: var(--shadow-focus);
+    }
+    
+    &::after {
+      transform: translateY(-50%) scale(1);
+    }
   }
-  input[type="radio"]:checked + &__label::after {
-    transform: translateY(-50%) scale(1);
+  
+  // Estado de foco para acessibilidade
+  input[type="radio"]:focus + &__label::before {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
-  &:hover {
+  
+  // Quando selecionado, destaca o container
+  &:has(input[type="radio"]:checked) {
     border-color: var(--color-primary);
+    background-color: var(--color-primary-light);
+    box-shadow: var(--shadow-md);
   }
 }
 
-// --- Resumo do Pedido ---
+// === RESUMO DO PEDIDO MELHORADO ===
 .summary-details {
-  padding-bottom: 1rem;
+  padding-bottom: var(--space-lg);
 }
 
 .summary-line {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) 0;
   color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  
   &:not(:last-child) {
-    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+  
+  // Valores em destaque
+  span:last-child {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  
+  // Desconto em cor especial
+  &.discount span:last-child {
+    color: var(--color-success);
   }
 }
 
 .summary-footer {
-  padding-top: 1rem;
-  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-lg);
+  border-top: 2px solid var(--color-border);
 }
 
 .summary-total {
   display: flex;
   justify-content: space-between;
-  font-size: 1.4rem;
+  align-items: center;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-lg);
+  color: var(--color-text-primary);
+  
+  span:last-child {
+    color: var(--color-primary);
+  }
 }
 
-// --- Botões ---
+// === BOTÕES MELHORADOS ===
 .button-primary {
   width: 100%;
-  padding: 1rem;
-  background-color: var(--color-primary);
+  padding: var(--space-lg);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: white;
   border: none;
   border-radius: var(--border-radius);
-  font-size: 1.1rem;
+  font-size: 1.125rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all var(--transition-base);
+  min-height: 54px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
   
+  // Efeito hover melhorado
   &:hover:not(:disabled) {
-    background-color: var(--color-primary-dark);
+    background: linear-gradient(135deg, var(--color-primary-hover), var(--color-primary));
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  &:focus {
+    outline: 3px solid rgba(0, 166, 80, 0.3);
+    outline-offset: 2px;
   }
   
   &:disabled {
-    background-color: #ccc;
+    background: linear-gradient(135deg, #ccc, #bbb);
     cursor: not-allowed;
+    opacity: 0.7;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  // Efeito de ondulação sutil
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+  }
+  
+  &:active::before {
+    width: 300px;
+    height: 300px;
   }
 }
 
 .button-secondary {
   display: inline-block;
-  padding: 0.8rem 1.5rem;
-  background-color: var(--color-surface);
+  padding: var(--space-md) var(--space-lg);
+  background-color: transparent;
   color: var(--color-primary);
-  border: 1px solid var(--color-primary);
+  border: 2px solid var(--color-primary);
   border-radius: var(--border-radius);
   font-weight: 600;
   text-decoration: none;
-  transition: background-color 0.2s, color 0.2s;
+  transition: all var(--transition-base);
+  min-height: 48px;
+  cursor: pointer;
+  
   &:hover {
     background-color: var(--color-primary);
-    color: var(--color-surface);
+    color: white;
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+  }
+  
+  &:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 }
 
-/* Adicione estas novas regras ao seu arquivo checkout.scss */
-
-// Garante que o padding e a borda não aumentem o tamanho do input
-input[type="text"], input[type="tel"] {
-  box-sizing: border-box;
-}
-
-// A base do nosso grid de formulário
-.form-grid {
-  display: grid;
-  // Em telas pequenas, é sempre uma coluna única
-  grid-template-columns: 1fr;
-  // Em telas maiores, ativamos múltiplas colunas
-  // O espaçamento só se aplica entre as colunas
-  gap: 0 1.5rem; 
-
-  @media (min-width: 768px) {
-    // Usamos 6 colunas para ter mais flexibilidade (2, 3, 4 colunas)
-    grid-template-columns: repeat(6, 1fr);
+// === ESTADOS ESPECIAIS ===
+// Estado de loading melhorado
+.loading {
+  position: relative;
+  pointer-events: none;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
 }
 
-// Classes utilitárias para controlar a largura dos campos dentro da grade
-.form-group {
-  // Por padrão, todo .form-group ocupará a largura total
-  grid-column: 1 / -1;
-
-  // Em telas maiores, aplicamos as larguras específicas
-  @media (min-width: 768px) {
-    &.full-width { grid-column: span 6; } // Ocupa 6 de 6 colunas
-    &.half-width { grid-column: span 3; } // Ocupa 3 de 6 colunas (metade)
-    &.one-third { grid-column: span 2; } // Ocupa 2 de 6 colunas (um terço)
-    &.two-thirds { grid-column: span 4; } // Ocupa 4 de 6 colunas (dois terços)
+@keyframes spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
   }
 }
 
-// Estilo para campos somente leitura (feedback visual para o usuário)
-.readonly-field {
-  background-color: #f8f9fa;
-  cursor: not-allowed;
+// === MELHORIAS DE ACESSIBILIDADE ===
+// Screen reader only
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  :host {
+    --color-border: #000;
+    --color-text-secondary: #000;
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// === RESPONSIVIDADE ADICIONAL ===
+@media (max-width: 576px) {
+  .checkout-container {
+    padding: var(--space-sm);
+  }
+  
+  .card {
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md);
+  }
+  
+  .card-header {
+    padding-bottom: var(--space-md);
+    margin-bottom: var(--space-md);
+  }
 }

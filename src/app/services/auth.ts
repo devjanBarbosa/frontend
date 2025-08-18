@@ -1,36 +1,54 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { Router } from '@angular/router';
 
-@Injectable({ providedIn: 'root' })
+// Interface para os dados de login
+export interface DadosAutenticacao {
+  email: string;
+  senha?: string; // Senha é opcional aqui, pois só é usada no login
+}
+
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
-  private readonly apiUrl = 'http://localhost:8080/api/login';
-  private readonly TOKEN_KEY = 'auth_token';
+  private apiUrl = 'http://localhost:8080/api';
+  
+  // BehaviorSubject para manter o estado de autenticação reativo
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasAuthCookie());
+  public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) {}
 
-  login(credentials: { email: string, senha: string }): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(this.apiUrl, credentials).pipe(
-      tap(response => {
-        if (response && response.token) {
-          localStorage.setItem(this.TOKEN_KEY, response.token);
-        }
+  // --- MÉTODO DE LOGIN ATUALIZADO ---
+  login(dados: DadosAutenticacao): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, dados, { withCredentials: true }).pipe(
+      tap(() => {
+        // Se o login for bem-sucedido, o backend define o cookie.
+        // Nós apenas atualizamos o nosso estado interno.
+        this.isAuthenticatedSubject.next(true);
       })
     );
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
-  }
-
+  // --- MÉTODO DE LOGOUT ATUALIZADO ---
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
+    this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).subscribe(() => {
+      this.isAuthenticatedSubject.next(false);
+      this.router.navigate(['/login']);
+    });
   }
-  // Dentro da classe AuthService
 
-// Método para verificar se o usuário está logado (checa se existe um token)
-isLoggedIn(): boolean {
-  return !!this.getToken();
-}
+  // Verifica se o utilizador está autenticado
+  isLoggedIn(): boolean {
+    return this.isAuthenticatedSubject.value;
+  }
+
+  // Método simples para verificar a existência do cookie no arranque da aplicação
+  // NOTA: Isto não valida o token, apenas verifica se o cookie existe.
+  // A validação real acontece no backend em cada requisição.
+  private hasAuthCookie(): boolean {
+    return document.cookie.split(';').some((item) => item.trim().startsWith('auth_token='));
+  }
 }
