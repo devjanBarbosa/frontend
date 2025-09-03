@@ -11,7 +11,7 @@ export interface Categoria {
 
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
-  private readonly apiUrl = `${environment.apiUrl}/api/admin/categorias`;
+  private readonly apiUrl = `${environment.apiUrl}/api/categorias`;
   constructor(private http: HttpClient) { }
    listarCategorias(tipo?: 'PRODUTO' | 'PRESENTE'): Observable<Categoria[]> {
     let params = new HttpParams();
