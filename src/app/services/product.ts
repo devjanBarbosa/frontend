@@ -26,8 +26,8 @@ export interface Produto {
   providedIn: 'root',
 })
 export class ProductService {
-  private readonly apiUrl = `${environment.apiUrl}/produtos`;
-  private readonly uploadUrl = `${environment.apiUrl}/upload`;
+  private readonly apiUrl = `${environment.apiUrl}/api/produtos`;
+  private readonly uploadUrl = `${environment.apiUrl}/api/upload`;
 
   constructor(private http: HttpClient) {}
 

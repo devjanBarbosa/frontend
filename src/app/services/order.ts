@@ -56,7 +56,7 @@ export interface Pedido {
   providedIn: 'root'
 })
 export class OrderService {
-  private readonly apiUrl = `${environment.apiUrl}/api/pedidos`;
+  private readonly apiUrl = `${environment.apiUrl}/pedidos`;
 
   constructor(private http: HttpClient) { }
 
