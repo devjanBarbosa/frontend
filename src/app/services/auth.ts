@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 // Interface para os dados de login
 export interface DadosAutenticacao {
@@ -13,7 +14,7 @@ export interface DadosAutenticacao {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api';
+  private readonly apiUrl = `${environment.apiUrl}/api`;
   
   // BehaviorSubject para manter o estado de autenticação reativo
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasAuthCookie());

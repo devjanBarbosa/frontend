@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Categoria {
   id: string;
@@ -10,7 +11,7 @@ export interface Categoria {
 
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
-  private readonly apiUrl = 'http://localhost:8080/api/categorias';
+  private readonly apiUrl = `${environment.apiUrl}/api/categorias`;
   constructor(private http: HttpClient) { }
    listarCategorias(tipo?: 'PRODUTO' | 'PRESENTE'): Observable<Categoria[]> {
     let params = new HttpParams();

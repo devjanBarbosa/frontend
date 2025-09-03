@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 // Interface para a Categoria, melhorando a segurança de tipo
 export interface Categoria {
@@ -25,8 +26,8 @@ export interface Produto {
   providedIn: 'root',
 })
 export class ProductService {
-  private readonly apiUrl = 'http://localhost:8080/api/produtos';
-  private readonly uploadUrl = 'http://localhost:8080/api/upload';
+  private readonly apiUrl = `${environment.apiUrl}/produtos`;
+  private readonly uploadUrl = `${environment.apiUrl}/upload`;
 
   constructor(private http: HttpClient) {}
 

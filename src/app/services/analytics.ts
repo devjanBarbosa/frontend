@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 // A interface será expandida para incluir os novos dados
 export interface DashboardData {
@@ -19,7 +20,7 @@ export interface DashboardData {
   providedIn: 'root'
 })
 export class AnalyticsService {
-  private readonly apiUrl = 'http://localhost:8080/api/analytics/dashboard';
+  private readonly apiUrl = `${environment.apiUrl}/api/analytics/dashboard`;
 
   constructor(private http: HttpClient) { }
 
