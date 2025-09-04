@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 // Interface para tipar os dados da avaliação
 export interface Review {
@@ -27,12 +28,14 @@ export class ReviewsComponent implements OnInit {
 
   constructor(private http: HttpClient) {}
 
-  ngOnInit(): void {
-    this.reviews$ = this.http.get<any>('http://localhost:8080/api/reviews').pipe(
-      // Filtra e ordena as avaliações para mostrar apenas as de 5 estrelas mais recentes
+   ngOnInit(): void {
+    // 2. CONSTRUA O URL DINAMICAMENTE
+    const apiUrl = `${environment.apiUrl}/api/reviews`; 
+
+    this.reviews$ = this.http.get<any>(apiUrl).pipe( // <-- USE A VARIÁVEL apiUrl
       map(response => response.result?.reviews
         ?.filter((r: Review) => r.rating === 5)
-        .slice(0, 5) // Pega as 5 mais recentes
+        .slice(0, 5) 
       )
     );
   }
