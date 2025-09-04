@@ -152,6 +152,7 @@
 
 .cart-item__details {
   grid-area: details;
+  min-width: 0; // CORREÇÃO: Permite que o container encolha e o texto seja truncado.
   p { margin: 0; }
 }
 
@@ -159,6 +160,10 @@
   font-weight: 600;
   color: var(--color-text-primary);
   margin-bottom: var(--space-xs);
+  // CORREÇÃO: Trunca nomes de produtos muito longos para não quebrar o layout.
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cart-item__remove {
