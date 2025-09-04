@@ -1,55 +1,57 @@
 /*
- * checkout.scss (Versão Refinada)
- * SCSS moderno, escalável e consistente.
- * Design system focado em UX limpa e identidade para cosméticos.
+ * checkout.scss (Versão Aprimorada)
+ * Descrição: Uma folha de estilos completamente refeita com um design system moderno,
+ * focada em uma experiência de usuário (UX) limpa, profissional e agradável.
  */
 
-/* === DESIGN SYSTEM === */
-:root {
-  /* Paleta de cores */
-  --color-primary: #E91E63;
-  --color-primary-dark: #C2185B;
-  --color-primary-light: #FCE4EC;
-  --color-primary-hover: #D81B60;
-
+// === DESIGN SYSTEM ===
+:host {
+  // Paleta de cores moderna e feminina, ideal para cosméticos
+  --color-primary: #E91E63;       // Rosa vibrante para ações principais
+  --color-primary-dark: #C2185B;    // Tom mais escuro para hover/active
+  --color-primary-light: #FCE4EC;   // Tom pastel para fundos e destaques
+  --color-primary-hover: #D81B60;  // Cor para hover em botões
+  
+  // Cores de suporte e feedback
   --color-success: #28a745;
   --color-danger: #dc3545;
-
-  --color-text-primary: #1a1a1a;
+  --color-text-primary: #1a1a1a;   // Preto suave para melhor legibilidade
   --color-text-secondary: #5c5c5c;
   --color-text-muted: #8a8a8a;
-
+  
+  // Fundos e superfícies
   --color-surface: #ffffff;
   --color-surface-secondary: #f9fafb;
-  --color-background: #f7f9fc;
-
+  --color-background: #f7f9fc; // Azul muito claro para um fundo suave
+  
+  // Bordas
   --color-border: #dfe3e8;
   --color-border-light: #eef1f4;
   --color-border-focus: var(--color-primary);
 
-  /* Sombras */
+  // Sombras suaves e modernas
   --shadow-xs: 0 1px 2px rgba(26, 26, 26, 0.04);
   --shadow-sm: 0 2px 8px rgba(26, 26, 26, 0.06);
   --shadow-md: 0 4px 16px rgba(26, 26, 26, 0.08);
   --shadow-lg: 0 8px 32px rgba(26, 26, 26, 0.1);
   --shadow-focus: 0 0 0 3px rgba(233, 30, 99, 0.2);
 
-  /* Espaçamentos */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-  --space-2xl: 3rem;
+  // Espaçamentos consistentes (base 8px)
+  --space-xs: 0.25rem;  // 4px
+  --space-sm: 0.5rem;   // 8px
+  --space-md: 1rem;     // 16px
+  --space-lg: 1.5rem;   // 24px
+  --space-xl: 2rem;     // 32px
+  --space-2xl: 3rem;    // 48px
 
-  /* Bordas e transições */
+  // Transições e Bordas
   --border-radius: 10px;
   --border-radius-lg: 16px;
   --border-radius-pill: 50px;
-  --transition-base: 0.25s ease-in-out;
+  --transition-base: 0.2s ease-in-out;
 }
 
-/* === LAYOUT === */
+// === ESTRUTURA E LAYOUT ===
 .checkout-container {
   max-width: 1280px;
   margin: var(--space-xl) auto;
@@ -61,6 +63,7 @@
   font-weight: 800;
   text-align: center;
   margin-bottom: var(--space-2xl);
+  color: var(--color-text-primary);
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -70,7 +73,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-xl);
-
+  
   @media (min-width: 1024px) {
     grid-template-columns: 1fr 420px;
     align-items: flex-start;
@@ -83,78 +86,83 @@
   gap: var(--space-xl);
 }
 
-/* === CARD BASE === */
+// === CARD BASE ===
 .card {
-  background: var(--color-surface);
+  background-color: var(--color-surface);
   border-radius: var(--border-radius-lg);
-  border: 1px solid var(--color-border-light);
   box-shadow: var(--shadow-md);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  border: 1px solid var(--color-border-light);
+  transition: all var(--transition-base);
 
   &:hover {
-    transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
   }
 }
 
 .card-header {
   padding: var(--space-lg);
   border-bottom: 1px solid var(--color-border-light);
-
+  
   h2 {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
     font-size: 1.3rem;
     font-weight: 700;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
     color: var(--color-text-primary);
-
-    i {
+    i { 
+      color: var(--color-primary); 
       font-size: 1.5rem;
-      color: var(--color-primary);
     }
   }
 }
 
-/* === ITENS DO CARRINHO === */
+// === ITENS DO CARRINHO (COM CORREÇÃO DE LAYOUT) ===
 .cart-item {
   display: grid;
+  // Define colunas claras: imagem, detalhes (flexível), quantidade e preço (tamanhos fixos).
   grid-template-columns: 80px 1fr auto auto;
   gap: var(--space-lg);
   padding: var(--space-lg);
   align-items: center;
-  border-bottom: 1px solid var(--color-border-light);
-
-  &:last-child {
-    border-bottom: none;
+  
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--color-border-light);
   }
 
+  // Layout mobile otimizado
   @media (max-width: 576px) {
     grid-template-columns: 60px 1fr;
-    grid-template-areas:
+    grid-template-areas: 
       "image details"
       "image quantity"
-      "price price";
+      "price price"; // Preço ocupa a largura toda em baixo
     gap: var(--space-sm) var(--space-md);
   }
 }
 
 .cart-item__image {
+  grid-area: image;
   width: 80px;
   height: 80px;
   object-fit: cover;
   border-radius: var(--border-radius);
+  @media (max-width: 576px) { width: 60px; height: 60px; }
+}
 
-  @media (max-width: 576px) {
-    width: 60px;
-    height: 60px;
-  }
+.cart-item__details {
+  grid-area: details;
+  min-width: 0; // CORREÇÃO: Permite que o container encolha e o texto seja truncado.
+  p { margin: 0; }
 }
 
 .cart-item__name {
   font-weight: 600;
   color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+  // CORREÇÃO: Trunca nomes de produtos muito longos para não quebrar o layout.
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -163,82 +171,216 @@
 .cart-item__remove {
   background: none;
   border: none;
-  font-size: 0.85rem;
-  cursor: pointer;
   color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
   transition: color var(--transition-base);
-
-  &:hover {
-    color: var(--color-danger);
-  }
+  &:hover { color: var(--color-danger); }
 }
 
 .cart-item__quantity {
+  grid-area: quantity;
   display: flex;
   align-items: center;
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-pill);
-
+  
   .quantity-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
     width: 36px;
     height: 36px;
-    font-size: 1.2rem;
-    border: none;
-    background: transparent;
-    cursor: pointer;
+    color: var(--color-text-secondary);
     transition: all var(--transition-base);
 
     &:hover:not(:disabled) {
       color: var(--color-primary);
-      background: var(--color-primary-light);
+      background-color: var(--color-primary-light);
     }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    &:first-of-type { border-radius: 50% 0 0 50%; }
+    &:last-of-type { border-radius: 0 50% 50% 0; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
   }
-
+  
   .quantity-value {
+    font-weight: 600;
     min-width: 2ch;
     text-align: center;
-    font-weight: 600;
   }
 }
 
 .cart-item__price {
+  grid-area: price;
   font-weight: 700;
   font-size: 1.1rem;
-  color: var(--color-text-primary);
   text-align: right;
+  min-width: 100px;
+  color: var(--color-text-primary);
+
+  @media (max-width: 576px) {
+    justify-self: end; // Alinha à direita na linha do grid
+    margin-top: var(--space-sm);
+  }
 }
 
-/* === FORMULÁRIOS === */
+.empty-cart {
+  padding: var(--space-2xl);
+  text-align: center;
+  p { font-size: 1.1rem; color: var(--color-text-secondary); }
+  .button-secondary { margin-top: var(--space-lg); }
+}
+
+// === FORMULÁRIO ===
 form {
   padding: var(--space-lg);
 }
 
-input[type="text"],
-input[type="tel"] {
+.form-group {
+  margin-bottom: var(--space-lg);
+  label, legend {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+  }
+}
+
+input[type="text"], input[type="tel"] {
   width: 100%;
   padding: 0.8rem 1rem;
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
   font-size: 1rem;
-  transition: border var(--transition-base), box-shadow var(--transition-base);
-
+  transition: all var(--transition-base);
   &:focus {
+    outline: none;
     border-color: var(--color-primary);
     box-shadow: var(--shadow-focus);
-    outline: none;
   }
-
   &.readonly-field {
-    background: var(--color-surface-secondary);
+    background-color: var(--color-surface-secondary);
   }
 }
 
-/* === PAGAMENTO === */
+.input-with-spinner {
+  position: relative;
+  .spinner {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
+
+// === RESUMO DO PEDIDO ===
+.order-summary-section {
+  @media (min-width: 1024px) {
+    position: sticky;
+    top: var(--space-xl);
+  }
+}
+
+.summary-details {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-text-secondary);
+  span:last-child {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  &.discount span:last-child {
+    color: var(--color-success);
+  }
+}
+
+.coupon-section {
+  padding: var(--space-lg);
+  border-top: 1px solid var(--color-border-light);
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+    font-size: 0.9rem;
+  }
+  .input-group {
+    display: flex;
+    input {
+      flex-grow: 1;
+      border-right: none;
+      border-radius: var(--border-radius-pill) 0 0 var(--border-radius-pill);
+    }
+    .btn-apply-coupon {
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface-secondary);
+      border-radius: 0 var(--border-radius-pill) var(--border-radius-pill) 0;
+      padding: 0 var(--space-lg);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color var(--transition-base);
+      &:hover { background-color: var(--color-border-light); }
+    }
+  }
+}
+
+.summary-footer {
+  padding: var(--space-lg);
+  background-color: var(--color-surface-secondary);
+  border-top: 1px solid var(--color-border-light);
+  border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+  span:first-child { font-size: 1.1rem; }
+  span:last-child {
+    font-size: 1.75rem;
+    color: var(--color-primary);
+  }
+}
+
+// === OPÇÕES DE PAGAMENTO ===
+.payment-method-container {
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  legend {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-md);
+  }
+}
+
+.payment-method-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
 .payment-method-card {
   display: flex;
   flex-direction: column;
@@ -249,54 +391,57 @@ input[type="tel"] {
   border: 2px solid var(--color-border);
   border-radius: var(--border-radius);
   cursor: pointer;
-  transition: transform var(--transition-base), border-color var(--transition-base);
-
-  i,
-  span {
+  transition: all var(--transition-base);
+  
+  i {
+    font-size: 1.75rem;
     color: var(--color-text-secondary);
-    transition: color var(--transition-base);
+    transition: all var(--transition-base);
   }
-
-  &.selected,
-  &:hover {
+  span {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    transition: all var(--transition-base);
+  }
+  
+  &.selected, &:hover {
     border-color: var(--color-primary);
-    background: var(--color-primary-light);
+    background-color: var(--color-primary-light);
     transform: scale(1.03);
-
-    i,
-    span {
-      color: var(--color-primary);
-    }
+  }
+  
+  &.selected i, &:hover i,
+  &.selected span, &:hover span {
+    color: var(--color-primary);
   }
 }
 
-/* === BOTÕES === */
+// === BOTÃO PRINCIPAL ===
 .button-primary {
   width: 100%;
   padding: var(--space-lg);
-  font-weight: 700;
+  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
   border: none;
   border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  color: #fff;
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
-
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md);
+  
   &:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
     background: linear-gradient(135deg, var(--color-primary-hover), var(--color-primary));
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
   }
-
+  
   &:disabled {
     background: #ccc;
     cursor: not-allowed;
+    box-shadow: none;
   }
 }
 
-/* === ANIMAÇÕES === */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
