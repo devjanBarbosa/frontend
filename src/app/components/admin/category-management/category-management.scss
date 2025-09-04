@@ -1,3 +1,9 @@
+/* Arquivo: category-management.scss (Versão Refinada)
+  Descrição: Este SCSS foi estruturado seguindo as melhores práticas de CSS moderno,
+  incluindo um Design System baseado em variáveis, layout responsivo com Grid e
+  estilos de componentes modulares.
+*/
+
 // --- 1. Design System (Variáveis) ---
 :host {
   --primary-color: #E91E63;
@@ -10,8 +16,10 @@
   --border-radius: 12px;
   --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.04);
 
-  --color-product: #3498db; --color-product-bg: #eaf4fb;
-  --color-gift: #e67e22; --color-gift-bg: #fdf3e9;
+  --color-product: #3498db;
+  --color-product-bg: #eaf4fb;
+  --color-gift: #e67e22;
+  --color-gift-bg: #fdf3e9;
   --color-delete: #e74c3c;
 }
 
@@ -22,18 +30,48 @@
   padding: 1.5rem;
   background-color: var(--background-color);
 }
+
 .page-header {
   margin-bottom: 2rem;
-  .page-title { font-size: 1.8rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.75rem; i { color: var(--primary-color); } }
-  .page-subtitle { margin-top: 0.5rem; color: var(--text-color-light); max-width: 600px; }
-  .header-stats { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; }
+  .page-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    i { color: var(--primary-color); }
+  }
+  .page-subtitle {
+    margin-top: 0.5rem;
+    color: var(--text-color-light);
+    max-width: 600px;
+  }
+  .header-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
 }
+
 .stat-card {
-  display: flex; align-items: center; gap: 1rem; background-color: var(--surface-color);
-  padding: 1rem; border-radius: var(--border-radius); border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--surface-color);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
   .stat-icon {
-    width: 40px; height: 40px; border-radius: 50%; display: flex;
-    align-items: center; justify-content: center; font-size: 1.2rem; color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #fff;
     &.product { background-color: var(--color-product); }
     &.gift { background-color: var(--color-gift); }
   }
@@ -42,10 +80,15 @@
 }
 
 .manager-layout {
-  display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
   align-items: flex-start;
-  @media (min-width: 992px) { grid-template-columns: 380px 1fr; }
+  @media (min-width: 992px) {
+    grid-template-columns: 380px 1fr;
+  }
 }
+
 .form-column {
   @media (min-width: 992px) {
     position: sticky;
@@ -55,87 +98,225 @@
 
 // --- 3. Formulário e Componentes ---
 .card {
-  background-color: var(--surface-color); border-radius: var(--border-radius);
-  border: 1px solid var(--border-color); box-shadow: var(--shadow-subtle);
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-subtle);
 }
+
 .card-header {
-  padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color);
-  h3 { margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 0.75rem; }
-}
-.card-body { padding: 1.5rem; }
-.form-group {
-  margin-bottom: 1.5rem;
-  label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
-  input, select {
-    width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color);
-    border-radius: 8px; font-size: 1rem; transition: all 0.2s ease;
-    &:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1); }
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 }
+
+.card-body { padding: 1.5rem; }
+
+.form-group {
+  margin-bottom: 1.5rem;
+  label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  input, select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+    }
+  }
+}
+
 .radio-card-group {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
   .radio-card {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 0.5rem; padding: 1rem; border: 2px solid var(--border-color);
-    border-radius: var(--border-radius); cursor: pointer; transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
     input { display: none; }
     i { font-size: 1.5rem; }
     span { font-weight: 600; }
-    &.selected { border-color: var(--primary-color); background-color: rgba(233, 30, 99, 0.05); color: var(--primary-color); }
-    &:hover { border-color: var(--primary-color); }
+    &.selected {
+      border-color: var(--primary-color);
+      background-color: rgba(233, 30, 99, 0.05);
+      color: var(--primary-color);
+    }
+    &:hover {
+      border-color: var(--primary-color);
+    }
   }
 }
+
 .form-actions {
-  display: flex; gap: 0.75rem; margin-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
   .btn-primary { flex-grow: 1; }
-  .btn-secondary { background-color: var(--border-color); color: var(--text-color-dark); &:hover { background-color: #d3d9e0; } }
+  .btn-secondary {
+    background-color: var(--border-color);
+    color: var(--text-color-dark);
+    &:hover { background-color: #d3d9e0; }
+  }
 }
-.validation-error { color: #dc3545; font-size: 0.85rem; margin-top: 0.5rem; }
+
+.validation-error {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
 
 // --- 4. Lista de Categorias ---
 .list-header {
-  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
+
 .filter-tabs {
-  display: flex; gap: 0.25rem; background-color: var(--background-color);
-  border-radius: 50px; padding: 0.25rem;
+  display: flex;
+  gap: 0.25rem;
+  background-color: var(--background-color);
+  border-radius: 50px;
+  padding: 0.25rem;
   button {
-    background: none; border: none; padding: 0.4rem 1rem;
-    font-weight: 500; cursor: pointer; color: var(--text-color-light);
-    border-radius: 50px; transition: all 0.2s ease;
-    &.active, &:hover { background-color: var(--surface-color); color: var(--primary-color); box-shadow: var(--shadow-subtle); }
+    background: none;
+    border: none;
+    padding: 0.4rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text-color-light);
+    border-radius: 50px;
+    transition: all 0.2s ease;
+    &.active, &:hover {
+      background-color: var(--surface-color);
+      color: var(--primary-color);
+      box-shadow: var(--shadow-subtle);
+    }
   }
 }
 
-.category-list { list-style: none; padding: 0; margin: 0; }
+.category-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .category-item {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 0.75rem 1.5rem;
-  &:not(:last-child) { border-bottom: 1px solid var(--border-color); }
-  .category-info { display: flex; align-items: center; gap: 1rem; }
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--border-color);
+  }
+  .category-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .category-visual {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: var(--background-color);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
   .category-icon {
-    width: 36px; height: 36px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; color: #fff;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
     &.produto { background-color: var(--color-product); }
     &.presente { background-color: var(--color-gift); }
   }
   .category-name { font-weight: 500; }
   .category-actions {
-    display: flex; gap: 0.5rem; opacity: 0; transition: opacity 0.2s ease;
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
   }
-  &:hover .category-actions { opacity: 1; }
+  &:hover .category-actions {
+    opacity: 1;
+  }
 }
+
 .btn-action {
-  width: 32px; height: 32px; border-radius: 50%;
-  border: none; cursor: pointer; color: #fff; transition: background-color 0.2s ease;
-  &.btn-edit { background-color: var(--text-color-light); &:hover { background-color: var(--text-color-dark); } }
-  &.btn-delete { background-color: var(--color-delete); &:hover { background-color: #c0392b; } }
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  transition: background-color 0.2s ease;
+  &.btn-edit {
+    background-color: var(--text-color-light);
+    &:hover { background-color: var(--text-color-dark); }
+  }
+  &.btn-delete {
+    background-color: var(--color-delete);
+    &:hover { background-color: #c0392b; }
+  }
 }
 
 // --- 5. Estados de Loading/Vazio ---
 .state-container {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 3rem; text-align: center; color: var(--text-color-light);
-  .spinner { /* Seus estilos de spinner aqui */ }
-  i { font-size: 2.5rem; margin-bottom: 1rem; color: var(--border-color); }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-color-light);
+  .spinner { /* Pode adicionar o seu estilo de spinner aqui */
+    border: 4px solid var(--border-color);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+  i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #ced4da;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

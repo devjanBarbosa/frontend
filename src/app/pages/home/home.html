@@ -1,3 +1,9 @@
+<!-- 
+  Arquivo: home.html (Versão Corrigida)
+  Descrição: O atributo [src] da tag <img> foi atualizado para usar a propriedade
+  'categoria.urlImagem', que vem dinamicamente da API, em vez de um nome de ficheiro estático.
+  Adicionado um *ngIf para garantir que a imagem só seja exibida se o URL existir.
+-->
 <section class="hero-banner">
   <div class="hero-content">
     <h1>Sua Beleza, Nosso Cuidado</h1>
@@ -5,6 +11,7 @@
     <a routerLink="/produtos" class="btn-primary">Ver todos os produtos</a>
   </div>
 </section>
+
 <section class="diferenciais-section">
   <div class="diferencial-item">
     <i class="bi bi-truck"></i>
@@ -22,7 +29,9 @@
     <p>Apenas produtos testados e aprovados por quem entende.</p>
   </div>
 </section>
+
 <app-welcome></app-welcome>
+
 <section class="gift-section">
   <div class="container">
     <h2>Presentes Especiais</h2>
@@ -45,7 +54,15 @@
            class="category-card">
           
           <div class="category-image-wrapper">
-            <img [src]="categoria.nome.toLowerCase() + '.jpg'" [alt]="categoria.nome">
+            <!-- ============================================= -->
+            <!--             CORREÇÃO PRINCIPAL AQUI             -->
+            <!-- ============================================= -->
+            <img *ngIf="categoria.urlImagem" [src]="categoria.urlImagem" [alt]="categoria.nome">
+            
+            <!-- Fallback: Mostra um ícone se a categoria não tiver imagem -->
+            <div *ngIf="!categoria.urlImagem" class="category-image-placeholder">
+                <i class="bi bi-gift-fill"></i>
+            </div>
           </div>
           
           <div class="category-name">
@@ -58,6 +75,7 @@
     </swiper-container>
   </div>
 </section>
+
 <section class="category-section">
   <div class="container">
     <h2>Nossas Categorias</h2>
@@ -80,7 +98,15 @@
         <a [routerLink]="['/produtos']" [queryParams]="{ categoria: categoria.id }" class="category-card">
           
           <div class="category-image-wrapper">
-            <img [src]="categoria.nome.toLowerCase() + '.jpg'" [alt]="categoria.nome">
+            <!-- ============================================= -->
+            <!--             CORREÇÃO PRINCIPAL AQUI             -->
+            <!-- ============================================= -->
+            <img *ngIf="categoria.urlImagem" [src]="categoria.urlImagem" [alt]="categoria.nome">
+            
+            <!-- Fallback: Mostra um ícone se a categoria não tiver imagem -->
+            <div *ngIf="!categoria.urlImagem" class="category-image-placeholder">
+                <i class="bi bi-box-seam-fill"></i>
+            </div>
           </div>
           
           <div class="category-name">
@@ -93,5 +119,7 @@
     </swiper-container>
   </div>
 </section>
+
 <app-product-list [produtos]="produtosEmDestaque" titulo="Destaques da Semana"></app-product-list>
+
 <app-reviews></app-reviews>

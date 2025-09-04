@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 export interface Categoria {
   id: string;
   nome: string;
+  urlImagem?: string;
   tipo: 'PRODUTO' | 'PRESENTE';
 }
 
