@@ -5,7 +5,7 @@ import { WelcomeComponent } from '../../components/welcome/welcome';
 import { ProductListComponent } from '../../components/product-list/product-list';
 import { ProductService, Produto } from '../../services/product';
 import { CategoryService, Categoria } from '../../services/category';
-import { ReviewsComponent } from '../../components/reviews/reviews'; // 1. IMPORTE O NOVO COMPONENTE
+import { ReviewsComponent } from '../../components/reviews/reviews';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +15,7 @@ import { ReviewsComponent } from '../../components/reviews/reviews'; // 1. IMPOR
     RouterModule,
     WelcomeComponent,
     ProductListComponent,
-    ReviewsComponent // 2. ADICIONE-O AOS IMPORTS
+    ReviewsComponent
   ],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
@@ -33,9 +33,8 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // A sua lógica de carregamento de produtos e categorias continua a mesma
     this.productService.listarProdutos().subscribe(data => {
-      // Aumentei para 8 para preencher melhor o carrossel em ecrãs grandes
+      // Mostra até 8 produtos em destaque
       this.produtosEmDestaque = data.slice(0, 8); 
     });
 
@@ -48,3 +47,4 @@ export class HomeComponent implements OnInit {
     });
   }
 }
+
