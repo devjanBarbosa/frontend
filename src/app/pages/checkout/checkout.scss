@@ -119,9 +119,10 @@
   }
 }
 
-// === ITENS DO CARRINHO ===
+// === ITENS DO CARRINHO (COM CORREÇÃO DE LAYOUT) ===
 .cart-item {
   display: grid;
+  // Define colunas claras: imagem, detalhes (flexível), quantidade e preço (tamanhos fixos).
   grid-template-columns: 80px 1fr auto auto;
   gap: var(--space-lg);
   padding: var(--space-lg);
@@ -131,12 +132,13 @@
     border-bottom: 1px solid var(--color-border-light);
   }
 
+  // Layout mobile otimizado
   @media (max-width: 576px) {
     grid-template-columns: 60px 1fr;
     grid-template-areas: 
       "image details"
       "image quantity"
-      ".     price";
+      "price price"; // Preço ocupa a largura toda em baixo
     gap: var(--space-sm) var(--space-md);
   }
 }
@@ -219,6 +221,12 @@
   font-size: 1.1rem;
   text-align: right;
   min-width: 100px;
+  color: var(--color-text-primary);
+
+  @media (max-width: 576px) {
+    justify-self: end; // Alinha à direita na linha do grid
+    margin-top: var(--space-sm);
+  }
 }
 
 .empty-cart {
