@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/sitemap.xml",
+      "destination": "https://ledacosmeticos-api-1acaf0d975ac.herokuapp.com/sitemap.xml"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://ledacosmeticos-api-1acaf0d975ac.herokuapp.com/api/:path*"
+    }
+  ]
+}
