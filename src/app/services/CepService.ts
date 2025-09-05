@@ -36,9 +36,8 @@ export class CepService {
       return of(null); // Retorna nulo se o CEP for inválido
     }
 
-    return this.http.get<EnderecoCep>(`${this.backendCepUrl}${cepNumerico}`).pipe(
-      map(endereco => (endereco.erro ? null : endereco)), // Se o backend retornar erro, tratamos como nulo
-      catchError(() => of(null)) // Em caso de erro na requisição (ex: 404), também retorna nulo
-    );
-  }
+    return this.http.get<EnderecoCep>(`${this.backendCepUrl}/${cepNumerico}`).pipe(
+  map(endereco => (endereco.erro ? null : endereco)),
+  catchError(() => of(null))
+);}
 }
