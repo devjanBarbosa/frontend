@@ -1,284 +1,322 @@
-/* ================================
-   VARIÁVEIS CSS CUSTOMIZADAS
-   ================================ */
+/* ==========================================================================
+   1. SETTINGS & CONFIGURATION
+   ========================================================================== */
+
+/**
+ * Contém todas as variáveis globais, como cores, fontes e configurações
+ * de design system. Manter tudo aqui facilita a manutenção do tema.
+ */
+
 :root {
-  /* Spacing System - Escala Harmonizada */
-  --space-xs: 0.25rem;   /* 4px */
-  --space-sm: 0.5rem;    /* 8px */
-  --space-md: 1rem;      /* 16px */
-  --space-lg: 1.5rem;    /* 24px */
-  --space-xl: 2rem;      /* 32px */
-  --space-2xl: 3rem;     /* 48px */
-  
-  /* Typography Scale */
+  // -- CORES (Exemplo - Adicionar paleta completa) --
+  --color-primary-rgb: 59, 130, 246;
+  --color-primary: rgb(var(--color-primary-rgb));
+  --color-primary-light: #93c5fd;
+  --color-primary-dark: #1d4ed8;
+
+  --color-text-primary: #111827;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #6b7280;
+  --color-text-placeholder: #9ca3af;
+
+  --color-surface: #ffffff;
+  --color-surface-light: #f8fafc;
+  --color-surface-muted: #f9fafb;
+  --color-surface-hover: #f1f5f9;
+
+  --color-border: #e5e7eb;
+  --color-border-light: #f3f4f6;
+
+  --color-error: #ef4444;
+  --color-success: #10b981;
+
+  // -- SISTEMA DE ESPAÇAMENTO --
+  --space-xs: 0.25rem;  // 4px
+  --space-sm: 0.5rem;   // 8px
+  --space-md: 1rem;     // 16px
+  --space-lg: 1.5rem;   // 24px
+  --space-xl: 2rem;     // 32px
+  --space-2xl: 3rem;    // 48px
+
+  // -- ESCALA TIPOGRÁFICA --
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
   --font-size-lg: 1.125rem;
   --font-size-xl: 1.25rem;
-  
-  /* Border Radius System */
+
+  // -- BORDAS --
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
-  --radius-pill: 50px;
-  
-  /* Shadows com melhor profundidade */
+  --radius-pill: 50rem; // Usar um valor alto garante a forma de pílula
+
+  // -- SOMBRAS --
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-focus: 0 0 0 3px rgba(59, 130, 246, 0.15);
-  
-  /* Transitions padronizadas */
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-focus: 0 0 0 3px rgba(var(--color-primary-rgb), 0.15);
+
+  // -- TRANSIÇÕES --
   --transition-fast: 150ms ease-out;
   --transition-base: 200ms ease-out;
   --transition-slow: 300ms ease-out;
-  
-  /* Estados interativos */
+
+  // -- EFEITOS DE INTERAÇÃO --
   --hover-scale: 1.02;
   --active-scale: 0.98;
 }
 
-/* ================================
-   FORMULÁRIOS - Design System
-   ================================ */
-.checkout-form {
-  padding: var(--space-xl);
-  max-width: 100%;
-  
-  /* Input Group - Melhor organização visual */
-  .form-group {
+/* ==========================================================================
+   2. GENERIC & RESETS
+   ========================================================================== */
+
+/**
+ * Estilos base e resets para garantir consistência entre navegadores.
+ * Box-sizing é um reset fundamental.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   3. KEYFRAMES & HELPERS
+   ========================================================================== */
+
+/**
+ * Animações e classes utilitárias reutilizáveis.
+ */
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Classe utilitária para "esconder" visualmente, mas manter acessível para leitores de tela
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   4. COMPONENTS
+   ========================================================================== */
+
+/**
+ * O coração do seu CSS. Cada componente é encapsulado em seu próprio
+ * bloco, seguindo a metodologia BEM (Block__Element--Modifier).
+ * Usar aninhamento Sass aqui ajuda a manter o escopo.
+ */
+
+// ------------------------------------
+// COMPONENT: Form
+// ------------------------------------
+
+.c-form {
+  // -- ELEMENTOS DO FORM --
+  &__group {
     margin-bottom: var(--space-lg);
-    
-    label {
-      display: block;
-      font-weight: 600;
-      font-size: var(--font-size-sm);
-      color: var(--color-text-primary);
-      margin-bottom: var(--space-sm);
-      
-      &.required::after {
-        content: " *";
-        color: var(--color-error, #ef4444);
-      }
+  }
+
+  &__label {
+    display: block;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-sm);
+
+    &--required::after {
+      content: " *";
+      color: var(--color-error);
     }
   }
-  
-  /* Inputs redesenhados com micro-interações */
-  input[type="text"],
-  input[type="tel"],
-  input[type="email"],
-  input[type="number"],
-  input[type="password"],
-  select,
-  textarea {
+
+  // Seletor genérico para campos de formulário, mantendo o escopo
+  &__control {
     width: 100%;
-    min-height: 44px; /* Accessibility - mínimo 44px para touch */
+    min-height: 44px; // Acessibilidade
     padding: 0.75rem 1rem;
-    
-    /* Visual aprimorado */
-    border: 1.5px solid var(--color-border, #e5e7eb);
+    border: 1.5px solid var(--color-border);
     border-radius: var(--radius-md);
-    background: var(--color-surface, #ffffff);
-    
-    /* Typography */
+    background: var(--color-surface);
     font-size: var(--font-size-base);
     font-family: inherit;
     line-height: 1.5;
-    
-    /* Transições suaves */
     transition: all var(--transition-base);
-    
-    /* Estados de interação */
+
     &:hover:not(:disabled) {
-      border-color: var(--color-primary-light, #93c5fd);
+      border-color: var(--color-primary-light);
       box-shadow: var(--shadow-sm);
     }
-    
-    &:focus {
-      border-color: var(--color-primary, #3b82f6);
+
+    &:focus-visible {
+      border-color: var(--color-primary);
       box-shadow: var(--shadow-focus);
       outline: none;
-      background: var(--color-surface-light, #fafafa);
+      background: var(--color-surface-light);
     }
-    
+
     &:disabled,
-    &.readonly-field {
-      background: var(--color-surface-muted, #f9fafb);
-      color: var(--color-text-muted, #6b7280);
+    &[readonly] {
+      background: var(--color-surface-muted);
+      color: var(--color-text-muted);
       cursor: not-allowed;
       opacity: 0.7;
     }
-    
+
     &::placeholder {
-      color: var(--color-text-placeholder, #9ca3af);
+      color: var(--color-text-placeholder);
       font-style: italic;
-      opacity: 1;
     }
-    
-    /* Estados de validação */
-    &.error {
-      border-color: var(--color-error, #ef4444);
+
+    // Modificadores de estado
+    &--error {
+      border-color: var(--color-error);
       box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
     }
-    
-    &.success {
-      border-color: var(--color-success, #10b981);
+
+    &--success {
+      border-color: var(--color-success);
       box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
     }
   }
-  
-  /* Mensagens de erro/sucesso */
-  .field-message {
+
+  &__message {
     margin-top: var(--space-xs);
     font-size: var(--font-size-xs);
-    
-    &.error {
-      color: var(--color-error, #ef4444);
+
+    &--error {
+      color: var(--color-error);
     }
-    
-    &.success {
-      color: var(--color-success, #10b981);
+
+    &--success {
+      color: var(--color-success);
     }
   }
 }
 
-/* ================================
-   CARRINHO - Layout Responsivo Aprimorado
-   ================================ */
-.cart-container {
-  background: var(--color-surface, #ffffff);
+// ------------------------------------
+// COMPONENT: Cart
+// ------------------------------------
+
+.c-cart {
+  background: var(--color-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   overflow: hidden;
-}
 
-.cart-item {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  grid-template-areas: "image details quantity price";
-  gap: var(--space-lg);
-  padding: var(--space-lg);
-  align-items: center;
-  border-bottom: 1px solid var(--color-border-light, #f3f4f6);
-  
-  /* Transição suave para interações */
-  transition: background-color var(--transition-fast);
-  
-  &:hover {
-    background: var(--color-surface-hover, #f8fafc);
-  }
-  
-  &:last-child {
-    border-bottom: none;
-  }
-  
-  /* Mobile First - Responsividade aprimorada */
-  @media (max-width: 640px) {
-    grid-template-columns: auto 1fr;
-    grid-template-areas:
-      "image details"
-      "quantity price";
-    gap: var(--space-sm) var(--space-md);
-    padding: var(--space-md);
-  }
-  
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "image"
-      "details"
-      "quantity"
-      "price";
-    text-align: center;
-    gap: var(--space-sm);
-  }
-}
+  &__item {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-areas: "image details quantity price";
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    align-items: center;
+    border-bottom: 1px solid var(--color-border-light);
+    transition: background-color var(--transition-fast);
 
-.cart-item__image {
-  grid-area: image;
-  width: 80px;
-  height: 80px;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform var(--transition-base);
-  }
-  
-  &:hover img {
-    transform: scale(1.05);
-  }
-  
-  @media (max-width: 640px) {
-    width: 60px;
-    height: 60px;
-  }
-}
+    &:hover {
+      background: var(--color-surface-hover);
+    }
 
-.cart-item__details {
-  grid-area: details;
-  min-width: 0; /* Previne overflow */
-  
-  .item-name {
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__image {
+    grid-area: image;
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--transition-base);
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+    }
+  }
+
+  &__details {
+    grid-area: details;
+    min-width: 0; // Previne overflow de flex/grid items
+  }
+
+  &__name {
     font-weight: 600;
-    font-size: var(--font-size-base);
     color: var(--color-text-primary);
     margin-bottom: var(--space-xs);
-    
-    /* Truncate em linhas longas */
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
-  .item-description {
+
+  &__description {
     font-size: var(--font-size-sm);
     color: var(--color-text-secondary);
     line-height: 1.4;
   }
-}
 
-.cart-item__price {
-  grid-area: price;
-  text-align: right;
-  
-  .current-price {
-    font-size: var(--font-size-lg);
-    font-weight: 700;
-    color: var(--color-primary);
-  }
-  
-  .original-price {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    text-decoration: line-through;
-  }
-  
-  @media (max-width: 640px) {
-    text-align: left;
+  &__price {
+    grid-area: price;
+    text-align: right;
+
+    .current-price {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    .original-price {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      text-decoration: line-through;
+    }
   }
 }
 
-/* ================================
-   CONTROLE DE QUANTIDADE - UX Melhorada
-   ================================ */
-.cart-item__quantity {
+// ------------------------------------
+// COMPONENT: Quantity Selector
+// ------------------------------------
+
+.c-quantity {
   grid-area: quantity;
   display: inline-flex;
   align-items: center;
-  background: var(--color-surface-light, #f8fafc);
+  background: var(--color-surface-light);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-pill);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  
-  .quantity-button {
+
+  &__button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -290,140 +328,95 @@
     font-weight: 600;
     cursor: pointer;
     color: var(--color-text-secondary);
-    
-    /* Transições e micro-interações */
     transition: all var(--transition-fast);
-    position: relative;
-    
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--color-primary);
-      opacity: 0;
-      transition: opacity var(--transition-fast);
-      border-radius: inherit;
-    }
-    
+
     &:hover:not(:disabled) {
       color: var(--color-primary);
-      background: var(--color-primary-light, rgba(59, 130, 246, 0.1));
+      background: rgba(var(--color-primary-rgb), 0.1);
       transform: scale(var(--hover-scale));
     }
-    
+
     &:active:not(:disabled) {
       transform: scale(var(--active-scale));
     }
-    
+
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      background: var(--color-surface-muted);
-    }
-    
-    /* Feedback tátil para touch */
-    @media (hover: none) {
-      &:active:not(:disabled) {
-        background: var(--color-primary-light);
-        transform: scale(0.95);
-      }
     }
   }
-  
-  .quantity-display {
+
+  &__display {
     min-width: 3ch;
     padding: 0 var(--space-sm);
     text-align: center;
     font-weight: 600;
-    font-size: var(--font-size-base);
     color: var(--color-text-primary);
-    
-    /* Input para edição manual */
-    &.editable {
-      border: none;
-      background: transparent;
-      outline: none;
-      
-      &:focus {
-        background: var(--color-surface);
-        border-radius: var(--radius-sm);
-      }
-    }
   }
 }
 
-/* ================================
-   MÉTODOS DE PAGAMENTO - Cards Interativos
-   ================================ */
-.payment-methods {
+// ------------------------------------
+// COMPONENT: Payment Method
+// ------------------------------------
+
+.c-payment-methods {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: var(--space-md);
   margin: var(--space-lg) 0;
-}
 
-.payment-method-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  padding: var(--space-lg);
-  min-height: 100px;
-  
-  /* Visual */
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-  cursor: pointer;
-  
-  /* Transições suaves */
-  transition: all var(--transition-base);
-  
-  /* Estados visuais */
-  .payment-icon {
+  &__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    min-height: 100px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    cursor: pointer;
+    transition: all var(--transition-base);
+
+    &:hover:not(.is-selected) {
+      border-color: var(--color-primary-light);
+      background: rgba(var(--color-primary-rgb), 0.05);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+  }
+
+  &__icon {
     font-size: 1.5rem;
     color: var(--color-text-secondary);
-    transition: all var(--transition-base);
+    transition: color var(--transition-base);
   }
-  
-  .payment-label {
+
+  &__label {
     font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--color-text-secondary);
     text-align: center;
     transition: color var(--transition-base);
   }
-  
-  /* Estado hover */
-  &:hover:not(.selected) {
-    border-color: var(--color-primary-light);
-    background: var(--color-primary-light, rgba(59, 130, 246, 0.05));
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    
-    .payment-icon,
-    .payment-label {
-      color: var(--color-primary);
-    }
-  }
-  
-  /* Estado selecionado */
-  &.selected {
+
+  // Estados
+  // Usar .is-state para estados, uma convenção BEM
+  .is-selected {
     border-color: var(--color-primary);
-    background: var(--color-primary-light, rgba(59, 130, 246, 0.1));
+    background: rgba(var(--color-primary-rgb), 0.1);
     box-shadow: var(--shadow-lg);
     transform: scale(1.02);
-    
-    .payment-icon,
-    .payment-label {
+
+    .c-payment-methods__icon,
+    .c-payment-methods__label {
       color: var(--color-primary);
     }
-    
-    /* Indicador visual de seleção */
+
     &::after {
-      content: '✓';
+      content: "✓";
       position: absolute;
       top: var(--space-xs);
       right: var(--space-xs);
@@ -439,145 +432,108 @@
       font-weight: bold;
     }
   }
-  
-  /* Estado de loading */
-  &.loading {
+
+  .is-loading {
     pointer-events: none;
     opacity: 0.7;
-    
-    .payment-icon {
+
+    .c-payment-methods__icon {
       animation: pulse 1.5s infinite;
     }
   }
 }
 
-/* ================================
-   BOTÕES - Sistema de Design Consistente
-   ================================ */
-.btn {
-  /* Base styles */
+// ------------------------------------
+// COMPONENT: Button
+// ------------------------------------
+
+.c-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
   padding: 0.75rem 1.5rem;
   min-height: 44px;
-  
-  /* Typography */
   font-weight: 600;
-  font-size: var(--font-size-base);
   text-decoration: none;
   text-align: center;
   line-height: 1;
-  
-  /* Visual */
   border: 1.5px solid transparent;
   border-radius: var(--radius-md);
   cursor: pointer;
   user-select: none;
-  
-  /* Transitions */
   transition: all var(--transition-base);
-  position: relative;
-  overflow: hidden;
-  
-  /* Estados base */
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    transform: none !important;
   }
-  
+
   &:not(:disabled) {
     &:hover {
       transform: translateY(-1px);
       box-shadow: var(--shadow-lg);
     }
-    
     &:active {
       transform: translateY(0);
       box-shadow: var(--shadow-md);
     }
   }
-}
 
-/* Variações de botões */
-.btn-primary {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark, #1d4ed8));
-  color: white;
-  border-color: var(--color-primary);
-  
-  &:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--color-primary-hover, #2563eb), var(--color-primary));
-    box-shadow: var(--shadow-lg), 0 0 20px rgba(59, 130, 246, 0.3);
-  }
-}
-
-.btn-secondary {
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  border-color: var(--color-border);
-  
-  &:hover:not(:disabled) {
-    background: var(--color-surface-hover, #f1f5f9);
-    border-color: var(--color-primary-light);
-  }
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-  
-  &:hover:not(:disabled) {
-    background: var(--color-primary);
+  // -- MODIFICADORES DE ESTILO --
+  &--primary {
+    background: linear-gradient(
+      135deg,
+      var(--color-primary),
+      var(--color-primary-dark)
+    );
     color: white;
-  }
-}
+    border-color: var(--color-primary);
 
-.btn-ghost {
-  background: transparent;
-  color: var(--color-text-secondary);
-  border-color: transparent;
-  
-  &:hover:not(:disabled) {
-    background: var(--color-surface-hover);
+    &:hover:not(:disabled) {
+      background: linear-gradient(
+        135deg,
+        var(--color-primary-light),
+        var(--color-primary)
+      );
+      box-shadow: var(--shadow-lg), 0 0 20px rgba(var(--color-primary-rgb), 0.3);
+    }
+  }
+
+  &--secondary {
+    background: var(--color-surface);
     color: var(--color-text-primary);
+    border-color: var(--color-border);
+
+    &:hover:not(:disabled) {
+      background: var(--color-surface-hover);
+      border-color: var(--color-primary-light);
+    }
+  }
+
+  // -- MODIFICADORES DE TAMANHO --
+  &--sm {
+    padding: 0.5rem 1rem;
+    font-size: var(--font-size-sm);
+    min-height: 36px;
+  }
+
+  &--lg {
+    padding: 1rem 2rem;
+    font-size: var(--font-size-lg);
+    min-height: 52px;
+  }
+
+  &--full {
+    width: 100%;
   }
 }
 
-/* Tamanhos de botões */
-.btn-sm {
-  padding: 0.5rem 1rem;
-  font-size: var(--font-size-sm);
-  min-height: 36px;
-}
+// ------------------------------------
+// COMPONENT: Loading Spinner
+// ------------------------------------
 
-.btn-lg {
-  padding: 1rem 2rem;
-  font-size: var(--font-size-lg);
-  min-height: 52px;
-}
-
-/* Botão de largura total */
-.btn-full {
-  width: 100%;
-}
-
-/* ================================
-   ESTADOS DE LOADING
-   ================================ */
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.loading-spinner {
+.c-spinner {
   display: inline-block;
   width: 16px;
   height: 16px;
@@ -587,30 +543,53 @@
   animation: spin 0.8s linear infinite;
 }
 
-/* ================================
-   RESPONSIVIDADE E ACESSIBILIDADE
-   ================================ */
+/* ==========================================================================
+   5. RESPONSIVE & ACCESSIBILITY OVERRIDES
+   ========================================================================== */
 
-/* Redução de movimento para usuários sensíveis */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+/**
+ * Media queries e overrides de acessibilidade. Eles vêm por último para
+ * garantir que tenham a maior especificidade.
+ */
+
+@media (max-width: 640px) {
+  .c-cart__item {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "image details"
+      "quantity price";
+    gap: var(--space-sm) var(--space-md);
+    padding: var(--space-md);
+  }
+
+  .c-cart__image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .c-cart__price {
+    text-align: left;
   }
 }
 
-/* Alto contraste */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @media (prefers-contrast: high) {
   :root {
     --shadow-focus: 0 0 0 3px rgba(0, 0, 0, 0.5);
   }
-  
-  .btn-primary {
-    border-width: 2px;
-  }
-  
-  input, select, textarea {
+
+  .c-form__control,
+  .c-btn {
     border-width: 2px;
   }
 }
