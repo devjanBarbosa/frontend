@@ -1,170 +1,194 @@
-<!-- 
-  Arquivo: checkout.html (Versão Refinada)
-  Descrição: Este template foi reestruturado para seguir a sua sugestão de layout,
-  melhorando a clareza e a experiência do usuário com um fluxo mais intuitivo e
-  componentes de UI mais modernos.
--->
-<main class="checkout-container">
-  <header class="page-header">
-    <h1>Finalizar Pedido</h1>
-  </header>
+<form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+  <main class="checkout-container">
+    <header class="page-header">
+      <h1>Finalizar Pedido</h1>
+    </header>
 
-  <div class="checkout-layout" *ngIf="cartItems.length > 0; else emptyCart">
-    
-    <!-- Coluna Principal: Carrinho e Formulário -->
-    <div class="main-column">
+    <div class="checkout-layout" *ngIf="cartItems.length > 0; else emptyCart">
+      <div class="main-column">
+        <section class="card" aria-labelledby="cart-heading">
+          <header class="card-header">
+            <h2 id="cart-heading">
+              <i class="bi bi-cart3" aria-hidden="true"></i> Revise o seu Carrinho
+            </h2>
+          </header>
+          <ul class="cart-items-list">
+            <li class="cart-item" *ngFor="let item of cartItems">
+              <div class="cart-item__image-wrapper">
+                <img [src]="item.produto.urlImagem" [alt]="item.produto.nome" class="cart-item__image">
+              </div>
 
-      <!-- 1. Revisão do Carrinho -->
-      <section class="card" aria-labelledby="cart-heading">
-        <header class="card-header">
-          <h2 id="cart-heading"><i class="bi bi-cart3"></i> Revise o seu Carrinho</h2>
-        </header>
-        <div>
-          <article class="cart-item" *ngFor="let item of cartItems">
-            <img [src]="item.produto.urlImagem" [alt]="item.produto.nome" class="cart-item__image">
-            <div class="cart-item__details">
-              <p class="cart-item__name">{{ item.produto.nome }}</p>
-              <button class="cart-item__remove" (click)="removerItem(item)">
-                <i class="bi bi-trash"></i> Remover
-              </button>
-            </div>
-            <div class="cart-item__quantity">
-              <button class="quantity-button" (click)="decrementarQuantidade(item)" [disabled]="item.quantidade === 1" aria-label="Diminuir quantidade">-</button>
-              <span class="quantity-value">{{ item.quantidade }}</span>
-              <button class="quantity-button" (click)="incrementarQuantidade(item)" aria-label="Aumentar quantidade">+</button>
-            </div>
-            <div class="cart-item__price">
-              <span>{{ (item.produto.preco * item.quantidade) | currency:'BRL' }}</span>
-            </div>
-          </article>
-        </div>
-      </section>
+              <div class="cart-item__details">
+                <h3 class="cart-item__name">{{ item.produto.nome }}</h3>
+                <p class="cart-item__price-per-unit">
+                  {{ item.produto.preco | currency:'BRL' }} / unidade
+                </p>
+              </div>
 
-      <!-- 2. Formulário de Entrega e Pagamento -->
-      <section class="card" aria-labelledby="checkout-heading">
-        <header class="card-header">
-          <h2 id="checkout-heading"><i class="bi bi-person-lines-fill"></i> Seus Dados</h2>
-        </header>
-        
-        <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
-          <div class="form-grid">
-            <div class="form-group full-width">
-              <label for="nomeCliente">Nome Completo</label>
-              <input id="nomeCliente" formControlName="nomeCliente" type="text" placeholder="Digite seu nome completo">
-            </div>
-            <div class="form-group full-width">
-              <label for="whatsappCliente">WhatsApp</label>
-              <input id="whatsappCliente" formControlName="whatsappCliente" type="tel" placeholder="Ex: 21999998888">
-            </div>
-          </div>
+              <div class="cart-item__quantity">
+                <label [for]="'quantity-' + item.produto.id" class="u-visually-hidden">
+                  Quantidade para {{ item.produto.nome }}
+                </label>
+                <div class="quantity-control" [id]="'quantity-' + item.produto.id">
+                  <button type="button" class="quantity-control__button" (click)="decrementarQuantidade(item)" [disabled]="item.quantidade <= 1" aria-label="Diminuir quantidade do item">-</button>
+                  <span class="quantity-control__value" role="status" aria-live="polite">{{ item.quantidade }}</span>
+                  <button type="button" class="quantity-control__button" (click)="incrementarQuantidade(item)" aria-label="Aumentar quantidade do item">+</button>
+                </div>
+              </div>
 
-          <fieldset class="form-group">
-            <legend>Como você quer receber?</legend>
-            <div class="radio-custom-group">
-              <label class="radio-custom">
-                <input type="radio" formControlName="metodoEntrega" value="Delivery">
-                <span class="radio-custom__label">Delivery (Entrega em Bangu e região)</span>
-              </label>
-              <label class="radio-custom">
-                <input type="radio" formControlName="metodoEntrega" value="Retirar na Loja">
-                <span class="radio-custom__label">Retirar na Loja (Grátis)</span>
-              </label>
+              <div class="cart-item__total-price">
+                <span class="u-visually-hidden">Subtotal do item:</span>
+                <span>{{ (item.produto.preco * item.quantidade) | currency:'BRL' }}</span>
+              </div>
+
+              <div class="cart-item__actions">
+                <button type="button" class="cart-item__remove" (click)="removerItem(item)">
+                  <i class="bi bi-trash" aria-hidden="true"></i>
+                  <span class="u-visually-hidden">Remover {{ item.produto.nome }} do carrinho</span>
+                  <span>Remover</span>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="card" aria-labelledby="checkout-heading">
+          <header class="card-header">
+            <h2 id="checkout-heading">
+              <i class="bi bi-person-lines-fill" aria-hidden="true"></i> Seus Dados
+            </h2>
+          </header>
+
+          <fieldset class="form-section">
+            <legend class="form-section__title">Informações de Contato</legend>
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="nomeCliente" class="c-form__label--required">Nome Completo</label>
+                <input id="nomeCliente" formControlName="nomeCliente" type="text" placeholder="Digite seu nome completo" class="c-form__control" required>
+              </div>
+              <div class="form-group full-width">
+                <label for="whatsappCliente" class="c-form__label--required">WhatsApp</label>
+                <input id="whatsappCliente" formControlName="whatsappCliente" type="tel" placeholder="Ex: 21 99999-8888" class="c-form__control" required>
+              </div>
             </div>
           </fieldset>
 
-          <div class="address-fields" *ngIf="checkoutForm.get('metodoEntrega')?.value === 'Delivery'">
+          <fieldset class="form-section">
+            <legend class="form-section__title">Como você quer receber?</legend>
+            <div class="radio-group">
+              <div class="radio-custom">
+                <input type="radio" id="delivery" formControlName="metodoEntrega" value="Delivery">
+                <label for="delivery" class="radio-custom__label">Delivery (Entrega em Bangu e região)</label>
+              </div>
+              <div class="radio-custom">
+                <input type="radio" id="pickup" formControlName="metodoEntrega" value="Retirar na Loja">
+                <label for="pickup" class="radio-custom__label">Retirar na Loja (Grátis)</label>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-section" *ngIf="isDeliverySelected()">
+            <legend class="form-section__title">Endereço de Entrega</legend>
             <div class="form-grid">
               <div class="form-group full-width">
-                <label for="cep">CEP</label>
+                <label for="cep" class="c-form__label--required">CEP</label>
                 <div class="input-with-spinner">
-                  <input id="cep" formControlName="cep" type="text" placeholder="Digite o CEP e aguarde">
-                  <div *ngIf="isCepLoading" class="spinner"></div>
+                  <input id="cep" formControlName="cep" type="text" placeholder="Digite o CEP e aguarde" class="c-form__control" required>
+                  <div *ngIf="isCepLoading" class="c-spinner" role="status" aria-label="Buscando endereço"></div>
                 </div>
               </div>
             </div>
-            
-            <div class="form-grid" *ngIf="cep?.valid">
+
+            <div class="form-grid" *ngIf="cep?.valid && !isCepLoading">
               <div class="form-group two-thirds">
                 <label for="endereco">Rua</label>
-                <input id="endereco" formControlName="endereco" type="text" class="readonly-field">
+                <input id="endereco" formControlName="endereco" type="text" class="c-form__control" readonly aria-readonly="true">
               </div>
               <div class="form-group one-third">
-                <label for="numero">Número</label>
-                <input id="numero" formControlName="numero" type="text" placeholder="Ex: 123">
+                <label for="numero" class="c-form__label--required">Número</label>
+                <input id="numero" formControlName="numero" type="text" placeholder="Ex: 123" class="c-form__control" required>
               </div>
               <div class="form-group half-width">
                 <label for="bairro">Bairro</label>
-                <input id="bairro" formControlName="bairro" type="text" class="readonly-field">
+                <input id="bairro" formControlName="bairro" type="text" class="c-form__control" readonly aria-readonly="true">
               </div>
               <div class="form-group half-width">
                 <label for="complemento">Complemento (Opcional)</label>
-                <input id="complemento" formControlName="complemento" type="text" placeholder="Ex: Apto 101">
+                <input id="complemento" formControlName="complemento" type="text" placeholder="Ex: Apto 101" class="c-form__control">
               </div>
             </div>
+          </fieldset>
+        </section>
+      </div>
+
+      <aside class="sidebar-column">
+        <div class="order-summary-card card" role="region" aria-labelledby="summary-heading">
+          <header class="card-header">
+            <h2 id="summary-heading"><i class="bi bi-receipt" aria-hidden="true"></i> Resumo do Pedido</h2>
+          </header>
+
+          <div class="summary-details">
+            <dl class="summary-list">
+              <div class="summary-list__item">
+                <dt>Subtotal</dt>
+                <dd>{{ subtotal | currency:'BRL' }}</dd>
+              </div>
+              <div class="summary-list__item" *ngIf="isDeliverySelected()">
+                <dt>Taxa de Entrega</dt>
+                <dd>{{ taxaEntrega | currency:'BRL' }}</dd>
+              </div>
+              <div class="summary-list__item--discount" *ngIf="desconto > 0">
+                <dt>Desconto</dt>
+                <dd>- {{ desconto | currency:'BRL' }}</dd>
+              </div>
+            </dl>
           </div>
-        </form>
-      </section>
 
-    </div>
-
-    <!-- Coluna Lateral: Resumo do Pedido -->
-    <aside class="order-summary-section card">
-      <header class="card-header">
-        <h2><i class="bi bi-receipt"></i> Resumo do Pedido</h2>
-      </header>
-      <div class="summary-details">
-        <div class="summary-line">
-          <span>Subtotal</span>
-          <span>{{ subtotal | currency:'BRL' }}</span>
-        </div>
-        <div class="summary-line" *ngIf="checkoutForm.get('metodoEntrega')?.value === 'Delivery'">
-          <span>Taxa de Entrega</span>
-          <span>{{ taxaEntrega | currency:'BRL' }}</span>
-        </div>
-        <div class="summary-line discount" *ngIf="desconto > 0">
-            <span>Desconto</span>
-            <span>- {{ desconto | currency:'BRL' }}</span>
-        </div>
-      </div>
-      <div class="coupon-section">
-        <label for="cupom">Cupom de Desconto</label>
-        <div class="input-group">
-          <input id="cupom" formControlName="cupom" type="text" placeholder="Digite seu cupom">
-          <button class="btn-apply-coupon" (click)="aplicarCupom()">Aplicar</button>
-        </div>
-      </div>
-      <footer class="summary-footer">
-        <div class="summary-total">
-          <span>Total</span>
-          <span>{{ total | currency:'BRL' }}</span>
-        </div>
-        
-        <!-- Seleção de Pagamento como Cartões -->
-        <div class="payment-method-container">
-            <legend>Como você quer pagar?</legend>
-            <div class="payment-method-group">
-                <div class="payment-method-card" (click)="selectPaymentMethod('Pagar na Entrega')" [class.selected]="checkoutForm.get('metodoPagamento')?.value === 'Pagar na Entrega'">
-                    <i class="bi bi-cash-coin"></i>
-                    <span>Pagar na Entrega</span>
-                </div>
-                <div class="payment-method-card" (click)="selectPaymentMethod('Pix')" [class.selected]="checkoutForm.get('metodoPagamento')?.value === 'Pix'">
-                    <i class="bi bi-qr-code"></i>
-                    <span>Pix</span>
-                </div>
+          <div class="coupon-section">
+            <label for="cupom" class="form-label">Cupom de Desconto</label>
+            <div class="input-group">
+              <input id="cupom" formControlName="cupom" type="text" placeholder="Digite seu cupom" class="c-form__control">
+              <button type="button" class="c-btn--secondary" (click)="aplicarCupom()">Aplicar</button>
             </div>
-        </div>
-        
-        <button class="button-primary" (click)="onSubmit()" [disabled]="checkoutForm.invalid || cartItems.length === 0">
-          Finalizar Compra
-        </button>
-      </footer>
-    </aside>
-  </div>
+          </div>
 
-  <ng-template #emptyCart>
-    <div class="card empty-cart">
-      <p>Seu carrinho está vazio.</p>
-      <a routerLink="/" class="button-secondary">Ver produtos</a>
+          <footer class="summary-footer">
+            <div class="summary-total">
+              <dl class="summary-list">
+                <div class="summary-list__item--total">
+                  <dt>Total</dt>
+                  <dd>{{ total | currency:'BRL' }}</dd>
+                </div>
+              </dl>
+            </div>
+
+            <fieldset class="form-section">
+              <legend class="form-section__title">Como você quer pagar?</legend>
+              <div class="payment-method-group" role="radiogroup" aria-labelledby="payment-legend">
+                <div class="payment-method-card" (click)="selectPaymentMethod('Pagar na Entrega')" [class.selected]="isPaymentMethodSelected('Pagar na Entrega')" role="radio" [attr.aria-checked]="isPaymentMethodSelected('Pagar na Entrega')">
+                  <i class="bi bi-cash-coin" aria-hidden="true"></i>
+                  <span>Pagar na Entrega</span>
+                </div>
+                <div class="payment-method-card" (click)="selectPaymentMethod('Pix')" [class.selected]="isPaymentMethodSelected('Pix')" role="radio" [attr.aria-checked]="isPaymentMethodSelected('Pix')">
+                  <i class="bi bi-qr-code" aria-hidden="true"></i>
+                  <span>Pix</span>
+                </div>
+              </div>
+            </fieldset>
+
+            <button type="submit" class="c-btn--primary--full" [disabled]="checkoutForm.invalid || cartItems.length === 0">
+              Finalizar Compra
+            </button>
+          </footer>
+        </div>
+      </aside>
     </div>
-  </ng-template>
-</main>
+
+    <ng-template #emptyCart>
+      <div class="card empty-cart">
+        <p>Seu carrinho está vazio.</p>
+        <a routerLink="/" class="c-btn--secondary">Ver produtos</a>
+      </div>
+    </ng-template>
+  </main>
+</form>

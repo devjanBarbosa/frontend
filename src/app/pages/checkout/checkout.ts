@@ -1,27 +1,50 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { Subject, of } from 'rxjs';
-import { takeUntil, switchMap, tap, debounceTime } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { of, combineLatest } from 'rxjs';
+import { switchMap, tap, debounceTime, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 import { CartService, CartItem } from '../../services/cart';
-import { OrderService, PedidoPayload } from '../../services/order'; 
+import { OrderService, PedidoPayload } from '../../services/order';
 import { CepService } from '../../services/CepService';
 import { ConfiguracaoService } from '../../services/ConfiguracaoService';
+
+// --- BOAS PRÁTICAS: Constantes para evitar "Magic Strings" ---
+const FormKeys = {
+  NOME_CLIENTE: 'nomeCliente',
+  WHATSAPP_CLIENTE: 'whatsappCliente',
+  METODO_ENTREGA: 'metodoEntrega',
+  METODO_PAGAMENTO: 'metodoPagamento',
+  CEP: 'cep',
+  ENDERECO: 'endereco',
+  BAIRRO: 'bairro',
+  NUMERO: 'numero',
+  COMPLEMENTO: 'complemento',
+  CUPOM: 'cupom',
+} as const;
+
+const DeliveryMethods = {
+  DELIVERY: 'Delivery',
+  PICKUP: 'Retirar na Loja',
+} as const;
+
+const PaymentMethods = {
+  ON_DELIVERY: 'Pagar na Entrega',
+  PIX: 'Pix',
+} as const;
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './checkout.html',
-  styleUrls: ['./checkout.scss']
+  styleUrls: ['./checkout.scss'],
 })
-export class CheckoutComponent implements OnInit, OnDestroy {
-
-  @ViewChild('numeroInput') numeroInput!: ElementRef<HTMLInputElement>;
-
+export class CheckoutComponent implements OnInit {
+  // --- STATE DO COMPONENTE ---
   checkoutForm!: FormGroup;
   cartItems: CartItem[] = [];
   subtotal = 0;
@@ -29,140 +52,56 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   taxaEntrega = 0;
   desconto = 0;
   isCepLoading = false;
-  private destroy$ = new Subject<void>();
 
-  constructor(
-    private fb: FormBuilder,
-    private cartService: CartService,
-    private orderService: OrderService,
-    private router: Router,
-    private toastr: ToastrService,
-    private cepService: CepService,
-    private configuracaoService: ConfiguracaoService
-  ) {}
-
-  ngOnInit(): void {
-    this.iniciarFormulario();
-    this.carregarDadosIniciais();
-    this.observarMudancasNoFormulario();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  // Getters para facilitar o acesso aos controles no template
-  get nomeCliente(): AbstractControl | null { return this.checkoutForm.get('nomeCliente'); }
-  get whatsappCliente(): AbstractControl | null { return this.checkoutForm.get('whatsappCliente'); }
-  get metodoEntrega(): AbstractControl | null { return this.checkoutForm.get('metodoEntrega'); }
-  get cep(): AbstractControl | null { return this.checkoutForm.get('cep'); }
-
-  private iniciarFormulario(): void {
-    this.checkoutForm = this.fb.group({
-      nomeCliente: ['', Validators.required],
-      whatsappCliente: ['', [Validators.required, Validators.pattern('^[0-9]{10,11}$')]],
-      metodoEntrega: ['Delivery', Validators.required],
-      metodoPagamento: ['Pagar na Entrega', Validators.required],
-      cep: [''],
-      endereco: [{ value: '', disabled: true }],
-      bairro: [{ value: '', disabled: true }],
-      numero: [''],
-      complemento: [''],
-      cupom: ['']
-    });
-  }
-
-  private carregarDadosIniciais(): void {
-    this.configuracaoService.getTaxaEntrega().pipe(takeUntil(this.destroy$)).subscribe(taxa => {
-      this.taxaEntrega = taxa;
-      this.calcularTotal();
-    });
-
-    this.cartService.items$.pipe(takeUntil(this.destroy$)).subscribe(items => {
-      this.cartItems = items;
-      this.calcularTotal();
-    });
-  }
-
-  private observarMudancasNoFormulario(): void {
-    this.metodoEntrega?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      this.ajustarValidadoresDeEndereco(value === 'Delivery');
-      this.calcularTotal();
-    });
-    this.ajustarValidadoresDeEndereco(this.metodoEntrega?.value === 'Delivery');
-
-    this.cep?.valueChanges.pipe(
-      takeUntil(this.destroy$),
-      debounceTime(300),
-      tap(() => {
-        if (this.cep?.valid) {
-          this.checkoutForm.patchValue({ endereco: '', bairro: '' });
-        }
-      }),
-      switchMap(cepValue => {
-        if (cepValue && cepValue.length === 8 && this.cep?.valid) {
-          this.isCepLoading = true;
-          return this.cepService.buscar(cepValue);
-        }
-        return of(null);
-      })
-    ).subscribe(endereco => {
-      this.isCepLoading = false;
-      if (endereco) {
-        this.checkoutForm.patchValue({
-          endereco: endereco.logradouro,
-          bairro: endereco.bairro
-        });
-        // --- CORREÇÃO APLICADA AQUI ---
-        // Foca no elemento de input do número após preencher o endereço
-        this.numeroInput?.nativeElement.focus();
-      } else if (this.cep?.value.length === 8) {
-        this.toastr.error('CEP não encontrado. Verifique o número digitado.', 'Erro de CEP');
-      }
-    });
-  }
+  @ViewChild('numeroInput') private numeroInput!: ElementRef<HTMLInputElement>;
   
-  private ajustarValidadoresDeEndereco(isDelivery: boolean): void {
-    const camposEndereco = ['cep', 'numero'];
-    camposEndereco.forEach(campo => {
-      const control = this.checkoutForm.get(campo);
-      if (isDelivery) {
-        control?.setValidators(Validators.required);
-        if (campo === 'cep') {
-          control?.addValidators(Validators.pattern('^[0-9]{8}$'));
-        }
-      } else {
-        control?.clearValidators();
-      }
-      control?.updateValueAndValidity();
-    });
+  // --- BOAS PRÁTICAS: Injeção de dependência moderna e `takeUntilDestroyed` ---
+  private readonly fb = inject(FormBuilder);
+  private readonly cartService = inject(CartService);
+  private readonly orderService = inject(OrderService);
+  private readonly router = inject(Router);
+  private readonly toastr = inject(ToastrService);
+  private readonly cepService = inject(CepService);
+  private readonly configuracaoService = inject(ConfiguracaoService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  // --- LIFECYCLE HOOK ---
+  ngOnInit(): void {
+    this.initializeForm();
+    this.initializeComponentStreams();
+    this.observeFormChanges();
   }
 
-  private calcularTotal(): void {
-    this.subtotal = this.cartItems.reduce((acc, item) => acc + (item.produto.preco * item.quantidade), 0);
-    const taxa = (this.metodoEntrega?.value === 'Delivery') ? this.taxaEntrega : 0;
-    this.total = this.subtotal + taxa - this.desconto;
-  }
+  // --- GETTERS PARA O TEMPLATE ---
+  get cep(): AbstractControl | null { return this.checkoutForm.get(FormKeys.CEP); }
 
-  aplicarCupom(): void {
-      const cupom = this.checkoutForm.get('cupom')?.value.toUpperCase();
-      if (cupom === 'LEDA10') {
-          this.desconto = 10.00;
-          this.calcularTotal();
-          this.toastr.success('Cupom de R$ 10,00 aplicado com sucesso!');
-      } else {
-          this.toastr.error('Cupom inválido.');
-      }
-  }
-
-  selectPaymentMethod(method: string): void {
-      this.checkoutForm.get('metodoPagamento')?.setValue(method);
-  }
-
+  // --- MÉTODOS PÚBLICOS PARA O TEMPLATE ---
   incrementarQuantidade(item: CartItem): void { this.cartService.adicionarAoCarrinho(item.produto); }
   decrementarQuantidade(item: CartItem): void { this.cartService.decrementarQuantidade(item); }
   removerItem(item: CartItem): void { this.cartService.removerItem(item); }
+  
+  selectPaymentMethod(method: string): void {
+    this.checkoutForm.get(FormKeys.METODO_PAGAMENTO)?.setValue(method);
+  }
+
+  isDeliverySelected(): boolean {
+    return this.checkoutForm.get(FormKeys.METODO_ENTREGA)?.value === DeliveryMethods.DELIVERY;
+  }
+  
+  isPaymentMethodSelected(method: string): boolean {
+    return this.checkoutForm.get(FormKeys.METODO_PAGAMENTO)?.value === method;
+  }
+  
+  aplicarCupom(): void {
+    const cupom = this.checkoutForm.get(FormKeys.CUPOM)?.value?.toUpperCase();
+    if (cupom === 'LEDA10') {
+      this.desconto = 10.00;
+      this.calculateTotal();
+      this.toastr.success('Cupom de R$ 10,00 aplicado com sucesso!');
+    } else {
+      this.toastr.error('Cupom inválido.');
+    }
+  }
 
   onSubmit(): void {
     if (this.checkoutForm.invalid || this.cartItems.length === 0) {
@@ -170,9 +109,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.toastr.warning('Por favor, preencha todos os campos obrigatórios.', 'Atenção');
       return;
     }
-    
+
     const formValues = this.checkoutForm.getRawValue();
-    
     const pedidoPayload: PedidoPayload = {
       ...formValues,
       itens: this.cartItems.map(item => ({
@@ -180,7 +118,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         quantidade: item.quantidade
       }))
     };
-    
+
     this.orderService.criarPedido(pedidoPayload).subscribe({
       next: (respostaDoPedido) => {
         this.toastr.success('Entraremos em contato pelo WhatsApp para confirmar.', 'Pedido Realizado!');
@@ -194,5 +132,106 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       }
     });
   }
-}
 
+  // --- LÓGICA PRIVADA E INICIALIZAÇÃO ---
+  private initializeForm(): void {
+    this.checkoutForm = this.fb.group({
+      [FormKeys.NOME_CLIENTE]: ['', Validators.required],
+      [FormKeys.WHATSAPP_CLIENTE]: ['', [Validators.required, Validators.pattern('^[0-9]{10,11}$')]],
+      [FormKeys.METODO_ENTREGA]: [DeliveryMethods.DELIVERY, Validators.required],
+      [FormKeys.METODO_PAGAMENTO]: [PaymentMethods.ON_DELIVERY, Validators.required],
+      [FormKeys.CEP]: [''],
+      [FormKeys.ENDERECO]: [{ value: '', disabled: true }],
+      [FormKeys.BAIRRO]: [{ value: '', disabled: true }],
+      [FormKeys.NUMERO]: [''],
+      [FormKeys.COMPLEMENTO]: [''],
+      [FormKeys.CUPOM]: ['']
+    });
+  }
+
+  private initializeComponentStreams(): void {
+    // --- BOAS PRÁTICAS: Carregamento de dados declarativo com `combineLatest` ---
+    combineLatest([
+      this.configuracaoService.getTaxaEntrega(),
+      this.cartService.items$
+    ]).pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([taxa, items]) => {
+        this.taxaEntrega = taxa;
+        this.cartItems = items;
+        this.calculateTotal();
+      });
+  }
+
+  private observeFormChanges(): void {
+    this.observeDeliveryMethodChanges();
+    this.observeCepChanges();
+  }
+
+  private observeDeliveryMethodChanges(): void {
+    const metodoEntregaCtrl = this.checkoutForm.get(FormKeys.METODO_ENTREGA);
+    if (metodoEntregaCtrl) {
+      metodoEntregaCtrl.valueChanges
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(value => {
+          this.toggleAddressValidators(value === DeliveryMethods.DELIVERY);
+          this.calculateTotal();
+        });
+      // Seta o estado inicial dos validadores
+      this.toggleAddressValidators(metodoEntregaCtrl.value === DeliveryMethods.DELIVERY);
+    }
+  }
+
+  private observeCepChanges(): void {
+    this.cep?.valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef),
+      debounceTime(400),
+      tap(() => this.checkoutForm.patchValue({ [FormKeys.ENDERECO]: '', [FormKeys.BAIRRO]: '' })),
+      switchMap(cepValue => {
+        const cepValido = cepValue && cepValue.length === 8 && this.cep?.valid;
+        if (cepValido) {
+          this.isCepLoading = true;
+          return this.cepService.buscar(cepValue).pipe(
+            catchError(() => {
+              this.toastr.error('CEP não encontrado. Verifique o número digitado.', 'Erro de CEP');
+              return of(null);
+            })
+          );
+        }
+        return of(null);
+      })
+    ).subscribe(endereco => {
+      this.isCepLoading = false;
+      if (endereco) {
+        this.checkoutForm.patchValue({
+          [FormKeys.ENDERECO]: endereco.logradouro,
+          [FormKeys.BAIRRO]: endereco.bairro
+        });
+        // Foca no campo de número para melhor UX
+        this.numeroInput?.nativeElement.focus();
+      }
+    });
+  }
+
+  private toggleAddressValidators(isDelivery: boolean): void {
+    const addressFields = [FormKeys.CEP, FormKeys.NUMERO];
+    addressFields.forEach(fieldName => {
+      const control = this.checkoutForm.get(fieldName);
+      if (isDelivery) {
+        const validators = [Validators.required];
+        if (fieldName === FormKeys.CEP) {
+          validators.push(Validators.pattern('^[0-9]{8}$'));
+        }
+        control?.setValidators(validators);
+      } else {
+        control?.clearValidators();
+      }
+      control?.updateValueAndValidity();
+    });
+  }
+
+  private calculateTotal(): void {
+    this.subtotal = this.cartItems.reduce((acc, item) => acc + (item.produto.preco * item.quantidade), 0);
+    const deliveryFee = this.isDeliverySelected() ? this.taxaEntrega : 0;
+    this.total = this.subtotal + deliveryFee - this.desconto;
+  }
+}
