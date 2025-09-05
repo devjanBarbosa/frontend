@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 // Interface para definir a estrutura da resposta do backend
 export interface EnderecoCep {
@@ -18,7 +19,7 @@ export interface EnderecoCep {
 })
 export class CepService {
   // Endpoint do seu backend Spring Boot
-  private readonly backendCepUrl = 'http://localhost:8080/api/cep/';
+  private readonly backendCepUrl = `${environment.apiUrl}/api/cep`;
 
   constructor(private http: HttpClient) { }
 
