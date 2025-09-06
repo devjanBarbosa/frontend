@@ -90,11 +90,46 @@
 }
 
 .pix-layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  align-items: center;
-  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column; // Começa com a direção de coluna (bom para mobile)
+  gap: 1.5rem;           // Espaçamento entre os itens
+  align-items: center;     // Centraliza o QR code e o texto
+  margin-top: 1.5rem;
+  
+  @media (min-width: 768px) {
+    // Em telas maiores (tablets e desktops), volta para o layout lado a lado
+    flex-direction: row;
+    align-items: flex-start; // Alinha os itens no topo
+  }
+
+  .qr-code-wrapper {
+    flex-shrink: 0; // Impede que o QR code encolha
+    img {
+      max-width: 220px; // Um bom tamanho para o QR Code
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 10px; // Um respiro para o QR code
+      background-color: white;
+    }
+  }
+
+  .copy-paste-wrapper {
+    width: 100%; // Ocupa a largura total disponível
+    text-align: center; // Centraliza o texto no mobile
+
+    @media (min-width: 768px) {
+      text-align: left; // Alinha à esquerda no desktop
+    }
+  }
+}
+
+// Garante que o input-group também se adapte bem
+.input-group {
+    textarea {
+        min-height: 120px; // Aumenta a altura para facilitar a leitura no celular
+    }
 }
 
 @media (min-width: 600px) {
