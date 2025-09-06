@@ -27,7 +27,7 @@
       
       <div class="pix-layout">
         <div class="qr-code-wrapper">
-          <img [src]="'data:image/jpeg;base64,' + pedido.pixQrCodeBase64" alt="PIX QR Code para pagamento do pedido">
+          <img [src]="pedido.pixQrCodeBase64" alt="PIX QR Code para pagamento do pedido">
         </div>
         <div class="copy-paste-wrapper">
           <label for="pixCode">PIX Copia e Cola</label>
