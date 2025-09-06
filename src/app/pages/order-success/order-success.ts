@@ -39,8 +39,6 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
           // --- CORREÇÃO APLICADA AQUI ---
           // Agora, a conversão é reportada logo que os dados do pedido chegam.
           if (pedido) {
-            this.reportarConversaoUmaVez(pedido);
-
             // A lógica do timer e do polling só inicia se o pagamento estiver pendente.
             if (pedido.status === 'PENDENTE') {
               const dataCriacao = new Date(pedido.dataCriacao); 
@@ -87,7 +85,9 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
         takeWhile(pedido => !!pedido && pedido.status === 'PENDENTE', true)
       )
       .subscribe(pedido => {
+        
         if (pedido && pedido.status !== 'PENDENTE') {
+          this.reportarConversaoUmaVez(pedido);
           this.pollingSubscription?.unsubscribe();
           this.timerSubscription?.unsubscribe();
           this.toastr.success('Pagamento confirmado! Estamos preparando seu pedido.', 'Sucesso!');
