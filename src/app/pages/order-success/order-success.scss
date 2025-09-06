@@ -225,3 +225,32 @@
     transform: rotate(360deg);
   }
 }
+.timer-container {
+  text-align: center; // Centraliza o conteúdo
+  margin-top: 20px;   // Espaçamento acima
+  padding: 15px;      // Espaçamento interno
+  border: 1px solid #e0e0e0; // Borda sutil
+  border-radius: 8px;       // Cantos arredondados
+  background-color: #f9f9f9; // Cor de fundo leve
+
+  p {
+    margin: 0 0 10px 0; // Remove margem de baixo do parágrafo
+    font-size: 1rem;    // Tamanho da fonte do texto
+    color: #555;        // Cor do texto
+  }
+}
+
+// Estilo para o tempo restante (os números)
+.timer {
+  font-size: 2.5rem;    // Tamanho grande para destaque
+  font-weight: bold;    // Fonte em negrito
+  color: #333;           // Cor escura para os números
+  letter-spacing: 2px;  // Espaçamento entre os caracteres
+}
+
+// Estilo especial para a mensagem de PIX Expirado
+.pix-expirado {
+  font-size: 1.2rem !important; // Aumenta o tamanho da fonte
+  font-weight: bold;           // Negrito
+  color: #d32f2f !important;   // Cor vermelha para indicar expiração/alerta
+}
