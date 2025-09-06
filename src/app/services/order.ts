@@ -18,13 +18,14 @@ export interface PedidoPayload {
   complemento?: string;
   bairro: string;
   itens: {
-    produtoId: string; // Corrigido de produto: { id: string } para alinhar com o backend
+    produtoId: string; 
     quantidade: number;
   }[];
 }
 
 // Interface para RECEBER os dados de um item de um pedido
 export interface ItemPedido {
+  produtoId: string;
   nomeProduto: string;
   quantidade: number;
   precoUnitario: number;

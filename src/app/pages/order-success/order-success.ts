@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, Subscription, interval, of, startWith, switchMap, takeWhile, tap, map } from 'rxjs';
 import { OrderService, Pedido } from '../../services/order';
 import { ToastrService } from 'ngx-toastr';
+import { GoogleAnalyticsService } from '../../services/googleAnalyticsService';
 
 @Component({
   selector: 'app-order-success',
@@ -26,7 +27,8 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private orderService: OrderService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private googleAnalyticsService: GoogleAnalyticsService
   ) {}
 
   ngOnInit(): void {
@@ -34,16 +36,23 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
     if (pedidoId) {
       this.pedido$ = this.orderService.getPedidoById(pedidoId).pipe(
         tap(pedido => {
-          if (pedido && pedido.status === 'PENDENTE') {
-            const dataCriacao = new Date(pedido.dataCriacao); 
-            const dataExpiracao = new Date(dataCriacao.getTime() + 10 * 60000);
-            this.iniciarContador(dataExpiracao);
-            this.iniciarVerificacaoDeStatus(pedidoId);
+          // --- CORREÇÃO APLICADA AQUI ---
+          // Agora, a conversão é reportada logo que os dados do pedido chegam.
+          if (pedido) {
+            this.reportarConversaoUmaVez(pedido);
+
+            // A lógica do timer e do polling só inicia se o pagamento estiver pendente.
+            if (pedido.status === 'PENDENTE') {
+              const dataCriacao = new Date(pedido.dataCriacao); 
+              const dataExpiracao = new Date(dataCriacao.getTime() + 10 * 60000);
+              this.iniciarContador(dataExpiracao);
+              this.iniciarVerificacaoDeStatus(pedidoId);
+            }
           }
         })
       );
     } else {
-        this.pedido$ = of(null);
+      this.pedido$ = of(null);
     }
   }
 
@@ -52,19 +61,40 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
     this.timerSubscription?.unsubscribe();
   }
 
+  private reportarConversaoUmaVez(pedido: Pedido): void {
+    const conversionSentKey = `conversion_sent_${pedido.id}`;
+    
+    if (!sessionStorage.getItem(conversionSentKey)) {
+      
+      const itemsParaAnalytics = pedido.itens.map(item => ({
+        item_id: item.produtoId,
+        item_name: item.nomeProduto,
+        price: item.precoUnitario,
+        quantity: item.quantidade
+      }));
+
+      this.googleAnalyticsService.reportarCompra(pedido.id, pedido.valorTotal, itemsParaAnalytics);
+      
+      sessionStorage.setItem(conversionSentKey, 'true');
+    }
+  }
+
   private iniciarVerificacaoDeStatus(pedidoId: string): void {
-    this.pollingSubscription = interval(5000) // A cada 5 segundos
+    this.pollingSubscription = interval(5000)
       .pipe(
-        startWith(0), // Executa imediatamente
+        startWith(0),
         switchMap(() => this.orderService.getPedidoById(pedidoId)),
-        takeWhile(pedido => pedido.status === 'PENDENTE', true) // Continua enquanto o status for PENDENTE
+        takeWhile(pedido => !!pedido && pedido.status === 'PENDENTE', true)
       )
       .subscribe(pedido => {
         if (pedido && pedido.status !== 'PENDENTE') {
           this.pollingSubscription?.unsubscribe();
           this.timerSubscription?.unsubscribe();
           this.toastr.success('Pagamento confirmado! Estamos preparando seu pedido.', 'Sucesso!');
-          this.router.navigate(['/']); // Redireciona para a home
+          
+          setTimeout(() => {
+            this.router.navigate(['/']); 
+          }, 3000);
         }
       });
   }
@@ -89,7 +119,7 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
       this.tempoRestante = tempoFormatado;
       if(tempoFormatado === '00:00') {
          this.toastr.warning('O tempo para pagamento expirou.', 'PIX Expirado');
-         this.pollingSubscription?.unsubscribe(); // Para a verificação também
+         this.pollingSubscription?.unsubscribe();
       }
     });
   }
@@ -106,5 +136,12 @@ export class OrderSuccessComponent implements OnInit, OnDestroy {
     }, (err) => {
       this.toastr.error('Não foi possível copiar o código.');
     });
+  }
+
+  public formatarQrCodeBase64(base64String: string): string {
+    if (base64String.startsWith('data:image')) {
+      return base64String;
+    }
+    return `data:image/png;base64,${base64String}`;
   }
 }

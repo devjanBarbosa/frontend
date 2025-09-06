@@ -10,6 +10,7 @@ import { CartService, CartItem } from '../../services/cart';
 import { OrderService, PedidoPayload } from '../../services/order';
 import { CepService } from '../../services/CepService';
 import { ConfiguracaoService } from '../../services/ConfiguracaoService';
+import { GoogleAnalyticsService } from '../../services/googleAnalyticsService';
 
 @Component({
   selector: 'app-checkout',
@@ -39,7 +40,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private router: Router,
     private toastr: ToastrService,
     private cepService: CepService,
-    private configuracaoService: ConfiguracaoService
+    private configuracaoService: ConfiguracaoService,
+     private googleAnalyticsService: GoogleAnalyticsService
   ) {}
 
   ngOnInit(): void {
