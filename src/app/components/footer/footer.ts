@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, ChangeDetector
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { GoogleAnalyticsService } from '../../services/googleAnalyticsService';
 
 declare var google: any;
 
@@ -35,7 +36,7 @@ export class FooterComponent implements OnInit, AfterViewInit {
   currentYear = new Date().getFullYear();
   mapLoaded = false;
 
-  constructor(private toastr: ToastrService, private cdr: ChangeDetectorRef) {}
+  constructor(private toastr: ToastrService, private cdr: ChangeDetectorRef, private googleAnalyticsService: GoogleAnalyticsService) {}
 
   ngOnInit(): void {
     this.loadGoogleMapsScript();
@@ -90,6 +91,7 @@ export class FooterComponent implements OnInit, AfterViewInit {
   }
 
     openDirections(): void {
+    this.googleAnalyticsService.reportarEventoPersonalizado('click_get_directions');
     const address = encodeURIComponent(`${this.lojaInfo.endereco}, ${this.lojaInfo.cidade}`);
     window.open(`https://www.google.com/maps/dir/?api=1&destination=${address}`, '_blank');
   }
