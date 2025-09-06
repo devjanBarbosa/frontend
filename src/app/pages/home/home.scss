@@ -243,3 +243,60 @@ swiper-slide {
     display: none;
   }
 }
+
+/* Estilos para o Mini Banner de Marcas */
+.brand-banner {
+  background-color: #f7f9fc; // Um cinza bem claro, quase branco
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-color-dark);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .brand-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem 1.5rem; // Espaçamento vertical e horizontal
+    margin-bottom: 1.5rem;
+  }
+
+  .brand-item {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-color-light);
+    border: 1px solid #ced4da;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px; // Deixa com formato de pílula
+    transition: all 0.2s ease-in-out;
+
+    // Efeito sutil ao passar o mouse
+    &:hover {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+  }
+
+  .availability-check {
+    margin: 0;
+    color: var(--text-color-light);
+    
+    a {
+      color: var(--primary-color);
+      font-weight: 600;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
