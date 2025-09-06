@@ -19,50 +19,54 @@
   
       <section class="card-content">
 
-        <div *ngIf="pedido.metodoPagamento === 'Pix' && pedido.pixQrCodeBase64 && pedido.pixCopiaECola" class="payment-details">
-          <h2 class="section-title">Finalize o Pagamento via Pix</h2>
-          <p class="section-description">Aponte a câmera do seu celular para o QR Code ou utilize o código abaixo para pagar.</p>
-          
-          <div class="pix-layout">
-            <div class="qr-code-wrapper">
-              <img [src]="pedido.pixQrCodeBase64" alt="PIX QR Code para pagamento do pedido">
-            </div>
-            <div class="copy-paste-wrapper">
-              <label for="pixCode">PIX Copia e Cola</label>
-              <div class="input-group">
-                <textarea id="pixCode" readonly rows="4" aria-label="Código PIX para copiar e colar">{{ pedido.pixCopiaECola }}</textarea>
-                <button (click)="copiarPix(pedido.pixCopiaECola)" title="Copiar código PIX" class="btn-copy">
-                  <i class="bi bi-clipboard-check-fill" aria-hidden="true"></i>
-                  <span class="sr-only">Copiar Código</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="timer-container" *ngIf="tempoRestante && tempoRestante !== '00:00'">
-    <p>Este QR Code expira em:</p>
-    <div class="timer">{{ tempoRestante }}</div>
-</div>
+  <div *ngIf="pedido.metodoPagamento === 'Pix'">
 
-<div class="timer-container" *ngIf="tempoRestante === '00:00'">
-    <p class="pix-expirado">PIX Expirado!</p>
-    </div>
+    <div *ngIf="pedido.status === 'PENDENTE' && pedido.pixQrCodeBase64" class="payment-details">
+      <h2 class="section-title">Finalize o Pagamento via Pix</h2>
+      <p class="section-description">Aponte a câmera do seu celular para o QR Code ou utilize o código abaixo para pagar.</p>
+      
+      <div class="pix-layout">
+        <div class="qr-code-wrapper">
+          <img [src]="'data:image/jpeg;base64,' + pedido.pixQrCodeBase64" alt="PIX QR Code para pagamento do pedido">
         </div>
-
-         <div *ngIf="pedido.status !== 'PENDENTE'">
-        <div class="pagamento-aprovado">
-          <i class="fas fa-check-circle fa-5x text-success mb-3"></i>
-          <h1 class="display-4">Pagamento Aprovado!</h1>
-          <p class="lead">Seu pedido <strong>#{{ pedido.id.substring(0, 8) }}</strong> foi recebido e já estamos preparando tudo para você.</p>
-          <p>Você será redirecionado em alguns segundos...</p>
+        <div class="copy-paste-wrapper">
+          <label for="pixCode">PIX Copia e Cola</label>
+          <div class="input-group">
+            <textarea id="pixCode" readonly rows="4" aria-label="Código PIX para copiar e colar">{{ pedido.pixCopiaECola }}</textarea>
+            <button (click)="copiarPix(pedido.pixCopiaECola)" title="Copiar código PIX" class="btn-copy">
+              <i class="bi bi-clipboard-check-fill" aria-hidden="true"></i>
+              <span class="sr-only">Copiar Código</span>
+            </button>
+          </div>
         </div>
       </div>
+      
+      <div class="timer-container" *ngIf="tempoRestante && tempoRestante !== '00:00'">
+        <p>Este QR Code expira em:</p>
+        <div class="timer">{{ tempoRestante }}</div>
+      </div>
+      <div class="timer-container" *ngIf="tempoRestante === '00:00'">
+        <p class="pix-expirado">PIX Expirado!</p>
+      </div>
+    </div>
 
-        <!-- Caso 2: Outros métodos de pagamento (ex: Pagar na Entrega) -->
-        <div *ngIf="pedido.metodoPagamento !== 'Pix'" class="other-payment-details">
-          <h2 class="section-title">Próximos Passos</h2>
-          <p class="section-description">Já estamos preparando o seu pedido com muito carinho! O pagamento será realizado no momento da entrega.</p>
-        </div>
-      </section>
+    <div *ngIf="pedido.status !== 'PENDENTE'">
+      <div class="pagamento-aprovado">
+        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+        <h1 class="display-4">Pagamento Aprovado!</h1>
+        <p class="lead">Seu pedido <strong>#{{ pedido.id.substring(0, 8) }}</strong> foi recebido e já estamos preparando tudo para você.</p>
+        <p>Você será redirecionado em alguns segundos...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div *ngIf="pedido.metodoPagamento !== 'Pix'" class="other-payment-details">
+    <h2 class="section-title">Próximos Passos</h2>
+    <p class="section-description">Já estamos preparando o seu pedido com muito carinho! O pagamento será realizado no momento da entrega.</p>
+  </div>
+
+</section>
 
       <!-- 
         FOOTER: Contém as ações principais que o usuário pode tomar após a compra.
