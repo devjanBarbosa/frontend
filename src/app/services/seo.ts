@@ -141,7 +141,7 @@ export class SeoService {
 
   private updateTagsForStaticPage(url: string): void {
     // Títulos e descrições continuam os mesmos
-    let title = 'Leda Cosméticos | Entrega Rápida em Bangu, RJ';
+    let title = 'Leda Cosméticos | Entrega Rápida em Bangu e Região, RJ';
     let description = 'Descubra nossa seleção de cosméticos e presentes em Bangu, com entrega rápida. A curadoria especial da Leda para a sua beleza.';
 
     switch (url) {
