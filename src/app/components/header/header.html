@@ -1,67 +1,50 @@
 <header class="site-header">
-  
-    <div class="top-bar">
-    <div class="header-container">
-      
-      <div class="top-bar-start">
-        <span></span>
-      </div>
-
-      <div class="ticker-wrap">
-        <div class="ticker-move">
-          <div class="ticker-item" *ngFor="let mensagem of mensagensMarketing">{{ mensagem }}</div>
-          <div class="ticker-item" *ngIf="mensagensMarketing.length > 0">{{ mensagensMarketing[0] }}</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
 
   <div class="main-header">
-    <div class="header-container">
+  <div class="header-container">
+
+    <div class="header-top-row">
       <div class="logo">
         <a routerLink="/" aria-label="Página Inicial">Leda Cosméticos</a>
       </div>
-
-      <nav class="main-nav" [class.is-active]="isMenuOpen">
-        <div class="nav-item">
-          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" (click)="closeMenu()">Home</a>
-        </div>
-        
-        <div class="nav-item dropdown">
-          <a routerLink="/produtos" routerLinkActive="active" class="nav-link">Produtos</a>
-          <div class="dropdown-menu">
-            <a *ngFor="let cat of categoriasDeProduto" [routerLink]="['/produtos']" [queryParams]="{ categoria: cat.id }" class="dropdown-item" (click)="closeMenu()">{{ cat.nome }}</a>
-          </div>
-        </div>
-
-        <div class="nav-item dropdown">
-          <a routerLink="/presentes" routerLinkActive="active" class="nav-link">Presentes</a>
-          <div class="dropdown-menu">
-            <a *ngFor="let cat of categoriasDePresente" [routerLink]="['/presentes']" [queryParams]="{ categoria: cat.id }" class="dropdown-item" (click)="closeMenu()">{{ cat.nome }}</a>
-          </div>
-        </div>
-
-        <div class="nav-item">
-          <a routerLink="/sobre-nos" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Sobre Nós</a>
-        </div>
-      </nav>
-      
       <div class="header-actions">
-        <div class="search-bar">
-          <input type="text" placeholder="O que você procura?" #termoPesquisa (keyup.enter)="pesquisar(termoPesquisa.value)">
-          <button (click)="pesquisar(termoPesquisa.value)" aria-label="Buscar"><i class="bi bi-search"></i></button>
-        </div>
         <a routerLink="/carrinho" class="cart-link" aria-label="Ver carrinho de compras">
           <i class="bi bi-cart3"></i> 
           <span *ngIf="hasCartItems()" class="cart-badge">{{ quantidadeItensCarrinho }}</span>
         </a>
         <button class="menu-toggle" [class.is-active]="isMenuOpen" (click)="toggleMenu()" aria-label="Abrir menu">
-  <span class="bar"></span>
-  <span class="bar"></span>
-  <span class="bar"></span>
-</button>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
       </div>
     </div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="O que você procura?" #termoPesquisa (keyup.enter)="pesquisar(termoPesquisa.value)">
+      <button (click)="pesquisar(termoPesquisa.value)" aria-label="Buscar"><i class="bi bi-search"></i></button>
+    </div>
+
+    <nav class="main-nav" [class.is-active]="isMenuOpen">
+      <div class="nav-item">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" (click)="closeMenu()">Home</a>
+      </div>
+      <div class="nav-item dropdown">
+        <a routerLink="/produtos" routerLinkActive="active" class="nav-link">Produtos</a>
+        <div class="dropdown-menu">
+          <a *ngFor="let cat of categoriasDeProduto" [routerLink]="['/produtos']" [queryParams]="{ categoria: cat.id }" class="dropdown-item" (click)="closeMenu()">{{ cat.nome }}</a>
+        </div>
+      </div>
+      <div class="nav-item dropdown">
+        <a routerLink="/presentes" routerLinkActive="active" class="nav-link">Presentes</a>
+        <div class="dropdown-menu">
+          <a *ngFor="let cat of categoriasDePresente" [routerLink]="['/presentes']" [queryParams]="{ categoria: cat.id }" class="dropdown-item" (click)="closeMenu()">{{ cat.nome }}</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a routerLink="/sobre-nos" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Sobre Nós</a>
+      </div>
+    </nav>
+    
   </div>
-</header>
+</div>
