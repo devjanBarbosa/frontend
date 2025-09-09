@@ -73,29 +73,53 @@
 }
 
 .diferenciais-section {
-  padding: 4rem 1.5rem;
-  background-color: var(--surface-color);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  // 1. Layout Flexbox para alinhar os itens horizontalmente
+  display: flex;
+  justify-content: space-around; // Distribui os itens igualmente
+  flex-wrap: wrap; // Permite quebrar a linha em telas muito pequenas
+  
+  // 2. Visual de "faixa"
+  background-color: var(--background-color); // Um fundo sutil para separar do resto
+  padding: 1.5rem 1rem; // Mais compacto verticalmente
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  gap: 1.5rem; // Espaçamento entre os itens
+}
 
-  .diferencial-item {
+.diferencial-item {
+  display: flex;
+  align-items: center; // Alinha ícone e texto
+  gap: 0.75rem;
+  text-align: left; // Alinha o texto à esquerda do ícone
+
+  i {
+    font-size: 2rem; // Ícones um pouco menores
+    color: var(--primary-color);
+  }
+  
+  h3 {
+    font-size: 0.9rem; // Título mais sutil
+    font-weight: 600;
+    color: var(--text-color-dark);
+    margin: 0;
+  }
+
+  p {
+    display: none; // 3. Escondemos o parágrafo em telas maiores para economizar espaço
+  }
+  
+  // Para telas menores, voltamos a mostrar o parágrafo para mais clareza
+  @media (max-width: 768px) {
+    flex-direction: column; // Ícone em cima, texto embaixo
     text-align: center;
-    i {
-      font-size: 2.5rem;
-      color: var(--primary-color);
-      margin-bottom: 1rem;
-    }
-    h3 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--text-color-dark);
-    }
+    flex-basis: 100%; // Cada item ocupa a largura toda
+    
     p {
+      display: block; // Mostra o parágrafo novamente
+      font-size: 0.85rem;
       color: var(--text-color-light);
-      line-height: 1.7;
+      line-height: 1.5;
+      margin: 0.25rem 0 0 0;
     }
   }
 }
@@ -306,55 +330,5 @@ swiper-slide {
   swiper-container::part(button-next),
   swiper-container::part(button-prev) {
     display: none;
-  }
-}
-.brand-banner {
-  padding: 3rem 1.5rem;
-  background-color: var(--surface-color);
-  text-align: center;
-
-  h3 {
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: var(--text-color-light);
-    margin-bottom: 1.5rem;
-  }
-
-  .brand-list {
-    display: flex;
-    flex-wrap: wrap; // Permite que as marcas quebrem a linha em telas menores
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .brand-item {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--text-color-light);
-    opacity: 0.7;
-    transition: all 0.2s ease;
-
-    &:hover {
-      opacity: 1;
-      color: var(--primary-color);
-    }
-  }
-  
-  .availability-check {
-    margin-top: 2.5rem;
-    font-size: 1rem;
-    color: var(--text-color-dark);
-    
-    a {
-      color: var(--primary-color);
-      font-weight: 600;
-      text-decoration: none;
-      
-      &:hover {
-        text-decoration: underline;
-      }
-    }
   }
 }
