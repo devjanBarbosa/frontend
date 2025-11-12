@@ -93,42 +93,26 @@
     <h2>Nossas Categorias</h2>
     <p>Navegue pelas nossas seleções e encontre o que você precisa.</p>
     
-    <swiper-container
-      [slidesPerView]="'auto'"
-      [spaceBetween]="20"
-      navigation="true"
-      [pagination]="{ clickable: true }"
-      [loop]="true"
-      [breakpoints]="{
-        '320': { 'slidesPerView': 1, 'spaceBetween': 15 },
-        '576': { 'slidesPerView': 2, 'spaceBetween': 20 },
-        '992': { 'slidesPerView': 3, 'spaceBetween': 20 },
-        '1200': { 'slidesPerView': 4, 'spaceBetween': 20 }
-      }">
+    <div class="category-grid">
       
-      <swiper-slide *ngFor="let categoria of categoriasDeProduto">
-        <a [routerLink]="['/produtos']" [queryParams]="{ categoria: categoria.id }" class="category-card">
-          
-          <div class="category-image-wrapper">
-            <!-- ============================================= -->
-            <!--             CORREÇÃO PRINCIPAL AQUI             -->
-            <!-- ============================================= -->
-            <img *ngIf="categoria.urlImagem" [src]="categoria.urlImagem" [alt]="categoria.nome">
-            
-            <!-- Fallback: Mostra um ícone se a categoria não tiver imagem -->
-            <div *ngIf="!categoria.urlImagem" class="category-image-placeholder">
-                <i class="bi bi-box-seam-fill"></i>
-            </div>
+      <a *ngFor="let categoria of categoriasDeProduto" 
+         [routerLink]="['/produtos']" 
+         [queryParams]="{ categoria: categoria.id }" 
+         class="category-card --grid-style">
+        
+        <div class="category-image-wrapper">
+          <img *ngIf="categoria.urlImagem" [src]="categoria.urlImagem" [alt]="categoria.nome">
+          <div *ngIf="!categoria.urlImagem" class="category-image-placeholder">
+            <i class="bi bi-box-seam-fill"></i>
           </div>
-          
-          <div class="category-name">
-            <h3>{{ categoria.nome }}</h3>
-          </div>
-
-        </a>
-      </swiper-slide>
+        </div>
+        
+        <div class="category-name">
+          <h3>{{ categoria.nome }}</h3>
+        </div>
+      </a>
       
-    </swiper-container>
+    </div>
   </div>
 </section>
 

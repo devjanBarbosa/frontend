@@ -225,6 +225,36 @@ swiper-slide {
   }
 }
 
+.category-grid {
+  display: grid;
+  // Cria colunas responsivas: 2 no mobile, até 4 em telas grandes
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 992px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// Estilo específico para os cards que estão na grade
+.category-card.--grid-style {
+  // Ajustes para um visual mais limpo na grade
+  box-shadow: var(--shadow-subtle);
+  border: 1px solid var(--border-color);
+
+  .category-image-wrapper {
+    height: 180px; // Imagens um pouco menores na grade
+  }
+
+  .category-name h3 {
+    font-size: 1rem; // Fonte um pouco menor para economizar espaço
+  }
+}
+
 // --- 7. Secção de Depoimentos (Prova Social) ---
 .depoimentos-section {
   padding: 4rem 1.5rem;
