@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: '' // <-- String vazia
+  apiUrl: 'https://www.ledacosmeticos.com.br' 
 };
